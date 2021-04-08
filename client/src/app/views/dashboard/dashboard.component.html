@@ -12,7 +12,12 @@
       </div>
       <div class="dashboard__currency">EUR</div>
     </div>
-    <button mat-flat-button color="accent" class="dashboard__add-user">
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="addUser()"
+      class="dashboard__add-user"
+    >
       Add User
       <mat-icon>add</mat-icon>
     </button>
@@ -25,7 +30,7 @@
   <div class="dashboard__users-list">
     <div class="dashboard__user" *ngFor="let user of users">
       <h3 class="dashboard__user-name">
-        {{ user.FirstName + " " + user.SecondName }}
+        {{ user.fullName }}
       </h3>
       <div class="dashboard__user-adresses">
         {{ user.wallets.length + " adresses" }}

@@ -1,9 +1,8 @@
 export interface User {
   id: number;
-  FirstName: string;
-  SecondName: string;
+  fullName: string;
   wallets: string[];
-  transactions: Transaction[];
+  transactions?: Transaction[];
 }
 
 export interface Transaction {

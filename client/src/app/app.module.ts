@@ -23,9 +23,10 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
 import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { AddUserComponent } from './views/dashboard/add-user/add-user.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HeaderComponent, DashboardComponent],
+  declarations: [AppComponent, LoginComponent, HeaderComponent, DashboardComponent, AddUserComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

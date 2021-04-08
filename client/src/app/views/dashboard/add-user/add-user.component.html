@@ -1,0 +1,56 @@
+<form (ngSubmit)="addUser()" class="form">
+  <mat-form-field class="form__input" appearance="outline">
+    <mat-label>Full Name</mat-label>
+    <input
+      matInput
+      placeholder="Placeholder"
+      name="fullName"
+      [(ngModel)]="fullName"
+    />
+  </mat-form-field>
+  <div class="form__inputs-group">
+    <button mat-mini-fab class="form__add-field">
+      <mat-icon aria-label="label" (click)="addField(this.btcAdresses)"
+        >add</mat-icon
+      >
+    </button>
+    <mat-form-field
+      *ngFor="let input of btcAdresses; let i = index"
+      class="form__input"
+      appearance="outline"
+    >
+      <mat-label>BTC Address</mat-label>
+      <input
+        matInput
+        placeholder="Placeholder"
+        [name]="'btcAdress' + i"
+        [(ngModel)]="btcAdresses[i]"
+      />
+    </mat-form-field>
+  </div>
+  <div class="form__inputs-group">
+    <button
+      mat-mini-fab
+      class="form__add-field"
+      (click)="addField(this.ethAdresses)"
+    >
+      <mat-icon aria-label="label">add</mat-icon>
+    </button>
+    <mat-form-field
+      *ngFor="let input of ethAdresses; let i = index"
+      class="form__input"
+      appearance="outline"
+    >
+      <mat-label>ETH Address</mat-label>
+      <input
+        matInput
+        placeholder="Placeholder"
+        [name]="'ethAdress' + i"
+        [(ngModel)]="ethAdresses[i]"
+      />
+    </mat-form-field>
+  </div>
+  <button class="form__submit" mat-flat-button color="primary">
+    Add Client
+  </button>
+</form>

@@ -15,8 +15,7 @@ export class UsersService extends BaseRequestService {
   fakeUsers: User[] = [
     {
       id: 1,
-      FirstName: "Dante",
-      SecondName: "Alighieri",
+      fullName: "Dante Alighieri",
       wallets: [
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
@@ -50,8 +49,7 @@ export class UsersService extends BaseRequestService {
     },
     {
       id: 2,
-      FirstName: "Troy",
-      SecondName: "Yates",
+      fullName: "Troy Yates",
       wallets: [
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
@@ -82,8 +80,7 @@ export class UsersService extends BaseRequestService {
     },
     {
       id: 3,
-      FirstName: "Heather",
-      SecondName: "Graham",
+      fullName: "Heather Graham",
       wallets: [
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
@@ -115,8 +112,7 @@ export class UsersService extends BaseRequestService {
     },
     {
       id: 4,
-      FirstName: "Aimee",
-      SecondName: "Pearce",
+      fullName: "Aimee Pearce",
       wallets: [
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
@@ -151,8 +147,7 @@ export class UsersService extends BaseRequestService {
     },
     {
       id: 5,
-      FirstName: "Gracie",
-      SecondName: "Hensley",
+      fullName: "Gracie Hensley",
       wallets: [
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
         "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
@@ -186,5 +181,9 @@ export class UsersService extends BaseRequestService {
 
   getUsers() {
     return this.fakeUsers;
+  }
+
+  addUser(user: User) {
+    this.fakeUsers.push(user);
   }
 }
