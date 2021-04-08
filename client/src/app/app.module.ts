@@ -22,9 +22,10 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
+import { DashboardComponent } from './views/dashboard/dashboard.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HeaderComponent],
+  declarations: [AppComponent, LoginComponent, HeaderComponent, DashboardComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

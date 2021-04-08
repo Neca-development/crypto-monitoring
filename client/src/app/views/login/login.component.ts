@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     try {
       await this.sessionService.logIn(user);
       this.authLoading = false;
-      this.router.navigate(["admin"]);
+      this.router.navigate(["dashboard"]);
     } catch (error) {
       this.authLoading = false;
     }

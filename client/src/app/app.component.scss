@@ -2,3 +2,11 @@
   background-color: rgb(238, 238, 238);
   min-height: 100vh;
 }
+
+::ng-deep {
+  .container {
+    margin: auto;
+    max-width: 1200px;
+    padding: 0 25px;
+  }
+}
