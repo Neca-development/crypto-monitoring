@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 30px 45px;
+
+  background-color: #fff;
+
+  @media screen and (max-width: 430px) {
+    display: block;
+  }
+  &__logo {
+    height: 40px;
+    margin: 0;
+  }
+  &__back {
+    font-size: 30px;
+
+    color: #000;
+  }
+}

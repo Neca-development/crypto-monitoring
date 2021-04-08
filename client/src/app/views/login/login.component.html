@@ -1,0 +1,55 @@
+<div class="container login">
+  <mat-card class="login__form">
+    <form action="" method="POST" ngNativeValidate (ngSubmit)="logIn()">
+      <h2 class="login__title">Log in</h2>
+      <mat-form-field class="login__input" appearance="outline">
+        <mat-label>Enter your e-mail</mat-label>
+        <input
+          matInput
+          placeholder="e-mail"
+          required
+          name="uername"
+          type="email"
+          [(ngModel)]="username"
+        />
+      </mat-form-field>
+      <mat-form-field class="login__input" appearance="outline">
+        <mat-label>Enter your password</mat-label>
+        <input
+          matInput
+          [type]="hide ? 'password' : 'text'"
+          required
+          name="password"
+          [(ngModel)]="password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="hide = !hide"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide"
+          tabindex="none"
+        >
+          <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+      </mat-form-field>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="!(username && password)"
+        class="login__submit"
+      >
+        Log in
+        <mat-spinner
+          *ngIf="authLoading; else loginIcon"
+          [diameter]="24"
+          class="login__submit-spinner"
+        ></mat-spinner>
+        <ng-template #loginIcon>
+          <mat-icon>login</mat-icon>
+        </ng-template>
+      </button>
+    </form>
+  </mat-card>
+</div>
