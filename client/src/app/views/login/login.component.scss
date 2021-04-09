@@ -1,0 +1,39 @@
+.login {
+  width: 100%;
+  display: grid;
+  padding: 140px 0;
+  place-items: center;
+  &__form {
+    padding: 32px;
+    width: 536px;
+    box-shadow: 0 0.9px 1.8px -10px rgb(0 0 0 / 2%),
+      0 2.8px 5px -10px rgb(0 0 0 / 2%), 0 7.1px 12.1px -10px rgb(0 0 0 / 3%),
+      0 21px 40px -10px rgb(0 0 0 / 5%);
+    font-size: 16px;
+  }
+  &__title {
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+  &__input {
+    display: block;
+  }
+
+  &__submit {
+    display: flex;
+    margin-left: auto;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 5px 20px;
+  }
+
+  &__submit-spinner {
+    display: inline-block;
+    margin-left: 5px;
+    &::ng-deep circle,
+    .mat-spinner circle {
+      stroke: #fff;
+    }
+  }
+}
