@@ -2,10 +2,14 @@ export interface User {
   id: number;
   fullName: string;
   wallets: {
-    btcAdresses: string[];
-    ethAdresses: string[];
+    btcAdresses: IWallet[];
+    ethAdresses: IWallet[];
   };
   transactions?: Transaction[];
+}
+
+export interface IWallet {
+  value: string;
 }
 
 export interface Transaction {

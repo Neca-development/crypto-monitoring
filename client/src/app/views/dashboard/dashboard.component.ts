@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
 
   addUser() {
     const dialogRef = this.dialog.open(AddUserComponent, {
+      maxHeight: "80vh",
       width: "1000px",
     });
   }

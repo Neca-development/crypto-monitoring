@@ -22,11 +22,21 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
-import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { AddUserComponent } from './views/dashboard/add-user/add-user.component';
+import { DashboardComponent } from "./views/dashboard/dashboard.component";
+import { AddUserComponent } from "./views/dashboard/add-user/add-user.component";
+import { ClientComponent } from "./views/client/client.component";
+import { TransactionsHistoryComponent } from './components/transactions-history/transactions-history.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HeaderComponent, DashboardComponent, AddUserComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HeaderComponent,
+    DashboardComponent,
+    AddUserComponent,
+    ClientComponent,
+    TransactionsHistoryComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

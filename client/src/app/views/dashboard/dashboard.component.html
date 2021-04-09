@@ -40,7 +40,11 @@
         }}
       </div>
       <div class="dashboard__user-actions">
-        <button mat-flat-button color="accent" [routerLink]="['user', user.id]">
+        <button
+          mat-flat-button
+          color="accent"
+          [routerLink]="['/client', user.id]"
+        >
           View Details
         </button>
         <div class="dashboard__btns-group">

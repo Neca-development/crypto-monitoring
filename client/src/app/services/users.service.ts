@@ -18,19 +18,19 @@ export class UsersService extends BaseRequestService {
       fullName: "Dante Alighieri",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
@@ -62,19 +62,19 @@ export class UsersService extends BaseRequestService {
       fullName: "Troy Yates",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
@@ -106,19 +106,19 @@ export class UsersService extends BaseRequestService {
       fullName: "Heather Graham",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
@@ -150,19 +150,19 @@ export class UsersService extends BaseRequestService {
       fullName: "Aimee Pearce",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
@@ -194,19 +194,19 @@ export class UsersService extends BaseRequestService {
       fullName: "Gracie Hensley",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
@@ -239,6 +239,11 @@ export class UsersService extends BaseRequestService {
     return this.fakeUsers;
   }
 
+  getUserById(id: number) {
+    console.log(id);
+    return this.fakeUsers.find((el) => el.id === id);
+  }
+
   addUser(user: User) {
     this.fakeUsers.push(user);
   }
@@ -249,9 +254,7 @@ export class UsersService extends BaseRequestService {
   }
 
   updateUser(user: User) {
-    console.log(user);
     const idx = this.fakeUsers.findIndex((el) => el.id === user.id);
-    console.log(idx);
     this.fakeUsers[idx] = user;
   }
 }

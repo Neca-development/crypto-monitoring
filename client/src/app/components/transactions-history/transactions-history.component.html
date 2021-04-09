@@ -1,0 +1,17 @@
+<div class="tr-his">
+  <div class="tr-his__head">
+    <h2 class="tr-his__title">Transaction History</h2>
+    <div class="tr-his__filters">
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-select placeholder="placeholder">
+        <mat-option [value]="'val'">{{ val }}</mat-option>
+        <mat-option [value]="'val'">{{ val }}</mat-option>
+        <mat-option [value]="'val'">{{ val }}</mat-option>
+      </mat-select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+.client {
+  padding-top: 47px;
+
+  &__title {
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 66px;
+    margin-bottom: 0;
+  }
+
+  &__back {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    cursor: pointer;
+  }
+
+  &__row {
+    display: grid;
+    grid-gap: 22px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 30px;
+  }
+
+  &__graph {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+    background-color: #000;
+    text-align: center;
+    padding: 120px 0;
+    color: #ffffff;
+  }
+
+  &__currency-list {
+    margin-top: 20px;
+  }
+
+  &__currency {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    color: #fff;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+    text-align: center;
+  }
+
+  &__currency-hint {
+    font-size: 18px;
+    line-height: 21px;
+  }
+
+  .wallet {
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 21px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    line-height: 21px;
+  }
+}
