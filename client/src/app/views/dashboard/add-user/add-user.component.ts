@@ -14,8 +14,8 @@ import { UsersService } from "./../../../services/users.service";
 })
 export class AddUserComponent implements OnInit {
   fullName: string;
-  btcAdresses: string[] = [""];
-  ethAdresses: string[] = [""];
+  btcAdresses: any[] = [{ value: "" }];
+  ethAdresses: any[] = [{ value: "" }];
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
@@ -31,11 +31,12 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  addField(wallet: string[]) {
-    wallet.push("");
+  addField(wallet: any[]) {
+    wallet.push({ value: "" });
   }
 
   submit() {
+    console.log("submit");
     this.data ? this.updateUser() : this.addUser();
   }
 

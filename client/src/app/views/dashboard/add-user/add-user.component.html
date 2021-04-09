@@ -10,7 +10,7 @@
     />
   </mat-form-field>
   <div class="form__inputs-group">
-    <button role="button" mat-mini-fab class="form__add-field">
+    <button type="button" mat-mini-fab class="form__add-field">
       <mat-icon aria-label="label" (click)="addField(this.btcAdresses)"
         >add</mat-icon
       >
@@ -25,13 +25,13 @@
         matInput
         placeholder="1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV"
         [name]="'btcAdress' + i"
-        [(ngModel)]="btcAdresses[i]"
+        [(ngModel)]="btcAdresses[i].value"
       />
     </mat-form-field>
   </div>
   <div class="form__inputs-group">
     <button
-      role="button"
+      type="button"
       mat-mini-fab
       class="form__add-field"
       (click)="addField(this.ethAdresses)"
@@ -54,7 +54,7 @@
   </div>
   <button
     class="form__submit"
-    type="submit"
+    role="submit"
     mat-flat-button
     color="primary"
     *ngIf="!data"
@@ -63,7 +63,7 @@
   </button>
   <button
     class="form__submit"
-    type="submit"
+    role="submit"
     mat-flat-button
     color="primary"
     *ngIf="data"
