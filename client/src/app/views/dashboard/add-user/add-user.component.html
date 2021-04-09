@@ -1,4 +1,4 @@
-<form (ngSubmit)="addUser()" ngNativeValidate class="form">
+<form (ngSubmit)="submit()" ngNativeValidate class="form">
   <mat-form-field class="form__input" appearance="outline">
     <mat-label>Full Name</mat-label>
     <input
@@ -52,7 +52,22 @@
       />
     </mat-form-field>
   </div>
-  <button class="form__submit" mat-flat-button color="primary">
+  <button
+    class="form__submit"
+    type="submit"
+    mat-flat-button
+    color="primary"
+    *ngIf="!data"
+  >
     Add Client
+  </button>
+  <button
+    class="form__submit"
+    type="submit"
+    mat-flat-button
+    color="primary"
+    *ngIf="data"
+  >
+    Update Client
   </button>
 </form>

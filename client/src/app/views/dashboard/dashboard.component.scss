@@ -13,13 +13,10 @@
     line-height: 66px;
     align-self: center;
   }
-  &__currency-list {
-    display: flex;
-    justify-content: space-between;
-  }
   &__currency {
-    width: 140px;
-    height: 140px;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -76,5 +73,13 @@
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
+  }
+
+  &__btns-group {
+    button {
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
   }
 }

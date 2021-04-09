@@ -33,15 +33,24 @@
         {{ user.fullName }}
       </h3>
       <div class="dashboard__user-adresses">
-        {{ user.wallets.length + " adresses" }}
+        {{
+          user.wallets.btcAdresses.length +
+            user.wallets.ethAdresses.length +
+            " adresses"
+        }}
       </div>
       <div class="dashboard__user-actions">
-        <button mat-button [routerLink]="['user', user.id]">
+        <button mat-flat-button color="accent" [routerLink]="['user', user.id]">
           View Details
         </button>
-        <button mat-button color="warn" routerLink="link">
-          Delete <mat-icon>delete</mat-icon>
-        </button>
+        <div class="dashboard__btns-group">
+          <button mat-flat-button color="primary" (click)="editUser(user)">
+            Edit <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-flat-button color="warn" (click)="removeUser(user.id)">
+            Delete <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
   </div>

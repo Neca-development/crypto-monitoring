@@ -23,4 +23,20 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.users = this._usersService.getUsers();
   }
+
+  removeUser(id: number) {
+    this._usersService.removeUser(id);
+    this.users = this._usersService.fakeUsers;
+  }
+
+  editUser(user: User) {
+    const dialogRef = this.dialog.open(AddUserComponent, {
+      width: "1000px",
+      maxHeight: "80vh",
+      data: user,
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.users = this._usersService.fakeUsers;
+    });
+  }
 }

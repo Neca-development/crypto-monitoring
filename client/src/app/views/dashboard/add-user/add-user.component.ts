@@ -1,5 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
+import { Component, OnInit, Inject } from "@angular/core";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
+import { User } from "src/app/models/models";
 import { UsersService } from "./../../../services/users.service";
 
 @Component({
@@ -14,20 +19,46 @@ export class AddUserComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: User,
     private _usersService: UsersService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.data) {
+      this.fullName = this.data.fullName;
+      this.btcAdresses = this.data.wallets.btcAdresses;
+      this.ethAdresses = this.data.wallets.ethAdresses;
+    }
+  }
 
-  addField(arr: string[]) {
-    arr.push("");
+  addField(wallet: string[]) {
+    wallet.push("");
+  }
+
+  submit() {
+    this.data ? this.updateUser() : this.addUser();
   }
 
   addUser() {
     this._usersService.addUser({
       id: Date.now(),
       fullName: this.fullName,
-      wallets: [...this.btcAdresses, ...this.ethAdresses],
+      wallets: {
+        btcAdresses: this.btcAdresses,
+        ethAdresses: this.ethAdresses,
+      },
+    });
+    this.dialogRef.close();
+  }
+
+  updateUser() {
+    this._usersService.updateUser({
+      ...this.data,
+      fullName: this.fullName,
+      wallets: {
+        btcAdresses: this.btcAdresses,
+        ethAdresses: this.ethAdresses,
+      },
     });
     this.dialogRef.close();
   }

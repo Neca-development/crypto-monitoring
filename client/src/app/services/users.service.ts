@@ -16,13 +16,23 @@ export class UsersService extends BaseRequestService {
     {
       id: 1,
       fullName: "Dante Alighieri",
-      wallets: [
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-      ],
+      wallets: {
+        btcAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+
+        ethAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+      },
       transactions: [
         {
           currency: "BTC",
@@ -50,10 +60,23 @@ export class UsersService extends BaseRequestService {
     {
       id: 2,
       fullName: "Troy Yates",
-      wallets: [
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-      ],
+      wallets: {
+        btcAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+
+        ethAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+      },
       transactions: [
         {
           currency: "BTC",
@@ -81,11 +104,23 @@ export class UsersService extends BaseRequestService {
     {
       id: 3,
       fullName: "Heather Graham",
-      wallets: [
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-      ],
+      wallets: {
+        btcAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+
+        ethAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+      },
       transactions: [
         {
           currency: "BTC",
@@ -113,14 +148,23 @@ export class UsersService extends BaseRequestService {
     {
       id: 4,
       fullName: "Aimee Pearce",
-      wallets: [
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-      ],
+      wallets: {
+        btcAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+
+        ethAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+      },
       transactions: [
         {
           currency: "BTC",
@@ -148,11 +192,23 @@ export class UsersService extends BaseRequestService {
     {
       id: 5,
       fullName: "Gracie Hensley",
-      wallets: [
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-        "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-      ],
+      wallets: {
+        btcAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+
+        ethAdresses: [
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+        ],
+      },
       transactions: [
         {
           currency: "BTC",
@@ -185,5 +241,17 @@ export class UsersService extends BaseRequestService {
 
   addUser(user: User) {
     this.fakeUsers.push(user);
+  }
+
+  removeUser(id: number) {
+    const idx = this.fakeUsers.findIndex((el) => el.id === id);
+    this.fakeUsers.splice(idx, 1);
+  }
+
+  updateUser(user: User) {
+    console.log(user);
+    const idx = this.fakeUsers.findIndex((el) => el.id === user.id);
+    console.log(idx);
+    this.fakeUsers[idx] = user;
   }
 }
