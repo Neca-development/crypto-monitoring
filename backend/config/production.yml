@@ -1,0 +1,9 @@
+db:
+  synchronize: false
+
+jwt:
+  secret: '655afd70c47be89de9e8295a1982e96b5804419'
+
+admin:
+  email: 'test@gmail.com'
+  password: 'IWannaFly'
