@@ -1,5 +1,5 @@
 .app {
-  background-color: rgb(238, 238, 238);
+  background-color: hsl(0deg 0% 94%);
   min-height: 100vh;
 }
 
@@ -8,5 +8,9 @@
     margin: auto;
     max-width: 1200px;
     padding: 0 25px;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 }

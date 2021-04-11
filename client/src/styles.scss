@@ -11,7 +11,7 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$client-primary: mat-palette($mat-gray, 900);
+$client-primary: mat-palette($mat-gray, 800);
 $client-accent: mat-palette($mat-deep-orange);
 
 // The warn palette is optional (defaults to red).
@@ -42,5 +42,23 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  *:not(mat-icon) {
+    font-family: Circe, "Helvetica Neue", sans-serif !important;
+  }
+}
+
+.mat-flat-button.mat-accent,
+.mat-raised-button.mat-accent,
+.mat-fab.mat-accent,
+.mat-mini-fab.mat-accent {
+  background: linear-gradient(135deg, #ffc623, #ff4a13);
+  transition: 0.25s ease;
+  border-radius: 10px;
+  box-shadow: inset 0.2rem 0.2rem 1rem #fab46d,
+    inset -0.2rem -0.2rem 1rem #f94b14, 0.3rem 0.3rem 0.6rem #fdb771,
+    -0.2rem -0.2rem 0.5rem #ffffff;
+  &:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem #f94b14,
+      inset -0.2rem -0.2rem 1rem #fab46d;
+  }
 }

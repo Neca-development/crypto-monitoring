@@ -13,6 +13,12 @@
     line-height: 66px;
     align-self: center;
   }
+  &__currency-list {
+    background-color: #f1f1f1;
+    box-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
+      inset -4px -3px 6px 0px rgb(243 243 243);
+    border-radius: 15px;
+  }
   &__currency {
     width: 100%;
     padding: 10px;
@@ -21,8 +27,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #000;
-    color: #fff;
     font-weight: 500;
     font-size: 36px;
     line-height: 42px;
@@ -35,16 +39,20 @@
   }
   &__add-user {
     justify-self: start;
+    font-size: 18px;
   }
   &__search {
     width: 360px;
     justify-self: end;
     padding: 11px 21px;
-    border: 1px solid #000000;
     box-sizing: border-box;
-    border-radius: 5px;
-    font-size: 14px;
+    border-radius: 10px;
+    font-size: 16px;
     line-height: 140.62%;
+    border: 0;
+    background-color: #f1f1f1;
+    box-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
+      inset -4px -3px 6px 0px rgb(243 243 243);
 
     ::placeholder {
       color: rgba(0, 0, 0, 0.5);
@@ -57,8 +65,16 @@
     grid-gap: 37px 68px;
   }
   &__user {
-    background: #fff;
+    background: linear-gradient(153deg, #efefef1c, #dadada42);
     padding: 48px;
+    border-radius: 20px;
+    box-shadow: 4px 4px 16px rgb(136 136 136 / 19%), -4px -4px 11px white;
+    filter: grayscale(0.3);
+    transition: all ease 0.18s;
+
+    &:hover {
+      filter: grayscale(0);
+    }
   }
   &__user-name {
     font-weight: bold;

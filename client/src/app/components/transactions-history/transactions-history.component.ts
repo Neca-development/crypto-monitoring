@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-transactions-history',
-  templateUrl: './transactions-history.component.html',
-  styleUrls: ['./transactions-history.component.scss']
+  selector: "app-transactions-history",
+  templateUrl: "./transactions-history.component.html",
+  styleUrls: ["./transactions-history.component.scss"],
 })
 export class TransactionsHistoryComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
