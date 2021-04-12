@@ -5,6 +5,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px 68px;
+    margin-top: 50px;
   }
 
   &__caption {
@@ -14,10 +15,10 @@
     align-self: center;
   }
   &__currency-list {
-    background-color: #f1f1f1;
-    box-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
-      inset -4px -3px 6px 0px rgb(243 243 243);
-    border-radius: 15px;
+    display: grid;
+    grid-gap: 15px;
+    margin-top: 25px;
+    grid-template-columns: repeat(3, 1fr);
   }
   &__currency {
     width: 100%;
@@ -28,35 +29,32 @@
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    font-size: 36px;
+    position: relative;
+    font-size: 26px;
     line-height: 42px;
+    padding: 20px 10px;
     text-align: center;
+    background-color: #f1f1f1;
+    box-shadow: var(--inner-shadow);
+    border-radius: 15px;
   }
 
   &__currency-hint {
     font-size: 18px;
     line-height: 21px;
   }
+
+  &__currency-head {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    opacity: 0.5;
+    font-size: 18px;
+  }
+
   &__add-user {
     justify-self: start;
     font-size: 18px;
-  }
-  &__search {
-    width: 360px;
-    justify-self: end;
-    padding: 11px 21px;
-    box-sizing: border-box;
-    border-radius: 10px;
-    font-size: 16px;
-    line-height: 140.62%;
-    border: 0;
-    background-color: #f1f1f1;
-    box-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
-      inset -4px -3px 6px 0px rgb(243 243 243);
-
-    ::placeholder {
-      color: rgba(0, 0, 0, 0.5);
-    }
   }
   &__users-list {
     margin-top: 57px;
@@ -68,7 +66,7 @@
     background: linear-gradient(153deg, #efefef1c, #dadada42);
     padding: 48px;
     border-radius: 20px;
-    box-shadow: 4px 4px 16px rgb(136 136 136 / 19%), -4px -4px 11px white;
+    box-shadow: var(--base-shadow);
     filter: grayscale(0.3);
     transition: all ease 0.18s;
 
@@ -94,8 +92,40 @@
   &__btns-group {
     button {
       &:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 15px;
       }
     }
+  }
+}
+
+.search {
+  position: relative;
+  &__input {
+    width: 100%;
+    justify-self: end;
+    padding: 11px 21px 11px 50px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
+    line-height: 140.62%;
+    border: 0;
+    background-color: #f1f1f1;
+    box-shadow: var(--inner-shadow);
+
+    ::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    &:active,
+    &:focus {
+      outline: none;
+      box-shadow: 5px 5px 4px rgb(193 193 193 / 17%),
+        -4px -3px 6px 0px rgb(243 243 243);
+    }
+  }
+  &__icon {
+    position: absolute;
+    left: 10px;
+    top: 12px;
   }
 }

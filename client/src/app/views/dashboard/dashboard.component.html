@@ -1,31 +1,39 @@
 <div class="dashboard container">
-  <div class="dashboard__head">
-    <h2 class="dashboard__caption">Total Funds</h2>
-    <div class="dashboard__currency-list">
-      <div class="dashboard__currency">
-        BTC <br />
-        <span class="dashboard__currency-hint">(EUR)</span>
-      </div>
-      <div class="dashboard__currency">
-        ETH <br />
-        <span class="dashboard__currency-hint">(EUR)</span>
-      </div>
-      <div class="dashboard__currency">EUR</div>
+  <h2 class="dashboard__caption">Total Funds</h2>
+  <div class="dashboard__currency-list">
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
+      <span>3.02340234023492453 <b>BTC</b></span>
+      <span class="dashboard__currency-hint">(EUR)</span>
     </div>
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
+      <span>3.02340234023492453 <b>ETH</b></span>
+      <span class="dashboard__currency-hint">(EUR)</span>
+    </div>
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">euro_symbol</mat-icon>
+      <span>323423 <b>EUR</b></span>
+    </div>
+  </div>
+  <div class="dashboard__head">
     <button
       mat-flat-button
-      color="accent"
+      color="primary"
       (click)="addUser()"
       class="dashboard__add-user"
     >
-      Add User
+      Add Client
       <mat-icon>add</mat-icon>
     </button>
-    <input
-      class="dashboard__search"
-      type="search"
-      placeholder="Search by name or wallet address"
-    />
+    <div class="search">
+      <mat-icon class="search__icon">search</mat-icon>
+      <input
+        class="search__input"
+        type="search"
+        placeholder="Search by name or wallet address"
+      />
+    </div>
   </div>
   <div class="dashboard__users-list">
     <div class="dashboard__user" *ngFor="let user of users">

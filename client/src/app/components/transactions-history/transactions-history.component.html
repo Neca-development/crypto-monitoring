@@ -3,15 +3,78 @@
     <h2 class="tr-his__title">Transaction History</h2>
     <div class="tr-his__filters">
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Choose a date" />
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          [matDatepicker]="picker"
+          placeholder="Choose a date"
+        />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <!-- <mat-select placeholder="placeholder">
-        <mat-option [value]="'val'">{{ val }}</mat-option>
-        <mat-option [value]="'val'">{{ val }}</mat-option>
-        <mat-option [value]="'val'">{{ val }}</mat-option>
-      </mat-select> -->
+      <mat-form-field>
+        <mat-label>Filter by tag</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let tag of tags" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
+  </div>
+  <div class="tr-his__table">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <!-- ID Column -->
+      <ng-container matColumnDef="coin">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Coin</th>
+        <td mat-cell *matCellDef="let row">{{ row.currency }}</td>
+      </ng-container>
+
+      <!-- Progress Column -->
+      <ng-container matColumnDef="txHash">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>TX Hash</th>
+        <td mat-cell *matCellDef="let row">{{ row.TXHash }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>To Address</th>
+        <td mat-cell *matCellDef="let row">{{ row.ToAdress }}</td>
+      </ng-container>
+
+      <!-- Color Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.date | date: "short" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>In/Out</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.type }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="link">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          Block Explorer
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-button color="primary">Block Explorer</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter</td>
+      </tr>
+    </table>
+    <mat-paginator
+      #MatPaginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+    ></mat-paginator>
   </div>
 </div>

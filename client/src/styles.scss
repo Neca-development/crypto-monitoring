@@ -11,11 +11,11 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$client-primary: mat-palette($mat-gray, 800);
+$client-primary: mat-palette($mat-green, 600);
 $client-accent: mat-palette($mat-deep-orange);
 
 // The warn palette is optional (defaults to red).
-$client-warn: mat-palette($mat-red);
+$client-warn: mat-palette($mat-red, 600);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
@@ -35,6 +35,12 @@ $client-theme: mat-light-theme(
 @include angular-material-theme($client-theme);
 
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --base-shadow: 4px 4px 16px rgb(136 136 136 / 19%), -4px -4px 11px white;
+  --inner-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
+    inset -4px -3px 6px 0px rgb(243 243 243);
+}
 
 html,
 body {
@@ -60,5 +66,31 @@ body {
   &:active {
     box-shadow: inset 0.2rem 0.2rem 1rem #f94b14,
       inset -0.2rem -0.2rem 1rem #fab46d;
+  }
+}
+.mat-flat-button.mat-primary,
+.mat-raised-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  background: linear-gradient(135deg, #4ddd8e, #43a047);
+  transition: 0.25s ease;
+  border-radius: 10px;
+  box-shadow: inset 0.2rem 0.2rem 1rem #60e66981,
+    inset -0.2rem -0.2rem 1rem #388d3d, 0.3rem 0.3rem 0.6rem #60e66981,
+    -0.2rem -0.2rem 0.5rem #ffffff;
+  &:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem #388d3d,
+      inset -0.2rem -0.2rem 1rem #60e66981;
+  }
+}
+
+.mat-button {
+  background: linear-gradient(153deg, #efefef1c, #dadada42);
+  border-radius: 20px;
+  box-shadow: var(--base-shadow);
+
+  &:active {
+    box-shadow: inset 4px 4px 16px rgb(136 136 136 / 19%),
+      inset -4px -4px 11px white;
   }
 }

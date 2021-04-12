@@ -9,7 +9,7 @@
 
     background: linear-gradient(153deg, #efefef1c, #dadada42);
     border-radius: 20px;
-    box-shadow: 4px 4px 16px rgb(136 136 136 / 19%), -4px -4px 11px white;
+    box-shadow: var(--base-shadow);
     font-size: 16px;
   }
   &__title {

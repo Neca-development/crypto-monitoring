@@ -1,12 +1,19 @@
 .app {
   background-color: hsl(0deg 0% 94%);
   min-height: 100vh;
+  padding-bottom: 20px;
+}
+
+.uniswap {
+  text-align: right;
+  margin-top: 30px;
+  color: grey;
 }
 
 ::ng-deep {
   .container {
     margin: auto;
-    max-width: 1200px;
+    max-width: 1300px;
     padding: 0 25px;
   }
 
