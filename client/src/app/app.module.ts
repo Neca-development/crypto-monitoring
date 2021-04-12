@@ -31,6 +31,8 @@ import { DashboardComponent } from "./views/dashboard/dashboard.component";
 import { AddUserComponent } from "./views/dashboard/add-user/add-user.component";
 import { ClientComponent } from "./views/client/client.component";
 import { TransactionsHistoryComponent } from "./components/transactions-history/transactions-history.component";
+import { WalletComponent } from "./views/client/wallet/wallet.component";
+import { MainComponent } from "./views/client/main/main.component";
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { TransactionsHistoryComponent } from "./components/transactions-history/
     AddUserComponent,
     ClientComponent,
     TransactionsHistoryComponent,
+    WalletComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
