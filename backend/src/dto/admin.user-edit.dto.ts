@@ -23,15 +23,8 @@ export class EditUserDto {
   @IsEmail()
   newEmail: string
 
+  @IsNotEmpty()
   @Type(() => Number)
   @IsInt()
   userID: number
-
-  @IsOptional()
-  @IsString()
-  fullName: string
-
-  @IsOptional()
-  @IsEmail()
-  email: string
 }

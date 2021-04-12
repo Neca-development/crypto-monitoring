@@ -184,27 +184,12 @@ export class UserRepository extends Repository<User> {
   }
 
   async editUser(editUserDto: EditUserDto): Promise<User> {
-    const {
-      newPassword,
-      newFullName,
-      newEmail,
-      fullName,
-      email,
-      userID
-    } = editUserDto
+    const { newPassword, newFullName, newEmail, userID } = editUserDto
 
-    let user
-
-    if (userID) {
-      user = await this.getUserById(userID)
-    } else if (fullName) {
-      user = await this.findOne({ fullName })
-    } else if (email) {
-      user = await this.findOne({ email })
-    }
+    let user = await this.getUserById(userID)
 
     if (!user) {
-      throw new NotFoundException(`User with given credentials not found`)
+      throw new NotFoundException(`User with id ${userID} not found`)
     }
 
     if (newFullName) {

@@ -41,7 +41,7 @@ export class AuthService {
     На данный момент клиент получает только fullName и роль client
 
     В случае успеха возвращает нового клиента
-    Если клиент уже существует выбросит Unauthorized исключение
+    Если клиент уже существует выбросит ConflictException
   */
 
   async addClient(addClientDto: AddClientDto) {

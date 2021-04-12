@@ -8,7 +8,7 @@ import {
   UseGuards,
   ValidationPipe
 } from '@nestjs/common'
-import { AuthGuard, AuthModuleOptions } from '@nestjs/passport'
+import { AuthGuard } from '@nestjs/passport'
 
 import { AuthService } from './auth.service'
 
@@ -85,7 +85,7 @@ export class AuthController {
   }
 
   /*
-     Обновление refresh токена
+    Обновление refresh токена
   */
   @Post('/refresh')
   refreshToken(
@@ -97,27 +97,27 @@ export class AuthController {
     )
   }
 
-  /*
-    Тест на владение актуальным access токеном
-  */
-  @Post('/test')
-  @UseGuards(AuthGuard())
-  test() {
-    return {
-      status: 'JWT token accepted'
-    }
-  }
+  // /*
+  //   Тест на владение актуальным access токеном
+  // */
+  // @Post('/test')
+  // @UseGuards(AuthGuard())
+  // test() {
+  //   return {
+  //     status: 'JWT token accepted'
+  //   }
+  // }
 
-  /*
-    Тест на владение актуальным access токеном с ролью админа
-  */
+  // /*
+  //   Тест на владение актуальным access токеном с ролью админа
+  // */
 
-  @Post('admin/test')
-  @Roles(UserRole.admin)
-  @UseGuards(AuthGuard(), RolesGuard)
-  testAdmin() {
-    return {
-      status: 'Admin jwt token accepted'
-    }
-  }
+  // @Post('admin/test')
+  // @Roles(UserRole.admin)
+  // @UseGuards(AuthGuard(), RolesGuard)
+  // testAdmin() {
+  //   return {
+  //     status: 'Admin jwt token accepted'
+  //   }
+  // }
 }

@@ -29,7 +29,7 @@ export class User extends BaseEntity {
   @Column({ unique: true, nullable: true })
   fullName: string
 
-  @Column({ nullable: true })
+  @Column()
   role: UserRole
 
   @Column({ nullable: true })
