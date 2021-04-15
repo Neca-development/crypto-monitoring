@@ -12,3 +12,8 @@ admin:
 
 jwt:
   expiresIn: 86400
+
+email:
+  service: 'gmail'
+  user: 'sorenharfagri@gmail.com'
+  password: 'NMzYMOZR3qw1'

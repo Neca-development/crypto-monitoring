@@ -8,12 +8,12 @@
 //   database: 'nest-jwt',
 //   autoLoadEntities: true,
 //   entities: [__dirname + '/../**/*.entity.js']
-// };
+// };asd
 
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
-import * as config from 'config'
+import Config from 'config'
 
-const dbConfig = config.get('db')
+const dbConfig: any = Config.get('db')
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,

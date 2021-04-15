@@ -15,7 +15,7 @@ import { GetUserDto } from '../../dto/admin.user-get'
 import { AddClientDto } from '../../dto/admin.client-add.dto'
 import { UserRole } from '../enum/user-role.enum'
 import { GetClientsDto } from '../../dto/admin.client-getClients'
-import * as config from 'config'
+import config from 'config'
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -24,7 +24,7 @@ export class UserRepository extends Repository<User> {
   //Создание админа по данным из конфига
 
   async onModuleInit() {
-    const adminConfig = config.get('admin')
+    const adminConfig: any = config.get('admin')
 
     if (adminConfig.email && adminConfig.password) {
       try {

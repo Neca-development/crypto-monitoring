@@ -9,7 +9,9 @@ import { AuthService } from './auth.service'
 
 import { RefreshTokenRepository } from './jwt/refreshToken/refreshToken.repository'
 import { UserRepository } from './user/user.repository'
-import * as config from 'config'
+import Config from 'config'
+
+let jwtConfig: any = Config.get('jwt')
 
 @Module({
   imports: [
@@ -17,9 +19,9 @@ import * as config from 'config'
       defaultStrategy: 'jwt'
     }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || config.get('jwt.secret'),
+      secret: process.env.JWT_SECRET || jwtConfig.secret,
       signOptions: {
-        expiresIn: process.env.JWT_SECRET || config.get('jwt.expiresIn'),
+        expiresIn: process.env.JWT_SECRET || jwtConfig.expiresIn,
         algorithm: 'HS512'
       }
     }),
