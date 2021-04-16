@@ -26,32 +26,32 @@ export class MonitoringService {
     private httpService: HttpService
   ) {}
 
-  async onModuleInit() {
-    setInterval(async () => {
-      let wallets = await this.ethRepository.getAllWallets()
+  // async onModuleInit() {
+  //   setInterval(async () => {
+  //     let wallets = await this.ethRepository.getAllWallets()
 
-      let requests = wallets.map(wallet => {
-        return this.web3.eth.getBalance(wallet.address)
-      })
+  //     let requests = wallets.map(wallet => {
+  //       return this.web3.eth.getBalance(wallet.address)
+  //     })
 
-      let results = await Promise.all(requests)
+  //     let results = await Promise.all(requests)
 
-      console.log(`Results lenght`, results.length - 1)
-      console.log(`Wallets lenght`, wallets.length - 1)
+  //     console.log(`Results lenght`, results.length - 1)
+  //     console.log(`Wallets lenght`, wallets.length - 1)
 
-      for (let i = 0; i <= wallets.length - 1; i++) {
-        // console.log(wallets[i])
-        // console.log(results[i])
+  //     for (let i = 0; i <= wallets.length - 1; i++) {
+  //       // console.log(wallets[i])
+  //       // console.log(results[i])
 
-        if (wallets[i].balance == parseInt(results[i])) {
-          //   console.log(`Balances are the same`)
-        } else {
-          console.log('Balances are not the same')
-          await this.updateTransactions(wallets[i], parseInt(results[i]))
-        }
-      }
-    }, 60000)
-  }
+  //       if (wallets[i].balance == parseInt(results[i])) {
+  //         //   console.log(`Balances are the same`)
+  //       } else {
+  //         console.log('Balances are not the same')
+  //         await this.updateTransactions(wallets[i], parseInt(results[i]))
+  //       }
+  //     }
+  //   }, 60000)
+  // }
 
   async updateTransactions(wallet: WalletETH, balance: number) {
     let lastTransactions = await this.getLastTransactions(wallet.address)

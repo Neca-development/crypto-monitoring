@@ -27,6 +27,9 @@ export class TransactionBTC extends BaseEntity {
   @Column()
   hash: string
 
+  @Column('timestamp', { nullable: true })
+  time: Date
+
   @Column()
   from: string
 

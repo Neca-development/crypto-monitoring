@@ -1,12 +1,11 @@
 import { Logger } from '@nestjs/common'
-import { EntityRepository, Repository, Transaction } from 'typeorm'
-import { resourceLimits } from 'worker_threads'
+import { EntityRepository, In, Repository } from 'typeorm'
 import { TransactionETH } from '../entities/Transaction-eth.entity'
 import { TransactionEthModel } from '../entities/Transaction-eth.model'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { NumToEth } from '../../helpers/NumToEth'
 
-@EntityRepository(WalletETH)
+@EntityRepository(TransactionETH)
 export class EthTransactionRepository extends Repository<TransactionETH> {
   private readonly logger = new Logger(EthTransactionRepository.name)
 
@@ -32,10 +31,6 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
   }
 
   async getLastTsxHash(wallet: WalletETH) {
-    // let query = this.createQueryBuilder('transaction')
-    // TODO Переписать с queryBuilder-ом
-    // query.where('transaction.walletid = :walletID', { walletID: wallet.id })
-
     let transactions = await wallet.transactions
 
     if (!transactions.length) {
@@ -43,5 +38,15 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     }
 
     return transactions[transactions.length - 1].hash
+  }
+
+  async getTransactionsByWalletIds(ids: Number[]) {
+    const results = await this.find({
+      where: { wallet: { id: In(ids) } },
+      order: { time: 'ASC' },
+      loadEagerRelations: false
+    })
+
+    return results
   }
 }
