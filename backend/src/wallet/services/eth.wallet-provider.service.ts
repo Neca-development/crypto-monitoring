@@ -39,30 +39,13 @@ export class EthWalletProviderService {
 
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
-  private web3WS = new Web3.default(this.infuraWssUrl)
-  private web3HTTP = new Web3.default(this.infuraUrl)
-
-  async onModuleInit() {
-    // var subscription = this.web3WS.eth
-    //   .subscribe('pendingTransactions', function (error, result) {
-    //     if (!error) console.log(result)
-    //   })
-    //   .on('data', function (transaction) {
-    //     console.log(transaction)
-    //   })
-    // // unsubscribes the subscription
-    // subscription.unsubscribe(function (error, success) {
-    //   if (success) console.log('Successfully unsubscribed!')
-    // })
-  }
+  private web3 = new Web3.default(this.infuraTestUrl)
 
   async getEthWallet(address: string) {
-    const web3 = new Web3.default(this.infuraTestUrl)
-
     let balance: string
 
     try {
-      balance = await web3.eth.getBalance(address)
+      balance = await this.web3.eth.getBalance(address)
       this.logger.log(`Balance is ${balance}`)
     } catch (e) {
       this.logger.log(`Cannot get wallet with address ${address}`, e.stack)
@@ -78,7 +61,7 @@ export class EthWalletProviderService {
     try {
       response = await this.httpService
         .get(
-          `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=asc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+          `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
           {}
         )
         .toPromise()
@@ -127,6 +110,8 @@ export class EthWalletProviderService {
 
       wallet.transactions.push(transaction)
     })
+
+    wallet.transactions.reverse()
 
     // console.log(wallet)
     return wallet

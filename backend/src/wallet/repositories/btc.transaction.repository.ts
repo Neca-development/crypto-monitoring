@@ -3,6 +3,7 @@ import { EntityRepository, In, Repository } from 'typeorm'
 import { TransactionBtcModel } from '../entities/Transaction-btc.model'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
 import { TransactionBTC } from '../entities/Transaction-btc.entity'
+import { WalletBtcModel } from '../entities/Wallet-btc.model'
 
 @EntityRepository(TransactionBTC)
 export class BtcTransactionRepository extends Repository<TransactionBTC> {
@@ -32,6 +33,16 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
     TODO
     Реализовать адекватный запрос
   */
+
+  async getLastTsxHash(wallet: WalletBTC) {
+    let transactions = await wallet.transactions
+
+    if (!transactions.length) {
+      return 'No transactions found'
+    }
+
+    return transactions[transactions.length - 1].hash
+  }
 
   async getTransactionsByIds(ids: Number[]) {
     const results = await this.find({

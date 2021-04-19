@@ -1,10 +1,15 @@
 import { HttpService, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { EmailService } from 'src/email/email.service'
 import { TransactionEthModel } from 'src/wallet/entities/Transaction-eth.model'
 import { WalletETH } from 'src/wallet/entities/Wallet-eth.entity'
 import { EthRepository } from 'src/wallet/repositories/eth.repository'
 import { EthTransactionRepository } from 'src/wallet/repositories/eth.transaction.repository'
 import * as Web3 from 'web3'
+import Config from 'config'
+import { NumToEth } from 'src/helpers/NumToEth'
+
+let emailConfig: any = Config.get('email')
 
 @Injectable()
 export class EthMonitoringService {
@@ -22,34 +27,29 @@ export class EthMonitoringService {
     @InjectRepository(EthRepository) private ethRepository: EthRepository,
     @InjectRepository(EthTransactionRepository)
     private ethTransactionRepository: EthTransactionRepository,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private emailService: EmailService
   ) {}
 
   async onModuleInit() {
     setInterval(async () => {
       let wallets = await this.ethRepository.getAllWallets()
-
       let requests = wallets.map(wallet => {
         return this.web3.eth.getBalance(wallet.address)
       })
-
       let results = await Promise.all(requests)
 
-      console.log(`Results lenght`, results.length - 1)
-      console.log(`Wallets lenght`, wallets.length - 1)
-
       for (let i = 0; i <= wallets.length - 1; i++) {
-        // console.log(wallets[i])
-        // console.log(results[i])
-
-        if (wallets[i].balance == parseInt(results[i])) {
-          //   console.log(`Balances are the same`)
-        } else {
+        if (wallets[i].balance != NumToEth(parseInt(results[i]))) {
           console.log('Balances are not the same')
+          console.log(wallets[i].balance, NumToEth(parseInt(results[i])))
           await this.updateTransactions(wallets[i], parseInt(results[i]))
+        } else {
+          console.log(`Balances are the same`)
+          console.log(wallets[i].balance, results[i])
         }
       }
-    }, 60000)
+    }, 15000)
   }
 
   async updateTransactions(wallet: WalletETH, balance: number) {
@@ -61,32 +61,18 @@ export class EthMonitoringService {
     console.log(`Last hash is `, lastTsxHash)
     // console.log(`Last transactions is`, lastTransactions)
 
-    let newBalance = wallet.balance
-
     console.log(`Wallet balance is`, wallet.balance)
-    console.log(`New balance initial`, newBalance)
 
     for (let i = 0; i <= lastTransactions.length - 1; i++) {
       if (lastTsxHash == lastTransactions[i].hash) {
         break
       }
 
-      if (lastTransactions[i].value == 0) {
+      if (NumToEth(lastTransactions[i].value) == 0) {
         return
       }
 
       let model = this.convertToModel(lastTransactions[i], wallet.address)
-
-      if (model.type == true) {
-        newBalance += model.value
-        console.log(`Model type is true`)
-        console.log(`Model value is`, model.value)
-        console.log(`newBalance`, newBalance)
-      } else {
-        newBalance -= model.value
-        console.log(`Model type is false`)
-        console.log(`newBalance`, newBalance)
-      }
       newTransactions.push(model)
     }
 
@@ -98,14 +84,23 @@ export class EthMonitoringService {
       newTransactions.reverse()
     )
 
-    console.log(`NEW TRANSACTION ADDED!!!!!`)
-    // console.log(`Result is`)
-    // console.log(result)
+    console.log(`NEW ETH TRANSACTION ADDED!!!!!`)
 
-    console.log(`New balance on end is`, newBalance)
-
-    wallet.balance = newBalance
+    wallet.balance = NumToEth(balance)
     await wallet.save()
+
+    newTransactions.forEach(transaction => {
+      let type = transaction.type ? 'Incoming' : 'Outcoming'
+      this.emailService.sendMail({
+        to: emailConfig.receiver,
+        subject: 'New transaction',
+        text: `Name: ${wallet.user.fullName} \n Address: ${
+          wallet.address
+        } \n Type: ${type} \n Summ of transaction ${NumToEth(
+          transaction.value
+        )} \n Block explorer: https://etherscan.io/tx/${transaction.hash}`
+      })
+    })
 
     console.log(`Wallet balance on end end is`, wallet.balance)
 
@@ -135,7 +130,7 @@ export class EthMonitoringService {
     // Official https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.etherscanApiKey}&offset=5&page=1
     let response = await this.httpService
       .get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=5&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+        `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=5&apikey=${this.etherscanApiKey}`,
         {}
       )
       .toPromise()

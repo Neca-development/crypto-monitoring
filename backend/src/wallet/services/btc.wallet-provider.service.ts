@@ -1,7 +1,13 @@
-import { HttpService, Injectable, Logger } from '@nestjs/common'
+import {
+  HttpService,
+  Injectable,
+  Logger,
+  NotFoundException
+} from '@nestjs/common'
 import { WalletBtcModel } from '../entities/Wallet-btc.model'
 import { NumToBtc } from '../../helpers/NumToBtc'
 import { TransactionBtcModel } from '../entities/Transaction-btc.model'
+import { SimpleConsoleLogger, TransactionRepository } from 'typeorm'
 
 /*
     Mainnet infura
@@ -20,11 +26,20 @@ export class BtcWalletProviderService {
   private readonly logger = new Logger(BtcWalletProviderService.name)
 
   async getBtcWallet(address: string): Promise<WalletBtcModel> {
-    let walletResult = await this.httpService
-      .get(
-        `https://api.smartbit.com.au/v1/blockchain/address/${address}?limit=30&dir=desc`
-      )
-      .toPromise()
+    let walletResult: any
+
+    try {
+      walletResult = await this.httpService
+        .get(
+          `https://api.smartbit.com.au/v1/blockchain/address/${address}?limit=30&dir=desc`
+        )
+        .toPromise()
+    } catch (e) {
+      this.logger.error(`Cannot add btc wallet with address ${address}`)
+      throw new NotFoundException(`Wallet with address ${address} not found`)
+    }
+
+    // console.log(`Wallet result`, walletResult.data.address.transactions)
 
     const wallet: WalletBtcModel = {
       balance: NumToBtc(walletResult.data.address.total.balance_int),
@@ -42,38 +57,44 @@ export class BtcWalletProviderService {
 
         // console.log(`Tsx is`, transaction)
 
-        transaction.inputs.forEach(inputTsx => {
-          inputTsx.addresses.forEach(address => {
-            if (address == wallet.address) {
-              inputSumm += +inputTsx.value_int
-            } else {
-              inputAdresses.push(address)
-            }
-          })
-        })
+        // console.log(transaction)
 
-        transaction.outputs.forEach(outputTsx => {
-          outputTsx.addresses.forEach(address => {
-            if (address == wallet.address) {
-              outputSumm += +outputTsx.value_int
-            } else {
-              outputAdresses.push(address)
-            }
+        if (transaction.inputs) {
+          transaction.inputs.forEach(inputTsx => {
+            inputTsx.addresses.forEach(address => {
+              if (address == wallet.address) {
+                inputSumm += +inputTsx.value_int
+              } else {
+                inputAdresses.push(address)
+              }
+            })
           })
-        })
+        }
+
+        if (transaction.outputs) {
+          transaction.outputs.forEach(outputTsx => {
+            outputTsx.addresses.forEach(address => {
+              if (address == wallet.address) {
+                outputSumm += +outputTsx.value_int
+              } else {
+                outputAdresses.push(address)
+              }
+            })
+          })
+        }
 
         let summ = outputSumm - inputSumm
         let to: string
         let from: string
 
-        this.logger.log(`Output summ is ${outputSumm}`)
-        this.logger.log(`Input summ is ${inputSumm}`)
-        this.logger.log(`Summ is ${summ}`)
+        // this.logger.log(`Output summ is ${outputSumm}`)
+        // this.logger.log(`Input summ is ${inputSumm}`)
+        // this.logger.log(`Summ is ${summ}`)
 
         if (summ > 0) {
           transactionType = true
           to = wallet.address
-          from = inputAdresses[0]
+          from = inputAdresses[0] ? inputAdresses[0] : 'Newly Generated Coins'
         } else {
           transactionType = false
           from = wallet.address
@@ -96,6 +117,8 @@ export class BtcWalletProviderService {
         return tsx
       }
     )
+
+    wallet.transactions.reverse()
 
     return wallet
   }

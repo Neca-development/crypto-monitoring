@@ -41,7 +41,7 @@ export class TransactionETH extends BaseEntity {
   @Column('timestamp', { nullable: true })
   time: Date
 
-  @Column('decimal', { precision: 50, scale: 18 })
+  @Column('decimal', { precision: 40, scale: 18 })
   value: number
 
   @ManyToOne(type => WalletETH, wallet => wallet.transactions, {

@@ -36,7 +36,7 @@ export class TransactionBTC extends BaseEntity {
   @Column()
   to: string
 
-  @Column('decimal', { precision: 12, scale: 8 })
+  @Column('decimal', { precision: 16, scale: 8 })
   value: number
 
   @ManyToOne(type => WalletBTC, wallet => wallet.transactions, {

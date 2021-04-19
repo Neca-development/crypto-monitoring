@@ -46,6 +46,10 @@ export class BtcRepository extends Repository<WalletBTC> {
     return result.sum
   }
 
+  async getAllWallets() {
+    return await this.find()
+  }
+
   async getWallet(props: IGetWalletProps) {
     const { walletID, user, transactions } = props
 
