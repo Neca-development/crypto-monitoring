@@ -30,14 +30,16 @@ export class DashboardComponent implements OnInit {
     this.users = this._usersService.fakeUsers;
   }
 
-  editUser(user: User) {
+  async editUser(user: User) {
     const dialogRef = this.dialog.open(AddUserComponent, {
       width: "1000px",
       maxHeight: "80vh",
       data: user,
     });
-    dialogRef.afterClosed().subscribe(() => {
-      this.users = this._usersService.fakeUsers;
-    });
+    // dialogRef.afterClosed().subscribe(() => {
+    //   this.users = this._usersService.fakeUsers;
+    // });
+    await dialogRef.afterClosed().toPromise();
+    this.users = this._usersService.fakeUsers;
   }
 }
