@@ -7,3 +7,6 @@ jwt:
 admin:
   email: 'test@gmail.com'
   password: 'IWannaFly'
+
+server:
+  port: 80
