@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { User } from "../models/models";
+import { IUser } from "../models/models";
 import { BaseRequestService } from "./base-request.service";
 
 @Injectable({
@@ -12,7 +12,7 @@ export class UsersService extends BaseRequestService {
     super(_snackBar, http);
   }
 
-  fakeUsers: User[] = [
+  fakeUsers: IUser[] = [
     {
       id: 1,
       fullName: "Dante Alighieri",
@@ -355,7 +355,7 @@ export class UsersService extends BaseRequestService {
     return this.fakeUsers.find((el) => el.id === id);
   }
 
-  addUser(user: User) {
+  addUser(user: IUser) {
     this.fakeUsers.push(user);
   }
 
@@ -364,7 +364,7 @@ export class UsersService extends BaseRequestService {
     this.fakeUsers.splice(idx, 1);
   }
 
-  updateUser(user: User) {
+  updateUser(user: IUser) {
     const idx = this.fakeUsers.findIndex((el) => el.id === user.id);
     this.fakeUsers[idx] = user;
   }

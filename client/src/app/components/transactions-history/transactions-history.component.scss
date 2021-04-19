@@ -13,7 +13,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
-    background-color: #f1f1f1;
+    background-color: var(--base-bg);
     box-shadow: var(--base-shadow);
     border-radius: 15px;
     padding: 10px 25px;
@@ -21,7 +21,7 @@
 
   &__table {
     box-shadow: var(--inner-shadow);
-    background-color: #f1f1f1;
+    background-color: var(--base-bg);
     border-radius: 20px;
     margin-top: 25px;
     padding: 10px;

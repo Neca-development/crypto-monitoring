@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
-import { IWallet, User } from "src/app/models/models";
+import { IWallet, IUser } from "src/app/models/models";
 import { UsersService } from "src/app/services/users.service";
 
 @Component({
@@ -11,7 +11,7 @@ import { UsersService } from "src/app/services/users.service";
 })
 export class MainComponent implements OnInit {
   id: number;
-  user: User;
+  user: IUser;
   wallets: IWallet[] = [];
 
   private subscription: Subscription;

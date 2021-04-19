@@ -37,9 +37,11 @@ $client-theme: mat-light-theme(
 /* You can add global styles to this file, and also import other style files */
 
 :root {
-  --base-shadow: 4px 4px 16px rgb(136 136 136 / 19%), -4px -4px 11px white;
-  --inner-shadow: inset 5px 5px 4px rgb(193 193 193 / 17%),
-    inset -4px -3px 6px 0px rgb(243 243 243);
+  --base-shadow: -10px -10px 18px rgba(255, 255, 255, 0.8),
+    10px 10px 18px rgba(166, 180, 200, 0.65);
+  --base-bg: linear-gradient(220.6deg, #eef0f5 8.29%, #e6e9ef 84.92%);
+  --inner-shadow: inset -5px -5px 15px rgba(255, 255, 255, 0.75),
+    inset 5px 4px 6px rgba(166, 180, 200, 0.65);
 }
 
 html,

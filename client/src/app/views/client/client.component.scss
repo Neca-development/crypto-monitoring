@@ -1,14 +1,19 @@
 ::ng-deep {
   .client {
-    padding-top: 47px;
+    padding-top: 90px;
 
-    &__title {
-      @at-root h2#{&} {
-        font-weight: 500;
-        font-size: 56px;
-        line-height: 66px;
-        margin-bottom: 0;
-      }
+    h2.client__title {
+      font-weight: 600;
+      font-size: 42px;
+      line-height: 42px;
+      margin-bottom: 0;
+    }
+
+    &__title-hint {
+      font-size: 30px;
+      font-weight: 500;
+      display: block;
+      margin-top: 20px;
     }
 
     &__back {
@@ -37,6 +42,13 @@
 
     &__currency-list {
       margin-top: 20px;
+
+      &_l {
+        margin-top: 0;
+        .client__currency {
+          width: 100%;
+        }
+      }
     }
 
     &__currency {
@@ -53,7 +65,7 @@
       line-height: 42px;
       padding: 20px 10px;
       text-align: center;
-      background-color: #f1f1f1;
+      background-color: var(--base-bg);
       box-shadow: var(--inner-shadow);
       border-radius: 15px;
     }
@@ -72,9 +84,34 @@
     }
 
     &__right {
-      background-color: #f1f1f1;
+      background-color: var(--base-bg);
       box-shadow: var(--inner-shadow);
       border-radius: 20px;
+    }
+
+    &__block-explorer {
+      font-size: 20px;
+      padding: 5px 15px;
+    }
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    &__activate-portfolio {
+      margin-top: 30px;
+      display: flex;
+    }
+    &__average-price {
+      margin-top: 35px;
+      font-size: 28px;
+      box-shadow: var(--inner-shadow);
+      background: var(--base-bg);
+      display: inline-block;
+      padding: 20px 25px;
+      border-radius: 10px;
+      line-height: normal;
     }
   }
 
@@ -93,7 +130,7 @@
       position: absolute;
       height: 10px;
       width: 90%;
-      background-color: #f1f1f1;
+      background-color: var(--base-bg);
       box-shadow: var(--base-shadow);
       border-radius: 15px;
       bottom: -10px;

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { IWallet, User } from "src/app/models/models";
+import { IWallet, IUser } from "src/app/models/models";
 import { UsersService } from "./../../../services/users.service";
 
 @Component({
@@ -15,7 +15,7 @@ export class AddUserComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: User,
+    @Inject(MAT_DIALOG_DATA) public data: IUser,
     private _usersService: UsersService
   ) {}
 

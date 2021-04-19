@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
   id: number;
   fullName: string;
   wallets: {
@@ -10,6 +10,7 @@ export interface User {
 
 export interface IWallet {
   value: string;
+  transactions?: Transaction[];
 }
 
 export interface Transaction {

@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { User, IAuthorizedUser } from "../models/models";
 import { BaseRequestService } from "./base-request.service";
 import jwtDecode from "jwt-decode";
 import { MatSnackBar } from "@angular/material/snack-bar";
