@@ -14,6 +14,8 @@ import { BtcWalletProviderService } from './wallet/services/btc.wallet-provider.
 import { BtcRepository } from './wallet/repositories/btc.repository'
 import { BtcTransactionRepository } from './wallet/repositories/btc.transaction.repository'
 import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
   imports: [
@@ -25,6 +27,9 @@ import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
       BtcTransactionRepository,
       BtcRepository
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend')
+    }),
     AuthModule,
     WalletModule,
     EmailModule

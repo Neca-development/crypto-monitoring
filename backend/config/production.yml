@@ -1,12 +1,22 @@
-db:
-  synchronize: false
-
-jwt:
-  secret: '655afd70c47be89de9e8295a1982e96b5804419'
-
 admin:
   email: 'test@gmail.com'
   password: 'IWannaFly'
 
+jwt:
+  secret: '655afd70c47be89de9e8295a1982e96b5804419'
+  expiresIn: 86400
+
 server:
   port: 80
+
+db:
+  host: 'localhost'
+  username: 'cryptomonitoring'
+  password: '1234'
+  synchronize: true
+
+email:
+  service: 'gmail'
+  user: 'sorenharfagri@gmail.com'
+  receiver: 'QVing612@gmail.com'
+  password: 'NMzYMOZR3qw1'
