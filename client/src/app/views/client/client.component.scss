@@ -3,10 +3,12 @@
     padding-top: 47px;
 
     &__title {
-      font-weight: 500;
-      font-size: 56px;
-      line-height: 66px;
-      margin-bottom: 0;
+      @at-root h2#{&} {
+        font-weight: 500;
+        font-size: 56px;
+        line-height: 66px;
+        margin-bottom: 0;
+      }
     }
 
     &__back {
