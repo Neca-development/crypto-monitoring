@@ -10,7 +10,7 @@ import { AddUserComponent } from "./add-user/add-user.component";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
-  users: IUser[];
+  users: any;
 
   constructor(private _usersService: UsersService, private dialog: MatDialog) {}
 
@@ -21,8 +21,8 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.users = this._usersService.getUsers();
+  async ngOnInit() {
+    this.users = await this._usersService.getUsers();
   }
 
   removeUser(id: number) {

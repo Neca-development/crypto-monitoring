@@ -346,8 +346,8 @@ export class UsersService extends BaseRequestService {
     },
   ];
 
-  getUsers() {
-    return this.fakeUsers;
+  async getUsers() {
+    return await this.get("/wallet/users", {}, false);
   }
 
   getUserById(id: number) {
@@ -355,8 +355,8 @@ export class UsersService extends BaseRequestService {
     return this.fakeUsers.find((el) => el.id === id);
   }
 
-  addUser(user: IUser) {
-    this.fakeUsers.push(user);
+  async addUser(user: IUser) {
+    return await this.post("/auth/admin/client", user);
   }
 
   removeUser(id: number) {

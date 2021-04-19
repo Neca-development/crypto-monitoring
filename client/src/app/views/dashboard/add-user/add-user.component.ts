@@ -36,14 +36,9 @@ export class AddUserComponent implements OnInit {
     this.data ? this.updateUser() : this.addUser();
   }
 
-  addUser() {
-    this._usersService.addUser({
-      id: Date.now(),
+  async addUser() {
+    await this._usersService.addUser({
       fullName: this.fullName,
-      wallets: {
-        btcAdresses: this.btcAdresses,
-        ethAdresses: this.ethAdresses,
-      },
     });
     this.dialogRef.close();
   }
