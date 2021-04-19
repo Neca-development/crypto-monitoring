@@ -6,6 +6,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientModule } from "@angular/common/http";
 
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -17,16 +18,22 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatDividerModule } from "@angular/material/divider";
-import { HttpClientModule } from "@angular/common/http";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
-import { LoginComponent } from "./views/login/login.component";
+
+import { DashboardComponent } from "./views/dashboard/dashboard.component";
 import { HeaderComponent } from "./components/header/header.component";
-import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { AddUserComponent } from './views/dashboard/add-user/add-user.component';
+import { AddUserComponent } from "./views/dashboard/add-user/add-user.component";
+import { LoginComponent } from "./views/login/login.component";
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HeaderComponent, DashboardComponent, AddUserComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HeaderComponent,
+    DashboardComponent,
+    AddUserComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
