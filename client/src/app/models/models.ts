@@ -10,6 +10,7 @@ export interface IUser {
 
 export interface IWallet {
   value: string;
+  type?: string;
   transactions?: Transaction[];
 }
 

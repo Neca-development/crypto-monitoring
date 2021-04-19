@@ -76,4 +76,8 @@ export class WalletService extends BaseRequestService {
   getWalletInfo(address: string) {
     return this.wallets.find((wallet) => wallet.value === address);
   }
+
+  async addWallet(address: string, userID: number, type: string) {
+    return await this.post("/wallet", { userID, address, type }, false);
+  }
 }

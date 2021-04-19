@@ -41,11 +41,7 @@
         {{ user.fullName }}
       </h3>
       <div class="dashboard__user-adresses">
-        {{
-          user.wallets.btcAdresses.length +
-            user.wallets.ethAdresses.length +
-            " adresses"
-        }}
+        {{ user.wallets.length + " adresses" }}
       </div>
       <div class="dashboard__user-actions">
         <button

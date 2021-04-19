@@ -11,7 +11,7 @@
   </mat-form-field>
   <div class="form__inputs-group">
     <button type="button" mat-mini-fab class="form__add-field">
-      <mat-icon aria-label="label" (click)="addField(this.btcAdresses)"
+      <mat-icon aria-label="label" (click)="addField(this.btcAdresses, 'BTC')"
         >add</mat-icon
       >
     </button>
@@ -34,7 +34,7 @@
       type="button"
       mat-mini-fab
       class="form__add-field"
-      (click)="addField(this.ethAdresses)"
+      (click)="addField(this.ethAdresses, 'ETH')"
     >
       <mat-icon aria-label="label">add</mat-icon>
     </button>

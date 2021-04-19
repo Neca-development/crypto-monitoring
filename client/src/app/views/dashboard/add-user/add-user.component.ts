@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { IWallet, IUser } from "src/app/models/models";
+import { WalletService } from "src/app/services/wallet.service";
 import { UsersService } from "./../../../services/users.service";
 
 @Component({
@@ -10,13 +11,14 @@ import { UsersService } from "./../../../services/users.service";
 })
 export class AddUserComponent implements OnInit {
   fullName: string;
-  btcAdresses: IWallet[] = [{ value: "" }];
-  ethAdresses: IWallet[] = [{ value: "" }];
+  btcAdresses: IWallet[] = [{ value: "", type: "BTC" }];
+  ethAdresses: IWallet[] = [{ value: "", type: "ETH" }];
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IUser,
-    private _usersService: UsersService
+    private _usersService: UsersService,
+    private _walletService: WalletService
   ) {}
 
   ngOnInit(): void {
@@ -27,18 +29,26 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  addField(wallet: IWallet[]) {
-    wallet.push({ value: "" });
+  addField(wallet: IWallet[], type: string) {
+    wallet.push({ value: "", type });
   }
 
   submit() {
-    console.log("submit");
     this.data ? this.updateUser() : this.addUser();
   }
 
   async addUser() {
-    await this._usersService.addUser({
+    const user = await this._usersService.addUser({
       fullName: this.fullName,
+    });
+
+    console.log(user);
+
+    this.btcAdresses.forEach(async (el) => {
+      await this._walletService.addWallet(el.value, user.id, el.type);
+    });
+    this.ethAdresses.forEach(async (el) => {
+      await this._walletService.addWallet(el.value, user.id, el.type);
     });
     this.dialogRef.close();
   }

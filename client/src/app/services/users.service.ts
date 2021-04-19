@@ -355,8 +355,9 @@ export class UsersService extends BaseRequestService {
     return this.fakeUsers.find((el) => el.id === id);
   }
 
-  async addUser(user: IUser) {
-    return await this.post("/auth/admin/client", user);
+  async addUser(user: IUser): Promise<IUser> {
+    const userResp: IUser = await this.post("/auth/admin/client", user);
+    return userResp;
   }
 
   removeUser(id: number) {
