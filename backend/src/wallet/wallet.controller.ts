@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Post,
+  UseGuards,
   ValidationPipe
 } from '@nestjs/common'
 import { GetWalletDto } from '../dto/admin.get-wallet.dto'
@@ -12,8 +13,14 @@ import { DeleteWalletDto } from '../dto/admin.delete-wallet.dto'
 import { GetWalletsStats } from '../dto/admin.get-wallets-stats.dto'
 import { WalletService } from './wallet.service'
 import { GetUserWalletsInfo } from '../dto/admin.wallets-user-info.dto'
+import { Roles } from 'src/auth/guards/guards/roles.decorator'
+import { UserRole } from 'src/auth/enum/user-role.enum'
+import { AuthGuard } from '@nestjs/passport'
+import { RolesGuard } from 'src/auth/guards/guards/roles.guard'
 
 @Controller('wallet')
+@Roles(UserRole.admin)
+@UseGuards(AuthGuard(), RolesGuard)
 export class WalletController {
   constructor(private walletService: WalletService) {}
 

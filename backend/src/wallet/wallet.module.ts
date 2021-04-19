@@ -1,4 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common'
+import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserRepository } from 'src/auth/user/user.repository'
 import { BtcRepository } from './repositories/btc.repository'
@@ -29,7 +30,10 @@ import { WalletService } from './wallet.service'
       EthTransactionRepository,
       BtcRepository,
       BtcTransactionRepository
-    ])
+    ]),
+    PassportModule.register({
+      defaultStrategy: 'jwt'
+    })
   ]
 })
 export class WalletModule {}
