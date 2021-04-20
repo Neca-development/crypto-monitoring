@@ -350,14 +350,17 @@ export class UsersService extends BaseRequestService {
     return await this.get("/wallet/users", {}, false);
   }
 
-  getUserById(id: number) {
-    console.log(id);
-    return this.fakeUsers.find((el) => el.id === id);
+  async getUserById(id: number): Promise<IUser> {
+    return await this.get(
+      "/wallet/user?fullName=true&addresses=true&balancesSumm=true&balancesSummEur=true&transactions=true&userID=" +
+        id,
+      null,
+      false
+    );
   }
 
   async addUser(user: IUser): Promise<IUser> {
-    const userResp: IUser = await this.post("/auth/admin/client", user);
-    return userResp;
+    return await this.post("/auth/admin/client", user, false);
   }
 
   removeUser(id: number) {

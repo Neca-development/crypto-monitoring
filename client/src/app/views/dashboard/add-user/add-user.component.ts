@@ -38,7 +38,7 @@ export class AddUserComponent implements OnInit {
   }
 
   async addUser() {
-    const user = await this._usersService.addUser({
+    const user: IUser = await this._usersService.addUser({
       fullName: this.fullName,
     });
 

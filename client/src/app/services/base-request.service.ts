@@ -22,7 +22,7 @@ export class BaseRequestService {
   private async request<T>(
     url: string,
     method: "GET" | "POST" = "GET",
-    headersObj: any = null,
+    headersObj: any = {},
     data: any = null,
     useDataWrapper = true
   ): Promise<T> {

@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit {
 
   removeUser(id: number) {
     this._usersService.removeUser(id);
-    this.users = this._usersService.fakeUsers;
   }
 
   async editUser(user: IUser) {
@@ -37,6 +36,5 @@ export class DashboardComponent implements OnInit {
       data: user,
     });
     await dialogRef.afterClosed().toPromise();
-    this.users = this._usersService.fakeUsers;
   }
 }
