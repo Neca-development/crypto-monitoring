@@ -1,5 +1,4 @@
 <div class="container client">
-  <h2 class="client__title">{{ user.fullName }}</h2>
   <button
     mat-button
     color="accent"
@@ -8,6 +7,7 @@
   >
     Back
   </button>
+  <h2 class="client__title">{{ user.fullName }}</h2>
   <div class="client__row">
     <div class="client__left">
       <div class="client__graph">Graph with total balance</div>
@@ -33,7 +33,7 @@
     </div>
     <div class="client__right">
       <div class="wallet" *ngFor="let wallet of user.addresses">
-        <span class="wallet__value" [routerLink]="['wallet', wallet.address]">
+        <span class="wallet__value" [routerLink]="['wallet', wallet.id]">
           {{ wallet.address }}
         </span>
         <button mat-button color="primary" routerLink="link">

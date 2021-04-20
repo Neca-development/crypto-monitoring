@@ -16,8 +16,8 @@ export class MainComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private _usersService: UsersService
   ) {}
-  ngOnInit(): void {
+  async ngOnInit() {
     this.id = this.activateRoute.snapshot.params["id"];
-    this.user = this._usersService.getUserById(+this.id);
+    this.user = await this._usersService.getUserById(+this.id);
   }
 }

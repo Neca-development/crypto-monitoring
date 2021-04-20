@@ -11,14 +11,14 @@ import { WalletService } from "src/app/services/wallet.service";
 })
 export class WalletComponent implements OnInit {
   wallet: IWallet;
-  address: "";
+  id: "";
 
   constructor(
     private activateRoute: ActivatedRoute,
     private _walletService: WalletService
   ) {}
-  ngOnInit(): void {
-    this.address = this.activateRoute.snapshot.params["address"];
-    this.wallet = this._walletService.getWalletInfo(this.address);
+  async ngOnInit() {
+    this.id = this.activateRoute.snapshot.params["address"];
+    this.wallet = await this._walletService.getWalletInfo(this.id);
   }
 }

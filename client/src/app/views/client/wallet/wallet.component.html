@@ -1,13 +1,4 @@
 <div class="container client">
-  <div class="client__header">
-    <h2 class="client__title">
-      {{ address }}
-      <span class="client__title-hint"><b>Owner:</b> Client Name</span>
-    </h2>
-    <button mat-flat-button color="primary" class="client__block-explorer">
-      Block Explorer
-    </button>
-  </div>
   <button
     mat-button
     color="accent"
@@ -16,6 +7,17 @@
   >
     Back
   </button>
+  <div class="client__header">
+    <h2 class="client__title">
+      {{ wallet.address }}
+      <span class="client__title-hint"
+        ><b>Owner:</b> {{ wallet.holderName }}</span
+      >
+    </h2>
+    <button mat-flat-button color="primary" class="client__block-explorer">
+      Block Explorer
+    </button>
+  </div>
   <div class="client__row">
     <div class="client__left">
       <div class="client__graph">Graph with total balance</div>
@@ -23,12 +25,9 @@
     <div class="client__currency-list client__currency-list_l">
       <div class="client__currency">
         <mat-icon class="client__currency-head">generating_tokens</mat-icon>
-        <span>3.02340234023492453 <b>BTC</b></span>
-        <span class="client__currency-hint">(EUR)</span>
-      </div>
-      <div class="client__currency">
-        <mat-icon class="client__currency-head">generating_tokens</mat-icon>
-        <span>3.02340234023492453 <b>ETH</b></span>
+        <span
+          >3.02340234023492453 <b>{{ wallet.type }}</b></span
+        >
         <span class="client__currency-hint">(EUR)</span>
       </div>
       <div class="client__currency">

@@ -14,11 +14,13 @@ export class DashboardComponent implements OnInit {
 
   constructor(private _usersService: UsersService, private dialog: MatDialog) {}
 
-  addUser() {
+  async addUser() {
     const dialogRef = this.dialog.open(AddUserComponent, {
       maxHeight: "80vh",
       width: "1000px",
     });
+    await dialogRef.afterClosed().toPromise();
+    this.users = await this._usersService.getUsers();
   }
 
   async ngOnInit() {
@@ -26,7 +28,7 @@ export class DashboardComponent implements OnInit {
   }
 
   removeUser(id: number) {
-    this._usersService.removeUser(id);
+    // this._usersService.removeUser(id);
   }
 
   async editUser(user: IUser) {

@@ -9,7 +9,8 @@ export interface IUser {
 }
 
 export interface IWallet {
-  value: string;
+  address: string;
+  holderName?: string;
   type?: string;
   transactions?: Transaction[];
 }

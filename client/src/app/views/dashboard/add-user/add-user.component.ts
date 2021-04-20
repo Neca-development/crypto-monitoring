@@ -11,8 +11,8 @@ import { UsersService } from "./../../../services/users.service";
 })
 export class AddUserComponent implements OnInit {
   fullName: string;
-  btcAdresses: IWallet[] = [{ value: "", type: "BTC" }];
-  ethAdresses: IWallet[] = [{ value: "", type: "ETH" }];
+  btcAdresses: IWallet[] = [{ address: "", type: "BTC" }];
+  ethAdresses: IWallet[] = [{ address: "", type: "ETH" }];
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
@@ -30,7 +30,7 @@ export class AddUserComponent implements OnInit {
   }
 
   addField(wallet: IWallet[], type: string) {
-    wallet.push({ value: "", type });
+    wallet.push({ address: "", type });
   }
 
   submit() {
@@ -45,23 +45,23 @@ export class AddUserComponent implements OnInit {
     console.log(user);
 
     this.btcAdresses.forEach(async (el) => {
-      await this._walletService.addWallet(el.value, user.id, el.type);
+      await this._walletService.addWallet(el.address, user.id, el.type);
     });
     this.ethAdresses.forEach(async (el) => {
-      await this._walletService.addWallet(el.value, user.id, el.type);
+      await this._walletService.addWallet(el.address, user.id, el.type);
     });
     this.dialogRef.close();
   }
 
   updateUser() {
-    this._usersService.updateUser({
-      ...this.data,
-      fullName: this.fullName,
-      wallets: {
-        btcAdresses: this.btcAdresses,
-        ethAdresses: this.ethAdresses,
-      },
-    });
+    // this._usersService.updateUser({
+    //   ...this.data,
+    //   fullName: this.fullName,
+    //   wallets: {
+    //     btcAdresses: this.btcAdresses,
+    //     ethAdresses: this.ethAdresses,
+    //   },
+    // });
     this.dialogRef.close();
   }
 }
