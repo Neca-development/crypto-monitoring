@@ -1,0 +1,73 @@
+<div class="dashboard container">
+  <h2 class="dashboard__caption">Total Funds</h2>
+  <div class="dashboard__currency-list">
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
+      <span>{{ stats.btcBalanceSumm }} <b>BTC</b></span>
+      <span class="dashboard__currency-hint"
+        >{{ stats.btcBalanceSummEur }}<b>EUR</b></span
+      >
+    </div>
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
+      <span>{{ stats.ethBalanceSumm }} <b>ETH</b></span>
+      <span class="dashboard__currency-hint"
+        >{{ stats.ethBalanceSummEur }}<b>EUR</b></span
+      >
+    </div>
+    <div class="dashboard__currency">
+      <mat-icon class="dashboard__currency-head">euro_symbol</mat-icon>
+      <span>
+        {{ stats.btcBalanceSummEur + stats.ethBalanceSummEur }} <b>EUR</b>
+      </span>
+    </div>
+  </div>
+  <div class="dashboard__head">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="addUser()"
+      class="dashboard__add-user"
+    >
+      Add Client
+      <mat-icon>add</mat-icon>
+    </button>
+    <div class="search">
+      <mat-icon class="search__icon">search</mat-icon>
+      <input
+        class="search__input"
+        type="search"
+        placeholder="Search by name or wallet address"
+        [(ngModel)]="searchVal"
+        (input)="search()"
+      />
+    </div>
+  </div>
+  <div class="dashboard__users-list">
+    <div class="dashboard__user" *ngFor="let user of users">
+      <h3 class="dashboard__user-name">
+        {{ user.fullName }}
+      </h3>
+      <div class="dashboard__user-adresses">
+        {{ user.wallets.length + " adresses" }}
+      </div>
+      <div class="dashboard__user-actions">
+        <button
+          mat-flat-button
+          color="accent"
+          [routerLink]="['/client', user.id]"
+        >
+          View Details
+        </button>
+        <div class="dashboard__btns-group">
+          <!-- <button mat-button color="primary" (click)="editUser(user)">
+            <mat-icon>edit</mat-icon>
+          </button> -->
+          <button mat-button color="warn" (click)="removeUser(user.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

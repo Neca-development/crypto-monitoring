@@ -1,0 +1,98 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$client-primary: mat-palette($mat-green, 600);
+$client-accent: mat-palette($mat-deep-orange);
+
+// The warn palette is optional (defaults to red).
+$client-warn: mat-palette($mat-red, 600);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$client-theme: mat-light-theme(
+  (
+    color: (
+      primary: $client-primary,
+      accent: $client-accent,
+      warn: $client-warn,
+    ),
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($client-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --base-shadow: -10px -10px 18px rgba(255, 255, 255, 0.8),
+    10px 10px 18px rgba(166, 180, 200, 0.65);
+  --base-bg: linear-gradient(220.6deg, #eef0f5 8.29%, #e6e9ef 84.92%);
+  --inner-shadow: inset -5px -5px 15px rgba(255, 255, 255, 0.75),
+    inset 5px 4px 6px rgba(166, 180, 200, 0.65);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  *:not(mat-icon) {
+    font-family: Circe, "Helvetica Neue", sans-serif !important;
+  }
+}
+
+.mat-flat-button.mat-accent,
+.mat-raised-button.mat-accent,
+.mat-fab.mat-accent,
+.mat-mini-fab.mat-accent {
+  background: linear-gradient(135deg, #ffc623, #ff4a13);
+  transition: 0.25s ease;
+  border-radius: 10px;
+  box-shadow: inset 0.2rem 0.2rem 1rem #fab46d,
+    inset -0.2rem -0.2rem 1rem #f94b14, 0.3rem 0.3rem 0.6rem #fdb771,
+    -0.2rem -0.2rem 0.5rem #ffffff;
+  &:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem #f94b14,
+      inset -0.2rem -0.2rem 1rem #fab46d;
+  }
+}
+.mat-flat-button.mat-primary,
+.mat-raised-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  background: linear-gradient(135deg, #4ddd8e, #43a047);
+  transition: 0.25s ease;
+  border-radius: 10px;
+  box-shadow: inset 0.2rem 0.2rem 1rem #60e66981,
+    inset -0.2rem -0.2rem 1rem #388d3d, 0.3rem 0.3rem 0.6rem #60e66981,
+    -0.2rem -0.2rem 0.5rem #ffffff;
+  &:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem #388d3d,
+      inset -0.2rem -0.2rem 1rem #60e66981;
+  }
+}
+
+.mat-button {
+  background: linear-gradient(153deg, #efefef1c, #dadada42);
+  border-radius: 20px;
+  box-shadow: var(--base-shadow);
+
+  &:active {
+    box-shadow: inset 4px 4px 16px rgb(136 136 136 / 19%),
+      inset -4px -4px 11px white;
+  }
+}

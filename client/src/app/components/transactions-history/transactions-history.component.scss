@@ -1,0 +1,43 @@
+.tr-his {
+  margin-top: 200px;
+  &__title {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+  }
+  &__head {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__filters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    background-color: var(--base-bg);
+    box-shadow: var(--base-shadow);
+    border-radius: 15px;
+    padding: 10px 25px;
+  }
+
+  &__table {
+    box-shadow: var(--inner-shadow);
+    background-color: var(--base-bg);
+    border-radius: 20px;
+    margin-top: 25px;
+    padding: 10px;
+    table {
+      width: 100%;
+    }
+    th {
+      font-size: 14px;
+    }
+    td {
+      padding-bottom: 15px;
+      padding-top: 15px;
+      font-size: 13px;
+    }
+    * {
+      background: transparent;
+    }
+  }
+}
