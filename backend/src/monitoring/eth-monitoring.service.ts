@@ -58,18 +58,13 @@ export class EthMonitoringService {
 
     let newTransactions: TransactionEthModel[] = []
 
-    console.log(`Last hash is `, lastTsxHash)
-    // console.log(`Last transactions is`, lastTransactions)
-
-    console.log(`Wallet balance is`, wallet.balance)
-
     for (let i = 0; i <= lastTransactions.length - 1; i++) {
       if (lastTsxHash == lastTransactions[i].hash) {
         break
       }
 
       if (NumToEth(lastTransactions[i].value) == 0) {
-        return
+        continue
       }
 
       let model = this.convertToModel(lastTransactions[i], wallet.address)
