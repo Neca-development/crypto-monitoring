@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Post,
+  Query,
   UseGuards,
   ValidationPipe
 } from '@nestjs/common'
@@ -25,12 +26,12 @@ export class WalletController {
   constructor(private walletService: WalletService) {}
 
   @Get()
-  getWallet(@Body(ValidationPipe) getWalletDto: GetWalletDto) {
+  getWallet(@Query(ValidationPipe) getWalletDto: GetWalletDto) {
     return this.walletService.getWallet(getWalletDto)
   }
 
   @Get('/user')
-  userWalletsInfo(@Body(ValidationPipe) userWalletsInfo: GetUserWalletsInfo) {
+  userWalletsInfo(@Query(ValidationPipe) userWalletsInfo: GetUserWalletsInfo) {
     return this.walletService.userWalletsInfo(userWalletsInfo)
   }
 
@@ -40,7 +41,7 @@ export class WalletController {
   }
 
   @Get('/stats')
-  getStats(@Body(ValidationPipe) getWalletsStatsDto: GetWalletsStats) {
+  getStats(@Query(ValidationPipe) getWalletsStatsDto: GetWalletsStats) {
     return this.walletService.getWalletsStats(getWalletsStatsDto)
   }
 

@@ -11,7 +11,7 @@ server:
 
 db:
   host: 'localhost'
-  username: 'cryptomonitoring'
+  username: 'admin'
   password: '1234'
   synchronize: true
 

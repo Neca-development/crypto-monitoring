@@ -24,6 +24,9 @@ export class BtcMonitoringService {
     private btcTransactionRepositry: BtcTransactionRepository,
     private emailService: EmailService
   ) {}
+
+
+
   // async onModuleInit() {
   //   this.logger.log(`Btc Monitoring Service initalzied`)
 
@@ -46,13 +49,21 @@ export class BtcMonitoringService {
   //       } else {
   //         console.log('Balances are not the same')
   //         console.log(wallets[i].balance, results[i].data.address.total.balance)
-  //         await this.updateTransactions(wallets[i], results[i].data.address)
+  //         await this.updateTransactions(
+  //           wallets[i],
+  //           results[i].data.address.transactions,
+  //           results[i].data.address.total.balance
+  //         )
   //       }
   //     }
-  //   }, 60000)
+  //   }, 30000)
   // }
 
-  async updateTransactions(wallet: WalletBTC, lastTransactions: any) {
+  async updateTransactions(
+    wallet: WalletBTC,
+    lastTransactions: any,
+    balance: number
+  ) {
     console.log(`Update transactions emitted`)
     const lastTsxHash = await this.btcTransactionRepositry.getLastTsxHash(
       wallet
@@ -61,21 +72,20 @@ export class BtcMonitoringService {
     console.log(`Last hash is`, lastTsxHash)
 
     let newTransactions: TransactionBtcModel[] = []
-    let newBalance = wallet.balance
 
-    lastTransactions.map(transaction => {
+    for (let i = 0; i <= lastTransactions.length - 1; i++) {
       let inputSumm: number = 0
       let outputSumm: number = 0
       let transactionType: boolean
       let inputAdresses: string[] = []
       let outputAdresses: string[] = []
 
-      // console.log(`Tsx is`, transaction)
+      if (lastTsxHash == lastTransactions[i].hash) {
+        break
+      }
 
-      // console.log(transaction)
-
-      if (transaction.inputs) {
-        transaction.inputs.forEach(inputTsx => {
+      if (lastTransactions[i].inputs) {
+        lastTransactions[i].inputs.forEach(inputTsx => {
           inputTsx.addresses.forEach(address => {
             if (address == wallet.address) {
               inputSumm += +inputTsx.value_int
@@ -86,8 +96,8 @@ export class BtcMonitoringService {
         })
       }
 
-      if (transaction.outputs) {
-        transaction.outputs.forEach(outputTsx => {
+      if (lastTransactions[i].outputs) {
+        lastTransactions[i].outputs.forEach(outputTsx => {
           outputTsx.addresses.forEach(address => {
             if (address == wallet.address) {
               outputSumm += +outputTsx.value_int
@@ -116,33 +126,21 @@ export class BtcMonitoringService {
         to = outputAdresses[0]
       }
 
-      let time = transaction.time
-        ? new Date(transaction.time * 1000)
-        : new Date(transaction.first_seen * 1000)
+      let time = lastTransactions[i].time
+        ? new Date(lastTransactions[i].time * 1000)
+        : new Date(lastTransactions[i].first_seen * 1000)
 
       let tsx: TransactionBtcModel = {
         value: NumToBtc(summ),
-        hash: transaction.hash,
+        hash: lastTransactions[i].hash,
         from,
         to,
         time,
         type: transactionType
       }
 
-      if (tsx.type == true) {
-        newBalance += tsx.value
-        console.log(`Model type is true`)
-        console.log(`Model value is`, tsx.value)
-        console.log(`newBalance`, newBalance)
-      } else {
-        newBalance -= tsx.value
-        console.log(`Model type is false`)
-        console.log(`newBalance`, newBalance)
-      }
       newTransactions.push(tsx)
-
-      return tsx
-    })
+    }
 
     let result = await this.btcTransactionRepositry.addTransactions(
       wallet,
@@ -153,9 +151,9 @@ export class BtcMonitoringService {
     // console.log(`Result is`)
     // console.log(result)
 
-    console.log(`New balance on end is`, newBalance)
+    console.log(`Balance is `, balance)
 
-    wallet.balance = newBalance
+    wallet.balance = balance
     await wallet.save()
 
     newTransactions.forEach(transaction => {
