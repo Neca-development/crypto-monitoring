@@ -1,26 +1,32 @@
 import {
+  ConflictException,
   InternalServerErrorException,
   Logger,
   NotFoundException
 } from '@nestjs/common'
 import { User } from 'src/auth/user/user.entity'
+import { dbErrorCodes } from 'src/config/db-error-codes'
 import { EntityRepository, Repository } from 'typeorm'
-import { TransactionBTC } from '../entities/Transaction-btc.entity'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
-import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 
 @EntityRepository(WalletBTC)
 export class BtcRepository extends Repository<WalletBTC> {
   private readonly logger = new Logger(BtcRepository.name)
 
-  addWaletByModel(props: { address: string; balance: number }) {
+  async addWaletByModel(props: { address: string; balance: number }) {
+    let wallet = this.create()
+    wallet.address = props.address
+    wallet.balance = props.balance
+
     try {
-      let wallet = this.create()
-      wallet.address = props.address
-      wallet.balance = props.balance
-      return wallet
+      return await wallet.save()
     } catch (e) {
+      if (e.code === dbErrorCodes.duplicate) {
+        throw new ConflictException(
+          `Wallet with address ${props.address} already exists`
+        )
+      }
       throw new InternalServerErrorException('Cannot create wallet')
     }
   }

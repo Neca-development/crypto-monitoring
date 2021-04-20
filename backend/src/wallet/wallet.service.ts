@@ -45,10 +45,11 @@ export class WalletService {
     
     Метод пытается найти пользователя из dto
     И в зависимости от типа кошелька в dto
-    Направляет дальнейшую логику создания соответствующим сервисам
+    Направляет дальнейшую логику создания кошелька соответсвующим сервисам
+    После создания присваивает кошельку пользователя
   */
 
-  async addWallet(addWalletDto: AddWalletDto) {
+  async addWallet(addWalletDto: AddWalletDto): Promise<void> {
     const { userID, address, type } = addWalletDto
     const user: User = await this.userRepository.getUserById(userID)
 

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { dbErrorCodes } from 'src/config/db-error-codes'
+import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 import { EthRepository } from '../repositories/eth.repository'
@@ -24,6 +25,16 @@ export class EthService {
     private ethRepository: EthRepository
   ) {}
 
+  /*
+    Создание нового кошелька
+
+    Делегирует логику получения данных о кошельке провайдеру
+    Затем по полученной от провайдера модели создаёт кошель в бд
+    И добавляет к кошельку транзакции, по полученным от провайдера моделям
+
+    Затем возвращает кошелёк с транзакциями
+  */
+
   async createWallet(address: string) {
     let walletModel = await this.WalletProviderService.getEthWallet(address)
     let wallet = await this.ethRepository.addWaletByModel({
@@ -31,24 +42,12 @@ export class EthService {
       balance: walletModel.balance
     })
 
-    let tsx: any
+    let walletWithTransactions: WalletETH = await this.ethTsxRepository.addTransactionsByModel(
+      wallet,
+      walletModel.transactions
+    )
 
-    try {
-      tsx = await this.ethTsxRepository.addTransactions(
-        wallet,
-        walletModel.transactions
-      )
-    } catch (e) {
-      if (e.code === dbErrorCodes.duplicate) {
-        throw new ConflictException(
-          `Walet with address ${address} already exists`
-        )
-      }
-      this.logger.log(`Cannot add transactions`, e.stack)
-      throw new InternalServerErrorException('Cannot add wallet transactions')
-    }
-
-    return tsx
+    return walletWithTransactions
   }
 
   async getWalletsSummBalance(): Promise<Number> {

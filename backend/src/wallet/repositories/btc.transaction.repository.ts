@@ -1,15 +1,19 @@
-import { Logger } from '@nestjs/common'
+import {
+  ConflictException,
+  InternalServerErrorException,
+  Logger
+} from '@nestjs/common'
 import { EntityRepository, In, Repository } from 'typeorm'
 import { TransactionBtcModel } from '../entities/Transaction-btc.model'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
 import { TransactionBTC } from '../entities/Transaction-btc.entity'
-import { WalletBtcModel } from '../entities/Wallet-btc.model'
+import { dbErrorCodes } from 'src/config/db-error-codes'
 
 @EntityRepository(TransactionBTC)
 export class BtcTransactionRepository extends Repository<TransactionBTC> {
   private readonly logger = new Logger(BtcTransactionRepository.name)
 
-  async addTransactions(
+  async addTransactionsByModel(
     wallet: WalletBTC,
     transactions: TransactionBtcModel[]
   ) {
@@ -27,7 +31,18 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
       walletTransactions.push(transaction)
     })
 
-    return await wallet.save()
+    try {
+      return await wallet.save()
+    } catch (e) {
+      if (e.code === dbErrorCodes.duplicate) {
+        this.logger.error(`Duplicate transactions found`, e.stack)
+        this.logger.error(walletTransactions)
+        throw new ConflictException(`Duplicate transacions found`)
+      }
+      this.logger.error(`Cannot add transactions to db`, e.stack)
+      this.logger.error(walletTransactions)
+      throw new InternalServerErrorException('Cannot add transactions')
+    }
   }
   /*
     TODO

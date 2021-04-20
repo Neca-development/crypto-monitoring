@@ -140,7 +140,7 @@ export class BtcMonitoringService {
       newTransactions.push(tsx)
     }
 
-    let result = await this.btcTransactionRepositry.addTransactions(
+    let result = await this.btcTransactionRepositry.addTransactionsByModel(
       wallet,
       newTransactions.reverse()
     )

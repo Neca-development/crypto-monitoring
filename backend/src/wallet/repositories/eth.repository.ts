@@ -1,9 +1,11 @@
 import {
+  ConflictException,
   InternalServerErrorException,
   Logger,
   NotFoundException
 } from '@nestjs/common'
 import { User } from 'src/auth/user/user.entity'
+import { dbErrorCodes } from 'src/config/db-error-codes'
 import { NumToEth } from 'src/helpers/NumToEth'
 import { EntityRepository, Repository } from 'typeorm'
 import { WalletETH } from '../entities/Wallet-eth.entity'
@@ -13,11 +15,26 @@ import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 export class EthRepository extends Repository<WalletETH> {
   private readonly logger = new Logger(EthRepository.name)
 
-  addWaletByModel(props: { address: string; balance: number }) {
+  async addWaletByModel(props: { address: string; balance: number }) {
     let wallet = this.create()
     wallet.address = props.address
     wallet.balance = NumToEth(props.balance)
-    return wallet
+
+    try {
+      return await wallet.save()
+    } catch (e) {
+      if (e.code === dbErrorCodes.duplicate) {
+        this.logger.error(
+          `Cannot create wallet with address: ${props.address}, it already exists`
+        )
+        throw new ConflictException(
+          `Wallet with address ${props.address} already exists`
+        )
+      }
+      this.logger.error(`Cannot create wallet`, e.stack)
+      this.logger.error({ wallet, props })
+      throw new InternalServerErrorException('Cannot create wallet')
+    }
   }
 
   async deleteWalletById(walletID: number) {

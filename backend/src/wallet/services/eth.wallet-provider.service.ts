@@ -25,12 +25,6 @@ export class EthWalletProviderService {
 
   private readonly logger = new Logger(EthWalletProviderService.name)
 
-  private btcApiUrl: string =
-    'https://api.smartbit.com.au/v1/blockchain/address'
-
-  private infuraWssUrl: string =
-    'wss://mainnet.infura.io/ws/v3/28b42a756903430db51aed449ff78ad6'
-
   private infuraUrl =
     'https://mainnet.infura.io/v3/28b42a756903430db51aed449ff78ad6'
 

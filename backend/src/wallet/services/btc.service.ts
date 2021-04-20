@@ -1,16 +1,12 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  Logger
-} from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { dbErrorCodes } from 'src/config/db-error-codes'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 import { BtcRepository } from '../repositories/btc.repository'
 import { BtcTransactionRepository } from '../repositories/btc.transaction.repository'
 import { BtcWalletProviderService } from './btc.wallet-provider.service'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
+import { WalletBTC } from '../entities/Wallet-btc.entity'
+import { WalletBtcModel } from '../entities/Wallet-btc.model'
 
 @Injectable()
 export class BtcService {
@@ -25,33 +21,30 @@ export class BtcService {
 
   /*
     Создание нового кошелька
+
+    Делегирует логику получения данных о кошельке провайдеру
+    Затем по полученной от провайдера модели создаёт кошель в бд
+    И добавляет к кошельку транзакции, по полученным от провайдера моделям
+
+    Затем возвращает кошелёк с транзакциями
   */
 
   async createWallet(address: string) {
-    let walletModel = await this.btcWalletProviderService.getBtcWallet(address)
-    let wallet = await this.btcRepository.addWaletByModel({
+    let walletModel: WalletBtcModel = await this.btcWalletProviderService.getBtcWallet(
+      address
+    )
+
+    let wallet: WalletBTC = await this.btcRepository.addWaletByModel({
       address: walletModel.address,
       balance: walletModel.balance
     })
 
-    let tsx: any
+    let walletWithTransactions: WalletBTC = await this.btcTransactionRepository.addTransactionsByModel(
+      wallet,
+      walletModel.transactions
+    )
 
-    try {
-      tsx = await this.btcTransactionRepository.addTransactions(
-        wallet,
-        walletModel.transactions
-      )
-    } catch (e) {
-      if (e.code === dbErrorCodes.duplicate) {
-        throw new ConflictException(
-          `Walet with address ${address} already exists`
-        )
-      }
-      this.logger.log(`Cannot add transactions`, e.stack)
-      throw new InternalServerErrorException('Cannot add wallet transactions')
-    }
-
-    return tsx
+    return walletWithTransactions
   }
 
   async getWalletsSummBalance(): Promise<Number> {

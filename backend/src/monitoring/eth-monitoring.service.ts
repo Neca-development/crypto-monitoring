@@ -79,7 +79,7 @@ export class EthMonitoringService {
     console.log(`New transactions is`)
     console.log(newTransactions)
 
-    let result = await this.ethTransactionRepository.addTransactions(
+    let result = await this.ethTransactionRepository.addTransactionsByModel(
       wallet,
       newTransactions.reverse()
     )
