@@ -7,7 +7,6 @@ import {
 import { WalletBtcModel } from '../entities/Wallet-btc.model'
 import { NumToBtc } from '../../helpers/NumToBtc'
 import { TransactionBtcModel } from '../entities/Transaction-btc.model'
-import { SimpleConsoleLogger, TransactionRepository } from 'typeorm'
 
 /*
     Mainnet infura
@@ -25,11 +24,40 @@ export class BtcWalletProviderService {
 
   private readonly logger = new Logger(BtcWalletProviderService.name)
 
-  async getBtcWallet(address: string): Promise<WalletBtcModel> {
-    let walletResult: any
+  /*
+    Получение со стороннего api кошелька и его транзакций в виде WalletBtcModel
 
+    Получает кошель и транзакции
+    Преобразует в WalletBtcModel
+
+    Переворачивает массив транзакций
+  */
+
+  async getBtcWallet(address: string): Promise<WalletBtcModel> {
+    const { wallet, fetchedTransactions } = await this.getWallet(address)
+
+    wallet.transactions = this.transformTransactions(
+      fetchedTransactions,
+      wallet.address
+    )
+
+    wallet.transactions.reverse()
+
+    return wallet
+  }
+
+  /*
+    Получение кошеля и транзакций со стороннего api
+    Возвращает сырыми последние 30 транзакций в desc порядке
+    Преобразует кошель в модель
+
+    Если кошель не будет найден выбросит 404
+  */
+
+  private async getWallet(address: string) {
+    let result
     try {
-      walletResult = await this.httpService
+      result = await this.httpService
         .get(
           `https://api.smartbit.com.au/v1/blockchain/address/${address}?limit=30&dir=desc`
         )
@@ -39,87 +67,108 @@ export class BtcWalletProviderService {
       throw new NotFoundException(`Wallet with address ${address} not found`)
     }
 
-    // console.log(`Wallet result`, walletResult.data.address.transactions)
-
     const wallet: WalletBtcModel = {
-      balance: NumToBtc(walletResult.data.address.total.balance_int),
+      balance: NumToBtc(result.data.address.total.balance_int),
       address,
       transactions: []
     }
 
-    wallet.transactions = walletResult.data.address.transactions.map(
-      transaction => {
-        let inputSumm: number = 0
-        let outputSumm: number = 0
-        let transactionType: boolean
-        let inputAdresses: string[] = []
-        let outputAdresses: string[] = []
+    return {
+      wallet,
+      fetchedTransactions: result.data.address.transactions
+    }
+  }
 
-        // console.log(`Tsx is`, transaction)
+  /*
+    Преобразование транзакций в TransactionBtcModel
+    Производит необходимые вычисления чтобы привести сырые транзакции в человеческий вид
+    И возвращает их в виде массива
 
-        // console.log(transaction)
+    В кратце:
+    Транзакция в сыром виде имеет инпуты и аутпуты
+    Инпуты - исходящие операции
+    Аутпуты - входящие
 
-        if (transaction.inputs) {
-          transaction.inputs.forEach(inputTsx => {
-            inputTsx.addresses.forEach(address => {
-              if (address == wallet.address) {
-                inputSumm += +inputTsx.value_int
-              } else {
-                inputAdresses.push(address)
-              }
-            })
+    Чтобы определить итоговый тип транзакции
+    Нужно найти сумму value инпутов и аутпутов
+    Затем вычесть из суммы аутпутов сумму инпутов
+    
+    Если полученное число положительное - транзакция входящая
+    Получатель суммы - владелец кошелька
+    Отправить - первый кошель из входящих транзакций
+
+    Отрицательное - транзакция исходящая
+    Отправитель суммы - владелец кошелька
+    Получатель - первый кошель из исходящих транзакций
+  */
+
+  private transformTransactions(
+    rawTransactions: any,
+    walletAddress: string
+  ): TransactionBtcModel[] {
+    let transactions
+
+    transactions = rawTransactions.map(transaction => {
+      let inputSumm: number = 0
+      let outputSumm: number = 0
+      let transactionType: boolean
+      let inputAdresses: string[] = []
+      let outputAdresses: string[] = []
+
+      if (transaction.inputs) {
+        transaction.inputs.forEach(inputTsx => {
+          inputTsx.addresses.forEach(address => {
+            if (address == walletAddress) {
+              inputSumm += +inputTsx.value_int
+            } else {
+              inputAdresses.push(address)
+            }
           })
-        }
-
-        if (transaction.outputs) {
-          transaction.outputs.forEach(outputTsx => {
-            outputTsx.addresses.forEach(address => {
-              if (address == wallet.address) {
-                outputSumm += +outputTsx.value_int
-              } else {
-                outputAdresses.push(address)
-              }
-            })
-          })
-        }
-
-        let summ = outputSumm - inputSumm
-        let to: string
-        let from: string
-
-        // this.logger.log(`Output summ is ${outputSumm}`)
-        // this.logger.log(`Input summ is ${inputSumm}`)
-        // this.logger.log(`Summ is ${summ}`)
-
-        if (summ > 0) {
-          transactionType = true
-          to = wallet.address
-          from = inputAdresses[0] ? inputAdresses[0] : 'Newly Generated Coins'
-        } else {
-          transactionType = false
-          from = wallet.address
-          to = outputAdresses[0]
-        }
-
-        let time = transaction.time
-          ? new Date(transaction.time * 1000)
-          : new Date(transaction.first_seen * 1000)
-
-        let tsx: TransactionBtcModel = {
-          value: NumToBtc(summ),
-          hash: transaction.hash,
-          from,
-          to,
-          time,
-          type: transactionType
-        }
-
-        return tsx
+        })
       }
-    )
 
-    wallet.transactions.reverse()
+      if (transaction.outputs) {
+        transaction.outputs.forEach(outputTsx => {
+          outputTsx.addresses.forEach(address => {
+            if (address == walletAddress) {
+              outputSumm += +outputTsx.value_int
+            } else {
+              outputAdresses.push(address)
+            }
+          })
+        })
+      }
 
-    return wallet
+      let summ = outputSumm - inputSumm
+      let to: string
+      let from: string
+
+      if (summ > 0) {
+        transactionType = true
+        to = walletAddress
+        from = inputAdresses[0] ? inputAdresses[0] : 'Newly Generated Coins'
+      } else {
+        transactionType = false
+        from = walletAddress
+        to = outputAdresses[0]
+      }
+
+      let time = transaction.time
+        ? new Date(transaction.time * 1000)
+        : new Date(transaction.first_seen * 1000)
+
+      let tsx: TransactionBtcModel = {
+        value: NumToBtc(summ),
+        hash: transaction.hash,
+        from,
+        to,
+        time,
+        type: transactionType
+      }
+
+      return tsx
+    })
+
+    return transactions
   }
 }

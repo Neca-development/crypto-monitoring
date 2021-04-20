@@ -187,7 +187,18 @@ export class WalletService {
     wallet.balance = result.balance
 
     if (balanceInEur) {
-      wallet.balanceEur = await this.btcToEur(wallet.balance)
+      switch (type) {
+        case WalletType.btc: {
+          wallet.balanceEur = await this.btcToEur(wallet.balance)
+          break
+        }
+        case WalletType.eth:
+          wallet.balanceEur = await this.ethToEur(wallet.balance)
+          break
+
+        default:
+          throw new BadRequestException(`Invalid wallet type ${type}`)
+      }
     }
 
     if (holderName) {
