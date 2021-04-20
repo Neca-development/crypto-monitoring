@@ -23,4 +23,12 @@ export class WalletService extends BaseRequestService {
   async addWallet(address: string, userID: number, type: string) {
     return await this.post("/wallet", { userID, address, type }, false);
   }
+
+  async getAllStats() {
+    return await this.get(
+      "/wallet/stats?ethBalanceSumm=true&ethBalanceSummEur=true&btcBalanceSumm=true&btcBalanceSummEur=true ",
+      null,
+      false
+    );
+  }
 }

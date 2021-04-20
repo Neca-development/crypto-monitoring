@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { IUser, IWallet } from "src/app/models/models";
+import { WalletService } from "src/app/services/wallet.service";
 import { UsersService } from "./../../services/users.service";
 import { AddUserComponent } from "./add-user/add-user.component";
 
@@ -12,8 +13,18 @@ import { AddUserComponent } from "./add-user/add-user.component";
 export class DashboardComponent implements OnInit {
   searchVal: string;
   users: any;
+  stats: any;
 
-  constructor(private _usersService: UsersService, private dialog: MatDialog) {}
+  constructor(
+    private _usersService: UsersService,
+    private _walletService: WalletService,
+    private dialog: MatDialog
+  ) {}
+
+  async ngOnInit() {
+    this.users = await this._usersService.getUsers();
+    this.stats = await this._walletService.getAllStats();
+  }
 
   async addUser() {
     const dialogRef = this.dialog.open(AddUserComponent, {
@@ -21,10 +32,6 @@ export class DashboardComponent implements OnInit {
       width: "1000px",
     });
     await dialogRef.afterClosed().toPromise();
-    this.users = await this._usersService.getUsers();
-  }
-
-  async ngOnInit() {
     this.users = await this._usersService.getUsers();
   }
 

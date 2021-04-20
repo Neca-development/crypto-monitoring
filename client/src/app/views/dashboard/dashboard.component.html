@@ -3,17 +3,23 @@
   <div class="dashboard__currency-list">
     <div class="dashboard__currency">
       <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
-      <span>3.02340234023492453 <b>BTC</b></span>
-      <span class="dashboard__currency-hint">(EUR)</span>
+      <span>{{ stats.btcBalanceSumm }} <b>BTC</b></span>
+      <span class="dashboard__currency-hint"
+        >{{ stats.btcBalanceSummEur }}<b>EUR</b></span
+      >
     </div>
     <div class="dashboard__currency">
       <mat-icon class="dashboard__currency-head">generating_tokens</mat-icon>
-      <span>3.02340234023492453 <b>ETH</b></span>
-      <span class="dashboard__currency-hint">(EUR)</span>
+      <span>{{ stats.ethBalanceSumm }} <b>ETH</b></span>
+      <span class="dashboard__currency-hint"
+        >{{ stats.ethBalanceSummEur }}<b>EUR</b></span
+      >
     </div>
     <div class="dashboard__currency">
       <mat-icon class="dashboard__currency-head">euro_symbol</mat-icon>
-      <span>323423 <b>EUR</b></span>
+      <span>
+        {{ stats.btcBalanceSummEur + stats.ethBalanceSummEur }} <b>EUR</b>
+      </span>
     </div>
   </div>
   <div class="dashboard__head">
