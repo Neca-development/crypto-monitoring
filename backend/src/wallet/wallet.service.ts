@@ -273,7 +273,7 @@ export class WalletService {
       })
 
       btcResults.addresses.forEach(address => {
-        address.type = WalletType.eth
+        address.type = WalletType.btc
         result.addresses.push(address)
       })
     }
