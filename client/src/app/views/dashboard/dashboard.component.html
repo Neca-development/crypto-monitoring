@@ -1,0 +1,57 @@
+<div class="dashboard container">
+  <div class="dashboard__head">
+    <h2 class="dashboard__caption">Total Funds</h2>
+    <div class="dashboard__currency-list">
+      <div class="dashboard__currency">
+        BTC <br />
+        <span class="dashboard__currency-hint">(EUR)</span>
+      </div>
+      <div class="dashboard__currency">
+        ETH <br />
+        <span class="dashboard__currency-hint">(EUR)</span>
+      </div>
+      <div class="dashboard__currency">EUR</div>
+    </div>
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="addUser()"
+      class="dashboard__add-user"
+    >
+      Add User
+      <mat-icon>add</mat-icon>
+    </button>
+    <input
+      class="dashboard__search"
+      type="search"
+      placeholder="Search by name or wallet address"
+    />
+  </div>
+  <div class="dashboard__users-list">
+    <div class="dashboard__user" *ngFor="let user of users">
+      <h3 class="dashboard__user-name">
+        {{ user.fullName }}
+      </h3>
+      <div class="dashboard__user-adresses">
+        {{
+          user.wallets.btcAdresses.length +
+            user.wallets.ethAdresses.length +
+            " adresses"
+        }}
+      </div>
+      <div class="dashboard__user-actions">
+        <button mat-flat-button color="accent" [routerLink]="['user', user.id]">
+          View Details
+        </button>
+        <div class="dashboard__btns-group">
+          <button mat-flat-button color="primary" (click)="editUser(user)">
+            Edit <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-flat-button color="warn" (click)="removeUser(user.id)">
+            Delete <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

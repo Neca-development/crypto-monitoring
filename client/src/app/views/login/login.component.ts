@@ -8,27 +8,23 @@ import { SessionService } from "./../../services/session.service";
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
-  constructor(private sessionService: SessionService, private router: Router) {}
   username = "";
   password = "";
   authLoading = false;
-  hide = true;
+  showPassword = false;
+
+  constructor(private sessionService: SessionService, private router: Router) {}
 
   ngOnInit(): void {}
 
   async logIn() {
     this.authLoading = true;
-    const user = {
+
+    await this.sessionService.logIn({
       login: this.username,
       password: this.password,
-    };
-
-    try {
-      await this.sessionService.logIn(user);
-      this.authLoading = false;
-      this.router.navigate(["admin"]);
-    } catch (error) {
-      this.authLoading = false;
-    }
+    });
+    this.authLoading = false;
+    this.router.navigate(["dashboard"]);
   }
 }

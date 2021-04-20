@@ -1,17 +1,6 @@
 <header class="header">
-  <a
-    [routerLink]="['/admin']"
-    *ngIf="
-      this.location.path() !== '/admin' && this.location.path() !== '/login';
-      else logo
-    "
-  >
-    <mat-icon class="header__back">arrow_back</mat-icon>
-  </a>
-  <ng-template #logo>
-    <h1 class="header__logo">Crypto <b>monitoring</b></h1>
-  </ng-template>
-  <button mat-raised-button color="primary" type="submit" class="auth__submit">
+  <h1 class="header__logo">Crypto <b>monitoring</b></h1>
+  <button mat-raised-button color="accent" type="submit" class="auth__submit">
     Sign Up
     <mat-icon>login</mat-icon>
   </button>
