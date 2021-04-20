@@ -1,10 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
-import { User } from "src/app/models/models";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { IWallet, IUser } from "src/app/models/models";
 import { UsersService } from "./../../../services/users.service";
 
 @Component({
@@ -14,12 +10,12 @@ import { UsersService } from "./../../../services/users.service";
 })
 export class AddUserComponent implements OnInit {
   fullName: string;
-  btcAdresses: any[] = [{ value: "" }];
-  ethAdresses: any[] = [{ value: "" }];
+  btcAdresses: IWallet[] = [{ value: "" }];
+  ethAdresses: IWallet[] = [{ value: "" }];
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: User,
+    @Inject(MAT_DIALOG_DATA) public data: IUser,
     private _usersService: UsersService
   ) {}
 
@@ -31,7 +27,7 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  addField(wallet: any[]) {
+  addField(wallet: IWallet[]) {
     wallet.push({ value: "" });
   }
 

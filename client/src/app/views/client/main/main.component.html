@@ -1,0 +1,45 @@
+<div class="container client">
+  <h2 class="client__title">{{ user.fullName }}</h2>
+  <button
+    mat-button
+    color="accent"
+    routerLink="/dashboard"
+    class="client__back"
+  >
+    Back
+  </button>
+  <div class="client__row">
+    <div class="client__left">
+      <div class="client__graph">Graph with total balance</div>
+      <div class="client__currency-list">
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+          <span>3.02340234023492453 <b>BTC</b></span>
+          <span class="client__currency-hint">(EUR)</span>
+        </div>
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+          <span>3.02340234023492453 <b>ETH</b></span>
+          <span class="client__currency-hint">(EUR)</span>
+        </div>
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">euro_symbol</mat-icon>
+          <span>323423 <b>EUR</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="client__right">
+      <div class="wallet" *ngFor="let wallet of wallets">
+        <span class="wallet__value" [routerLink]="['wallet', wallet.value]">
+          {{ wallet.value }}
+        </span>
+        <button mat-button color="primary" routerLink="link">
+          Block Explorer
+        </button>
+      </div>
+    </div>
+  </div>
+  <app-transactions-history
+    [data]="user.transactions"
+  ></app-transactions-history>
+</div>

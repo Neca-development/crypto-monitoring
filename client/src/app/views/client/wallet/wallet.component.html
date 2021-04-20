@@ -1,0 +1,52 @@
+<div class="container client">
+  <div class="client__header">
+    <h2 class="client__title">
+      {{ address }}
+      <span class="client__title-hint"><b>Owner:</b> Client Name</span>
+    </h2>
+    <button mat-flat-button color="primary" class="client__block-explorer">
+      Block Explorer
+    </button>
+  </div>
+  <button
+    mat-button
+    color="accent"
+    routerLink="/dashboard"
+    class="client__back"
+  >
+    Back
+  </button>
+  <div class="client__row">
+    <div class="client__left">
+      <div class="client__graph">Graph with total balance</div>
+    </div>
+    <div class="client__currency-list client__currency-list_l">
+      <div class="client__currency">
+        <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+        <span>3.02340234023492453 <b>BTC</b></span>
+        <span class="client__currency-hint">(EUR)</span>
+      </div>
+      <div class="client__currency">
+        <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+        <span>3.02340234023492453 <b>ETH</b></span>
+        <span class="client__currency-hint">(EUR)</span>
+      </div>
+      <div class="client__currency">
+        <mat-icon class="client__currency-head">euro_symbol</mat-icon>
+        <span>323423 <b>EUR</b></span>
+      </div>
+    </div>
+  </div>
+  <label class="switch client__activate-portfolio">
+    <input type="checkbox" name="" id="" />
+    <div class="switch__bar"></div>
+    <div class="switch__circle"></div>
+    <span class="switch__label">Activate Portfolio</span>
+  </label>
+  <div class="client__average-price">
+    <b>Average Purchase Price:</b> 0.002342 ETH
+  </div>
+  <app-transactions-history
+    [data]="wallet.transactions"
+  ></app-transactions-history>
+</div>

@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { User } from "../models/models";
+import { IUser } from "../models/models";
 import { BaseRequestService } from "./base-request.service";
 
 @Injectable({
@@ -12,46 +12,49 @@ export class UsersService extends BaseRequestService {
     super(_snackBar, http);
   }
 
-  fakeUsers: User[] = [
+  fakeUsers: IUser[] = [
     {
       id: 1,
       fullName: "Dante Alighieri",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "ETH",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "Out",
         },
@@ -62,40 +65,43 @@ export class UsersService extends BaseRequestService {
       fullName: "Troy Yates",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "ETH",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "Out",
         },
@@ -106,40 +112,43 @@ export class UsersService extends BaseRequestService {
       fullName: "Heather Graham",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "ETH",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "Out",
         },
@@ -150,40 +159,139 @@ export class UsersService extends BaseRequestService {
       fullName: "Aimee Pearce",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
-          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "ETH",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "Out",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "ETH",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "Out",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "ETH",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "Out",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "ETH",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "Out",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "2JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "ETH",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
+          ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          type: "In",
+        },
+        {
+          currency: "BTC",
+          date: new Date(),
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "Out",
         },
@@ -194,40 +302,43 @@ export class UsersService extends BaseRequestService {
       fullName: "Gracie Hensley",
       wallets: {
         btcAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
 
         ethAdresses: [
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
-          "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
+          { value: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV" },
         ],
       },
       transactions: [
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "ETH",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "In",
         },
         {
           currency: "BTC",
           date: new Date(),
-          TXHash: "asd3423423sdfsdf",
+          TXHash:
+            "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d",
           ToAdress: "1JbM7yFVCT8e1sxZFa5sa7VEqCGCJVXQVV",
           type: "Out",
         },
@@ -239,7 +350,12 @@ export class UsersService extends BaseRequestService {
     return this.fakeUsers;
   }
 
-  addUser(user: User) {
+  getUserById(id: number) {
+    console.log(id);
+    return this.fakeUsers.find((el) => el.id === id);
+  }
+
+  addUser(user: IUser) {
     this.fakeUsers.push(user);
   }
 
@@ -248,10 +364,8 @@ export class UsersService extends BaseRequestService {
     this.fakeUsers.splice(idx, 1);
   }
 
-  updateUser(user: User) {
-    console.log(user);
+  updateUser(user: IUser) {
     const idx = this.fakeUsers.findIndex((el) => el.id === user.id);
-    console.log(idx);
     this.fakeUsers[idx] = user;
   }
 }

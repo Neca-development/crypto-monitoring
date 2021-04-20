@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { User } from "src/app/models/models";
+import { IUser } from "src/app/models/models";
 import { UsersService } from "./../../services/users.service";
 import { AddUserComponent } from "./add-user/add-user.component";
 
@@ -10,12 +10,13 @@ import { AddUserComponent } from "./add-user/add-user.component";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
-  users: User[];
+  users: IUser[];
 
   constructor(private _usersService: UsersService, private dialog: MatDialog) {}
 
   addUser() {
     const dialogRef = this.dialog.open(AddUserComponent, {
+      maxHeight: "80vh",
       width: "1000px",
     });
   }
@@ -29,15 +30,12 @@ export class DashboardComponent implements OnInit {
     this.users = this._usersService.fakeUsers;
   }
 
-  async editUser(user: User) {
+  async editUser(user: IUser) {
     const dialogRef = this.dialog.open(AddUserComponent, {
       width: "1000px",
       maxHeight: "80vh",
       data: user,
     });
-    // dialogRef.afterClosed().subscribe(() => {
-    //   this.users = this._usersService.fakeUsers;
-    // });
     await dialogRef.afterClosed().toPromise();
     this.users = this._usersService.fakeUsers;
   }

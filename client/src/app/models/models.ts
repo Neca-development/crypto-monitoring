@@ -1,10 +1,15 @@
-export interface User {
+export interface IUser {
   id: number;
   fullName: string;
   wallets: {
-    btcAdresses: string[];
-    ethAdresses: string[];
+    btcAdresses: IWallet[];
+    ethAdresses: IWallet[];
   };
+  transactions?: Transaction[];
+}
+
+export interface IWallet {
+  value: string;
   transactions?: Transaction[];
 }
 

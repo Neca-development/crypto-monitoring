@@ -14,17 +14,25 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatTableModule } from "@angular/material/table";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatSelectModule } from "@angular/material/select";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatSortModule } from "@angular/material/sort";
 
-import { DashboardComponent } from "./views/dashboard/dashboard.component";
-import { HeaderComponent } from "./components/header/header.component";
-import { AddUserComponent } from "./views/dashboard/add-user/add-user.component";
 import { LoginComponent } from "./views/login/login.component";
+import { HeaderComponent } from "./components/header/header.component";
+import { DashboardComponent } from "./views/dashboard/dashboard.component";
+import { AddUserComponent } from "./views/dashboard/add-user/add-user.component";
+import { ClientComponent } from "./views/client/client.component";
+import { TransactionsHistoryComponent } from "./components/transactions-history/transactions-history.component";
+import { WalletComponent } from "./views/client/wallet/wallet.component";
+import { MainComponent } from "./views/client/main/main.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +41,10 @@ import { LoginComponent } from "./views/login/login.component";
     HeaderComponent,
     DashboardComponent,
     AddUserComponent,
+    ClientComponent,
+    TransactionsHistoryComponent,
+    WalletComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +66,10 @@ import { LoginComponent } from "./views/login/login.component";
     HttpClientModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
