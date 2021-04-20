@@ -32,6 +32,8 @@
         class="search__input"
         type="search"
         placeholder="Search by name or wallet address"
+        [(ngModel)]="searchVal"
+        (input)="search()"
       />
     </div>
   </div>
@@ -52,9 +54,9 @@
           View Details
         </button>
         <div class="dashboard__btns-group">
-          <button mat-button color="primary" (click)="editUser(user)">
+          <!-- <button mat-button color="primary" (click)="editUser(user)">
             <mat-icon>edit</mat-icon>
-          </button>
+          </button> -->
           <button mat-button color="warn" (click)="removeUser(user.id)">
             <mat-icon>delete</mat-icon>
           </button>

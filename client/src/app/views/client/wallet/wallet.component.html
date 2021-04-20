@@ -26,13 +26,12 @@
       <div class="client__currency">
         <mat-icon class="client__currency-head">generating_tokens</mat-icon>
         <span
-          >3.02340234023492453 <b>{{ wallet.type }}</b></span
+          >{{ wallet.balance }} <b>{{ wallet.type }}</b></span
         >
-        <span class="client__currency-hint">(EUR)</span>
       </div>
       <div class="client__currency">
         <mat-icon class="client__currency-head">euro_symbol</mat-icon>
-        <span>323423 <b>EUR</b></span>
+        <span>{{ wallet.balanceEur }} <b>EUR</b></span>
       </div>
     </div>
   </div>

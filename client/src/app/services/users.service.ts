@@ -28,4 +28,13 @@ export class UsersService extends BaseRequestService {
   async addUser(user: IUser): Promise<IUser> {
     return await this.post("/auth/admin/client", user, false);
   }
+
+  async removeUser(id: number): Promise<IUser> {
+    const user: IUser = await this.delete("/auth/admin/client", { id }, false);
+    this._snackBar.open("Removed", null, {
+      verticalPosition: "top",
+      duration: 2000,
+    });
+    return user;
+  }
 }

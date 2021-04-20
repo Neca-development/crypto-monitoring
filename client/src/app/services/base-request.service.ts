@@ -19,9 +19,13 @@ export class BaseRequestService {
     return this.request(url, "POST", null, data, useDataWrapper);
   }
 
+  delete<T>(url: string, data: any, useDataWrapper = true): Promise<T> {
+    return this.request(url, "DELETE", null, data, useDataWrapper);
+  }
+
   private async request<T>(
     url: string,
-    method: "GET" | "POST" = "GET",
+    method: "GET" | "POST" | "DELETE" = "GET",
     headersObj: any = {},
     data: any = null,
     useDataWrapper = true

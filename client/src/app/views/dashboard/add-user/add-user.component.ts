@@ -24,8 +24,6 @@ export class AddUserComponent implements OnInit {
   ngOnInit(): void {
     if (this.data) {
       this.fullName = this.data.fullName;
-      this.btcAdresses = this.data.wallets.btcAdresses;
-      this.ethAdresses = this.data.wallets.ethAdresses;
     }
   }
 

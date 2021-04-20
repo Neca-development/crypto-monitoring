@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { IUser } from "src/app/models/models";
+import { IUser, IWallet } from "src/app/models/models";
 import { UsersService } from "./../../services/users.service";
 import { AddUserComponent } from "./add-user/add-user.component";
 
@@ -10,6 +10,7 @@ import { AddUserComponent } from "./add-user/add-user.component";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
+  searchVal: string;
   users: any;
 
   constructor(private _usersService: UsersService, private dialog: MatDialog) {}
@@ -27,8 +28,9 @@ export class DashboardComponent implements OnInit {
     this.users = await this._usersService.getUsers();
   }
 
-  removeUser(id: number) {
-    // this._usersService.removeUser(id);
+  async removeUser(id: number) {
+    await this._usersService.removeUser(id);
+    this.users = await this._usersService.getUsers();
   }
 
   async editUser(user: IUser) {
@@ -38,5 +40,27 @@ export class DashboardComponent implements OnInit {
       data: user,
     });
     await dialogRef.afterClosed().toPromise();
+  }
+
+  async search() {
+    console.log(this.searchVal);
+    if (!this.searchVal) {
+      this.users = await this._usersService.getUsers();
+    }
+    this.users = this.users.filter((el: IUser) => {
+      let bool = false;
+      const name = el.fullName.toLocaleLowerCase();
+      if (name.includes(this.searchVal.toLocaleLowerCase())) {
+        bool = true;
+      }
+      el.wallets.forEach((element: IWallet) => {
+        const wallet = element.address.toLocaleLowerCase();
+        console.log(wallet);
+        if (wallet.includes(this.searchVal.toLocaleLowerCase())) {
+          bool = true;
+        }
+      });
+      return bool;
+    });
   }
 }

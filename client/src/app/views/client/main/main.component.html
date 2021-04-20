@@ -15,12 +15,16 @@
         <div class="client__currency">
           <mat-icon class="client__currency-head">generating_tokens</mat-icon>
           <span>{{ user.totalBtcBalance }} <b>BTC</b></span>
-          <span class="client__currency-hint">(EUR)</span>
+          <span class="client__currency-hint"
+            >{{ user.totalBtcBalanceEur }} <b>EUR</b></span
+          >
         </div>
         <div class="client__currency">
           <mat-icon class="client__currency-head">generating_tokens</mat-icon>
           <span>{{ user.totalEthBalance }} <b>ETH</b></span>
-          <span class="client__currency-hint">(EUR)</span>
+          <span class="client__currency-hint"
+            >{{ user.totalEthBalanceEur }} <b>EUR</b></span
+          >
         </div>
         <div class="client__currency">
           <mat-icon class="client__currency-head">euro_symbol</mat-icon>
@@ -33,7 +37,11 @@
     </div>
     <div class="client__right">
       <div class="wallet" *ngFor="let wallet of user.addresses">
-        <span class="wallet__value" [routerLink]="['wallet', wallet.id]">
+        <span
+          class="wallet__value"
+          [routerLink]="['wallet', wallet.id]"
+          [queryParams]="{ type: wallet.type }"
+        >
           {{ wallet.address }}
         </span>
         <button mat-button color="primary" routerLink="link">

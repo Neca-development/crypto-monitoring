@@ -1,16 +1,15 @@
 export interface IUser {
   id?: number;
   fullName: string;
-  wallets?: {
-    btcAdresses: IWallet[];
-    ethAdresses: IWallet[];
-  };
+  wallets?: IWallet[];
   transactions?: Transaction[];
 }
 
 export interface IWallet {
   address: string;
   holderName?: string;
+  balance?: string;
+  balanceEur?: any;
   type?: string;
   transactions?: Transaction[];
 }

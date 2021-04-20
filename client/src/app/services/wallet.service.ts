@@ -12,9 +12,9 @@ export class WalletService extends BaseRequestService {
     super(_snackBar, http);
   }
 
-  async getWalletInfo(address: string): Promise<IWallet> {
+  async getWalletInfo(address: string, type: string): Promise<IWallet> {
     return await this.get(
-      `/wallet?walletID=${address}&type=BTC&holderName=true&transactions=true&balanceInEur=true `,
+      `/wallet?walletID=${address}&type=${type}&holderName=true&transactions=true&balanceInEur=true `,
       null,
       false
     );

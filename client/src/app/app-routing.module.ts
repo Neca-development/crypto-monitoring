@@ -8,7 +8,7 @@ import { MainComponent } from "./views/client/main/main.component";
 
 const clientRoutes = [
   { path: "", component: MainComponent },
-  { path: "wallet/:address", component: WalletComponent },
+  { path: "wallet/:id", component: WalletComponent },
 ];
 
 const routes: Routes = [
