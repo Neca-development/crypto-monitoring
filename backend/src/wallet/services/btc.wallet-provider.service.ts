@@ -28,9 +28,11 @@ export class BtcWalletProviderService {
     Получение со стороннего api кошелька и его транзакций в виде WalletBtcModel
 
     Получает кошель и транзакции
-    Преобразует в WalletBtcModel
+    Преобразует кошель в WalletBtcModel
+    И его транзакции в TransactionBtcModel
 
-    Переворачивает массив транзакций
+    Транзакции возвращаются отфильтрованные по времени в asc порядке
+    Где в самом начале - старые, в конце - новые
   */
 
   async getBtcWallet(address: string): Promise<WalletBtcModel> {

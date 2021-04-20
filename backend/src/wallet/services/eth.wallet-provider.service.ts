@@ -35,6 +35,8 @@ export class EthWalletProviderService {
 
   private web3 = new Web3.default(this.infuraTestUrl)
 
+  private async getWallet() {}
+
   async getEthWallet(address: string) {
     let balance: string
 
