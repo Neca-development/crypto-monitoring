@@ -25,39 +25,37 @@ export class BtcMonitoringService {
     private emailService: EmailService
   ) {}
 
+  async onModuleInit() {
+    this.logger.log(`Btc Monitoring Service initalzied`)
 
+    setInterval(async () => {
+      let wallets = await this.btcRepository.getAllWallets()
+      let requests = wallets.map(wallet => {
+        return this.httpService
+          .get(
+            `https://api.smartbit.com.au/v1/blockchain/address/${wallet.address}?limit=5`
+          )
+          .toPromise()
+      })
 
-  // async onModuleInit() {
-  //   this.logger.log(`Btc Monitoring Service initalzied`)
+      let results: any = await Promise.all(requests)
 
-  //   setInterval(async () => {
-  //     let wallets = await this.btcRepository.getAllWallets()
-  //     let requests = wallets.map(wallet => {
-  //       return this.httpService
-  //         .get(
-  //           `https://api.smartbit.com.au/v1/blockchain/address/${wallet.address}?limit=5`
-  //         )
-  //         .toPromise()
-  //     })
-
-  //     let results: any = await Promise.all(requests)
-
-  //     for (let i = 0; i <= wallets.length - 1; i++) {
-  //       if (wallets[i].balance == results[i].data.address.total.balance) {
-  //         console.log(`Balance are the same`)
-  //         console.log(wallets[i].balance, results[i].data.address.total.balance)
-  //       } else {
-  //         console.log('Balances are not the same')
-  //         console.log(wallets[i].balance, results[i].data.address.total.balance)
-  //         await this.updateTransactions(
-  //           wallets[i],
-  //           results[i].data.address.transactions,
-  //           results[i].data.address.total.balance
-  //         )
-  //       }
-  //     }
-  //   }, 30000)
-  // }
+      for (let i = 0; i <= wallets.length - 1; i++) {
+        if (wallets[i].balance == results[i].data.address.total.balance) {
+          console.log(`Balance are the same`)
+          console.log(wallets[i].balance, results[i].data.address.total.balance)
+        } else {
+          console.log('Balances are not the same')
+          console.log(wallets[i].balance, results[i].data.address.total.balance)
+          await this.updateTransactions(
+            wallets[i],
+            results[i].data.address.transactions,
+            results[i].data.address.total.balance
+          )
+        }
+      }
+    }, 240000)
+  }
 
   async updateTransactions(
     wallet: WalletBTC,

@@ -54,7 +54,4 @@ export class WalletController {
   deleteWallet(@Body(ValidationPipe) deleteWalletDto: DeleteWalletDto) {
     return this.walletService.deleteWallet(deleteWalletDto)
   }
-
-  // @Test()
-  // test() {}
 }

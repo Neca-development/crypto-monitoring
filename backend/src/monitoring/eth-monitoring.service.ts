@@ -49,7 +49,7 @@ export class EthMonitoringService {
           console.log(wallets[i].balance, results[i])
         }
       }
-    }, 180000)
+    }, 240000)
   }
 
   async updateTransactions(wallet: WalletETH, balance: number) {

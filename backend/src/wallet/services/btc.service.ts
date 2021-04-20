@@ -23,6 +23,10 @@ export class BtcService {
     private btcRepository: BtcRepository
   ) {}
 
+  /*
+    Создание нового кошелька
+  */
+
   async createWallet(address: string) {
     let walletModel = await this.btcWalletProviderService.getBtcWallet(address)
     let wallet = await this.btcRepository.addWaletByModel({

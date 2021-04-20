@@ -7,10 +7,6 @@ async function bootstrap() {
 
   let server: any = Config.get('server')
 
-  if (process.env.NODE_ENV === 'production') {
-    console.log(`Production mode`)
-  }
-
   await app.listen(server.port)
 }
 bootstrap()

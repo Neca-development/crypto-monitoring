@@ -16,19 +16,37 @@ import { BtcService } from './services/btc.service'
 import { EthService } from './services/eth.service'
 import { IGetWalletProps } from './interfaces/IGetWalletProps'
 import { GetUserWalletsInfo } from '../dto/admin.wallets-user-info.dto'
-import { concat } from 'rxjs'
-import { Connection, getConnection } from 'typeorm'
+import { getConnection } from 'typeorm'
 import { UserRole } from 'src/auth/enum/user-role.enum'
+
+/*
+  Сервис отвечающий за кошельки
+  Служит менеджером/прослойкой между интерфейсом и сервисами конкретных кошельков
+  В основном занимается логикой распределения запросов к btc/eth кошелькам
+  И старается огородить логику конкретных кошельков от преставлений ожидаемых в интерфейсе
+
+  Существуют сервисы конкретных кошельков, занимающиеся логикой btc/eth
+  WalletService же обращается к ним в зависимости от type: enum btc/eth
+  Который был передан в запросе
+*/
 
 @Injectable()
 export class WalletService {
   constructor(
     private BtcService: BtcService,
     private EthService: EthService,
+    private httpService: HttpService,
     @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
-    private httpService: HttpService
+    private userRepository: UserRepository
   ) {}
+
+  /*
+    Добавление нового кошелька
+    
+    Метод пытается найти пользователя из dto
+    И в зависимости от типа кошелька в dto
+    Направляет дальнейшую логику создания соответствующим сервисам
+  */
 
   async addWallet(addWalletDto: AddWalletDto) {
     const { userID, address, type } = addWalletDto
@@ -250,19 +268,13 @@ export class WalletService {
 
     if (addresses) {
       ethResults.addresses.forEach(address => {
-        let addressNote = {
-          address,
-          type: WalletType.eth
-        }
-        result.addresses.push(addressNote)
+        address.type = WalletType.eth
+        result.addresses.push(address)
       })
 
       btcResults.addresses.forEach(address => {
-        let addressNote = {
-          address,
-          type: WalletType.btc
-        }
-        result.addresses.push(addressNote)
+        address.type = WalletType.eth
+        result.addresses.push(address)
       })
     }
 

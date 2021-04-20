@@ -72,15 +72,14 @@ export class EthRepository extends Repository<WalletETH> {
     return result
   }
 
-  async getUserAdresses(user: User): Promise<String[]> {
+  async getUserAdresses(user: User) {
     let query = this.createQueryBuilder('wallet')
       .select('wallet.address')
+      .addSelect('wallet.id')
       .where('wallet.userId = :userID', { userID: user.id })
-
     let result = await query.getMany()
-    let resultArr = result.map(element => element.address)
 
-    return resultArr
+    return result
   }
 
   async getUserBalanceSumm(user: User): Promise<Number> {
