@@ -11,24 +11,29 @@ import { IAPIResponse } from "../models/models";
 export class BaseRequestService {
   constructor(public _snackBar: MatSnackBar, public http: HttpClient) {}
 
-  get<T>(url: string, headersObj: any): Promise<T> {
-    return this.request(url, "GET", headersObj);
+  get<T>(url: string, headersObj: any, useDataWrapper = true): Promise<T> {
+    return this.request(url, "GET", headersObj, null, useDataWrapper);
   }
 
-  post<T>(url: string, data: any): Promise<T> {
-    return this.request(url, "POST", null, data);
+  post<T>(url: string, data: any, useDataWrapper = true): Promise<T> {
+    return this.request(url, "POST", null, data, useDataWrapper);
+  }
+
+  delete<T>(url: string, data: any, useDataWrapper = true): Promise<T> {
+    return this.request(url, "DELETE", null, data, useDataWrapper);
   }
 
   private async request<T>(
     url: string,
-    method: "GET" | "POST" = "GET",
-    headersObj: any = null,
-    data: any = null
+    method: "GET" | "POST" | "DELETE" = "GET",
+    headersObj: any = {},
+    data: any = null,
+    useDataWrapper = true
   ): Promise<T> {
     let body;
 
     const headers = {
-      authorization: localStorage.getItem("token") || "",
+      Authorization: `Bearer ${localStorage.getItem("token")}` || "",
       ...headersObj,
     };
     if (data) {
@@ -36,13 +41,23 @@ export class BaseRequestService {
       body = data;
     }
     try {
-      const response = await this.http
-        .request<IAPIResponse<T>>(method, environment.serverUrl + url, {
-          headers,
-          body,
-        })
-        .toPromise();
-      return response.data;
+      if (useDataWrapper) {
+        const response = await this.http
+          .request<IAPIResponse<T>>(method, environment.serverUrl + url, {
+            headers,
+            body,
+          })
+          .toPromise();
+        return response.data;
+      } else {
+        const response = await this.http
+          .request<T>(method, environment.serverUrl + url, {
+            headers,
+            body,
+          })
+          .toPromise();
+        return response;
+      }
     } catch (e) {
       const errorObject = e as HttpErrorResponse;
       const errorData = errorObject.error as IAPIResponse<any>;

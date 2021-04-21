@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { BaseRequestService } from "./base-request.service";
 import jwtDecode from "jwt-decode";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { IAuthorizedUser } from "../models/models";
 
 @Injectable({
   providedIn: "root",
@@ -27,15 +28,18 @@ export class SessionService extends BaseRequestService {
     }
   }
 
-  async logIn(user: { login: string; password: string }): Promise<any> {
-    // const data = await this.post<IAuthorizedUser>("/login", user);
-    const data = {
-      token:
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImp0aSI6ImY4ZWFlYTI0LWExMTgtNGI4Yy05ODA4LTIxOGM1OTE0NTBmOCIsImlhdCI6MTYxNzg3MDY1MywiZXhwIjoxNjE3ODc0MjUzfQ._yx-t8YvfwbgswTr_Vn3MpHGR2BX8C9Ln57FoqOvQy4",
-    };
-    localStorage.setItem("token", data.token);
-    this.userJwtData = jwtDecode(data.token);
-    return this.userJwtData;
+  async logIn(login: string, password: string): Promise<any> {
+    const data: IAuthorizedUser = await this.post(
+      "/auth/signin",
+      {
+        email: login,
+        password,
+      },
+      false
+    );
+    localStorage.setItem("token", data.accessToken);
+    this.userJwtData = jwtDecode(data.accessToken);
+    return true;
   }
 
   logOut() {

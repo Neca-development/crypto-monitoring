@@ -1,15 +1,16 @@
 export interface IUser {
-  id: number;
+  id?: number;
   fullName: string;
-  wallets: {
-    btcAdresses: IWallet[];
-    ethAdresses: IWallet[];
-  };
+  wallets?: IWallet[];
   transactions?: Transaction[];
 }
 
 export interface IWallet {
-  value: string;
+  address: string;
+  holderName?: string;
+  balance?: string;
+  balanceEur?: any;
+  type?: string;
   transactions?: Transaction[];
 }
 
@@ -22,9 +23,8 @@ export interface Transaction {
 }
 
 export interface IAuthorizedUser {
-  id: number;
-  role: string;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface IAPIResponse<T> {

@@ -19,11 +19,11 @@ export class LoginComponent implements OnInit {
 
   async logIn() {
     this.authLoading = true;
-
-    await this.sessionService.logIn({
-      login: this.username,
-      password: this.password,
-    });
+    try {
+      await this.sessionService.logIn(this.username, this.password);
+    } catch (error) {
+      return false;
+    }
     this.authLoading = false;
     this.router.navigate(["dashboard"]);
   }

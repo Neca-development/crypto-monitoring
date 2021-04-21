@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { IWallet, IUser } from "src/app/models/models";
+import { WalletService } from "src/app/services/wallet.service";
 import { UsersService } from "./../../../services/users.service";
 
 @Component({
@@ -10,53 +11,55 @@ import { UsersService } from "./../../../services/users.service";
 })
 export class AddUserComponent implements OnInit {
   fullName: string;
-  btcAdresses: IWallet[] = [{ value: "" }];
-  ethAdresses: IWallet[] = [{ value: "" }];
+  btcAdresses: IWallet[] = [{ address: "", type: "BTC" }];
+  ethAdresses: IWallet[] = [{ address: "", type: "ETH" }];
 
   constructor(
     private dialogRef: MatDialogRef<AddUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IUser,
-    private _usersService: UsersService
+    private _usersService: UsersService,
+    private _walletService: WalletService
   ) {}
 
   ngOnInit(): void {
     if (this.data) {
       this.fullName = this.data.fullName;
-      this.btcAdresses = this.data.wallets.btcAdresses;
-      this.ethAdresses = this.data.wallets.ethAdresses;
     }
   }
 
-  addField(wallet: IWallet[]) {
-    wallet.push({ value: "" });
+  addField(wallet: IWallet[], type: string) {
+    wallet.push({ address: "", type });
   }
 
   submit() {
-    console.log("submit");
     this.data ? this.updateUser() : this.addUser();
   }
 
-  addUser() {
-    this._usersService.addUser({
-      id: Date.now(),
+  async addUser() {
+    const user: IUser = await this._usersService.addUser({
       fullName: this.fullName,
-      wallets: {
-        btcAdresses: this.btcAdresses,
-        ethAdresses: this.ethAdresses,
-      },
+    });
+
+    console.log(user);
+
+    this.btcAdresses.forEach(async (el) => {
+      await this._walletService.addWallet(el.address, user.id, el.type);
+    });
+    this.ethAdresses.forEach(async (el) => {
+      await this._walletService.addWallet(el.address, user.id, el.type);
     });
     this.dialogRef.close();
   }
 
   updateUser() {
-    this._usersService.updateUser({
-      ...this.data,
-      fullName: this.fullName,
-      wallets: {
-        btcAdresses: this.btcAdresses,
-        ethAdresses: this.ethAdresses,
-      },
-    });
+    // this._usersService.updateUser({
+    //   ...this.data,
+    //   fullName: this.fullName,
+    //   wallets: {
+    //     btcAdresses: this.btcAdresses,
+    //     ethAdresses: this.ethAdresses,
+    //   },
+    // });
     this.dialogRef.close();
   }
 }

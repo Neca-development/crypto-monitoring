@@ -10,19 +10,14 @@ import { UsersService } from "src/app/services/users.service";
 })
 export class MainComponent implements OnInit {
   id: number;
-  user: IUser;
-  wallets: IWallet[] = [];
+  user: any;
 
   constructor(
     private activateRoute: ActivatedRoute,
     private _usersService: UsersService
   ) {}
-  ngOnInit(): void {
+  async ngOnInit() {
     this.id = this.activateRoute.snapshot.params["id"];
-    this.user = this._usersService.getUserById(+this.id);
-    this.wallets = this.wallets.concat(
-      this.user.wallets.btcAdresses,
-      this.user.wallets.ethAdresses
-    );
+    this.user = await this._usersService.getUserById(+this.id);
   }
 }
