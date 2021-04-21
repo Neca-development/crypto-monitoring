@@ -1,11 +1,5 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  Logger
-} from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { dbErrorCodes } from 'src/config/db-error-codes'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
@@ -35,7 +29,7 @@ export class EthService {
     Затем возвращает кошелёк с транзакциями
   */
 
-  async createWallet(address: string) {
+  async createWallet(address: string): Promise<WalletETH> {
     let walletModel = await this.WalletProviderService.getEthWallet(address)
     let wallet = await this.ethRepository.addWaletByModel({
       address: walletModel.address,
@@ -54,20 +48,22 @@ export class EthService {
     return await this.ethRepository.getBalanceSumm()
   }
 
-  async deleteWallet(walletID: number) {
+  async deleteWallet(walletID: number): Promise<WalletETH> {
     return await this.ethRepository.deleteWalletById(walletID)
   }
 
-  async getWallet(props: IGetWalletProps) {
+  async getWallet(props: IGetWalletProps): Promise<WalletETH> {
     return await this.ethRepository.getWallet(props)
   }
 
-  async getInfoByUser(props: IGetUserWalletsInfo) {
-    // return await this.btcRepository.getInfoByUser(props)
-    let result: any = {}
+  /*
+    Получение информации о конкретном пользователе
+    В интерфейсе указывается какие именно необходимо получить данные
+    В основном делегирует логику репозиториям
+  */
 
-    // TODO
-    // Переписать на promise all
+  async getInfoByUser(props: IGetUserWalletsInfo) {
+    let result: any = {}
 
     if (props.totalBalance) {
       result.totalBalance = await this.ethRepository.getUserBalanceSumm(

@@ -2,7 +2,8 @@ import {
   ConflictException,
   InternalServerErrorException,
   Logger,
-  NotFoundException
+  NotFoundException,
+  UseFilters
 } from '@nestjs/common'
 import { EntityRepository, Repository } from 'typeorm'
 import * as bcrypt from 'bcryptjs'
@@ -16,8 +17,10 @@ import { AddClientDto } from '../../dto/admin.client-add.dto'
 import { UserRole } from '../enum/user-role.enum'
 import { GetClientsDto } from '../../dto/admin.client-getClients'
 import config from 'config'
+import { QueryFailedErrorFilter } from 'src/filters/Database.filter'
 
 @EntityRepository(User)
+@UseFilters(new QueryFailedErrorFilter())
 export class UserRepository extends Repository<User> {
   private readonly logger = new Logger(UserRepository.name)
 
@@ -89,7 +92,8 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async addClient(addClientDto: AddClientDto): Promise<User> {
+  @UseFilters(new QueryFailedErrorFilter())
+  async addClient(addClientDto: AddClientDto) {
     const { fullName } = addClientDto
 
     const user = this.create()
@@ -100,6 +104,7 @@ export class UserRepository extends Repository<User> {
       return await user.save()
     } catch (e) {
       if (e.code === dbErrorCodes.duplicate) {
+        console.log(e)
         throw new ConflictException(
           `User with given credentials already exists`
         )

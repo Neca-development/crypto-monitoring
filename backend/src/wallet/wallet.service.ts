@@ -75,6 +75,11 @@ export class WalletService {
     await wallet.save()
   }
 
+  /*
+    Удаление кошелька
+    Исходя из типа делегирует удаление конкретным сервисам
+  */
+
   async deleteWallet(deleteWalletDto: DeleteWalletDto) {
     const { walletID, type } = deleteWalletDto
 
@@ -95,9 +100,14 @@ export class WalletService {
     return wallet
   }
 
+  /*
+    Получение статистики по всем кошелькам
+    В dto указывается что именно необходимо получить
+  */
+
   async getWalletsStats(getWalletsStatsDto: GetWalletsStats) {
     let response: any = {}
-    Object.assign(response)
+
     if (
       getWalletsStatsDto.ethBalanceSumm ||
       getWalletsStatsDto.ethBalanceSummEur
@@ -126,7 +136,12 @@ export class WalletService {
   // TODO
   // Вынести в отдельный сервис
 
-  async ethToEur(value: number) {
+  /*
+    Конвертация эфира в евро
+    Происходит с помощью стороннего api
+  */
+
+  async ethToEur(value: number): Promise<number> {
     let result = await this.httpService
       .get(
         'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=EUR'
@@ -137,7 +152,12 @@ export class WalletService {
     return value * currency
   }
 
-  async btcToEur(value: number) {
+  /*
+    Конвертация битка в евро
+    Происходит с помощью стороннего api
+  */
+
+  async btcToEur(value: number): Promise<number> {
     let result = await this.httpService
       .get(
         'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=EUR'
@@ -147,6 +167,11 @@ export class WalletService {
     let currency = result.data.bitcoin.eur
     return value * currency
   }
+
+  /*
+    Получение кошелька по id
+    В dto указываются какую информацию необходимо получить
+  */
 
   async getWallet(getWalletDto: GetWalletDto) {
     const {
@@ -169,6 +194,12 @@ export class WalletService {
     }
 
     let result: any = {}
+
+    /*
+      Перенпаравление запроса к соответсвующему сервису
+      В зависимости от типа кошелька
+    */
+
     switch (type) {
       case WalletType.btc: {
         result = await this.BtcService.getWallet(props)
@@ -182,9 +213,12 @@ export class WalletService {
         throw new BadRequestException(`Invalid wallet type ${type}`)
     }
 
-    console.log(`Result is`, result)
     wallet.address = result.address
     wallet.balance = result.balance
+
+    /*
+      Конвертация балансов в евро
+    */
 
     if (balanceInEur) {
       switch (type) {
@@ -212,8 +246,15 @@ export class WalletService {
     return wallet
   }
 
-  // TODO
-  // Refactor
+  /*
+    Получение информации по кошелькам конкретного пользователя
+    dto указывает какую именно информацию необходимо получить
+    
+    В основном делегирует логику сервисам кошельков
+
+    Пользователя ищет по userID
+    Если не находит - выбрасывает нот фоунд эксепшен
+  */
 
   async userWalletsInfo(userWalletsInfo: GetUserWalletsInfo) {
     const {
@@ -260,6 +301,10 @@ export class WalletService {
       result.totalEthBalanceEur = await this.ethToEur(ethResults.totalBalance)
     }
 
+    /*
+      Транзакции смешиваются в один массив
+    */
+
     if (btcResults.transactions) {
       btcResults.transactions.forEach(element => {
         element.chain = WalletType.btc
@@ -278,6 +323,10 @@ export class WalletService {
     // Сортировка по времени
     // Самые свежие в начале
 
+    /*
+      Адреса всех кошельков пользователя смешиваются в единиый массив
+    */
+
     if (addresses) {
       ethResults.addresses.forEach(address => {
         address.type = WalletType.eth
@@ -293,8 +342,64 @@ export class WalletService {
     return result
   }
 
+  /*
+    Получение списка пользователей с их кошельками
+  */
+
   async getUsersWallets() {
-    let userRepository = getConnection().getRepository(User)
+    /*
+      Получаем список пользователей и все их кошельки
+    */
+    let users = (await this.userRepository.find({
+      join: {
+        alias: 'user',
+        leftJoinAndSelect: {
+          btcWallets: 'user.btcWallets',
+          ethWallets: 'user.ethWallets'
+        }
+      },
+      where: { role: UserRole.client }
+    })) as any
+
+    let usersModel = []
+
+    /*
+      Здесь по каждому пользователю формируется объект
+      Содержащий id пользователя 
+      Его имя
+      И список его кошельков (Кошельки смешанны)
+    */
+    users.forEach(element => {
+      // console.log(element)
+
+      let model = {
+        id: element.id,
+        fullName: element.fullName,
+        wallets: []
+      }
+
+      element.__btcWallets__.forEach(wallet => {
+        model.wallets.push({
+          type: WalletType.btc,
+          address: wallet.address,
+          id: wallet.id
+        })
+      })
+
+      element.__ethWallets__.forEach(wallet => {
+        model.wallets.push({
+          type: WalletType.eth,
+          address: wallet.address,
+          id: wallet.id
+        })
+      })
+
+      usersModel.push(model)
+    })
+
+    return usersModel
+
+    // let userRepository = getConnection().getRepository(User)
 
     // let users = await userRepository.find({
     //   relations: ['btcWallets', 'ethWallets'],
@@ -308,54 +413,6 @@ export class WalletService {
     //   relations: ['btcWallets', 'ethWallets.balance'],
     //   select: User.btcWallets
     // })
-
-    let users = (await this.userRepository.find({
-      join: {
-        alias: 'user',
-        leftJoinAndSelect: {
-          btcWallets: 'user.btcWallets',
-          ethWallets: 'user.ethWallets'
-        }
-      },
-      where: { role: UserRole.client }
-    })) as any
-
-    let usersModel = []
-    users.forEach(element => {
-      // console.log(element)
-
-      let model = {
-        id: element.id,
-        fullName: element.fullName,
-        wallets: []
-      }
-
-      console.log(element)
-
-      element.__btcWallets__.forEach(wallet => {
-        console.log(wallet)
-
-        model.wallets.push({
-          type: WalletType.btc,
-          address: wallet.address,
-          id: wallet.id
-        })
-      })
-
-      element.__ethWallets__.forEach(wallet => {
-        console.log(wallet)
-
-        model.wallets.push({
-          type: WalletType.eth,
-          address: wallet.address,
-          id: wallet.id
-        })
-      })
-
-      usersModel.push(model)
-    })
-
-    return usersModel
 
     // return await query.execute()
 

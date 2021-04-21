@@ -5,8 +5,8 @@ import { EmailService } from './email.service'
 export class EmailController {
   constructor(private emailService: EmailService) {}
 
-  @Post('test')
-  testEmail() {
-    this.emailService.sendTestMail()
-  }
+  // @Post('test')
+  // testEmail() {
+  //   this.emailService.sendTestMail()
+  // }
 }

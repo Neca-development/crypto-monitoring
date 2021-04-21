@@ -6,7 +6,7 @@ import { BtcTransactionRepository } from '../repositories/btc.transaction.reposi
 import { BtcWalletProviderService } from './btc.wallet-provider.service'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
-import { WalletBtcModel } from '../entities/Wallet-btc.model'
+import { WalletBtcModel } from '../interfaces/Wallet-btc.model'
 
 @Injectable()
 export class BtcService {
@@ -29,7 +29,7 @@ export class BtcService {
     Затем возвращает кошелёк с транзакциями
   */
 
-  async createWallet(address: string) {
+  async createWallet(address: string): Promise<WalletBTC> {
     let walletModel: WalletBtcModel = await this.btcWalletProviderService.getBtcWallet(
       address
     )
@@ -51,20 +51,22 @@ export class BtcService {
     return await this.btcRepository.getBalanceSumm()
   }
 
-  async deleteWallet(walletID: number) {
+  async deleteWallet(walletID: number): Promise<WalletBTC> {
     return await this.btcRepository.deleteWalletById(walletID)
   }
 
-  async getWallet(props: IGetWalletProps) {
+  async getWallet(props: IGetWalletProps): Promise<WalletBTC> {
     return await this.btcRepository.getWallet(props)
   }
 
-  async getInfoByUser(props: IGetUserWalletsInfo) {
-    // return await this.btcRepository.getInfoByUser(props)
-    let result: any = {}
+  /*
+    Получение информации о конкретном пользователе
+    В интерфейсе указывается какие именно необходимо получить данные
+    В основном делегирует логику репозиториям
+  */
 
-    // TODO
-    // Переписать на promise all
+  async getInfoByUser(props: IGetUserWalletsInfo) {
+    let result: any = {}
 
     if (props.totalBalance) {
       result.totalBalance = await this.btcRepository.getUserBalanceSumm(

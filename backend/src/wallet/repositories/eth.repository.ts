@@ -15,7 +15,18 @@ import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 export class EthRepository extends Repository<WalletETH> {
   private readonly logger = new Logger(EthRepository.name)
 
-  async addWaletByModel(props: { address: string; balance: number }) {
+  /*
+    Добавление кошелька по модели
+    Создаёт кошель в бд
+    Затем его возвращает
+    
+    В случае если кошель с переданным адресом уже существует выбросит Conflict
+  */
+
+  async addWaletByModel(props: {
+    address: string
+    balance: number
+  }): Promise<WalletETH> {
     let wallet = this.create()
     wallet.address = props.address
     wallet.balance = NumToEth(props.balance)
@@ -37,7 +48,13 @@ export class EthRepository extends Repository<WalletETH> {
     }
   }
 
-  async deleteWalletById(walletID: number) {
+  /*
+    Удаление кошелька по id
+    выбрасывает нотфоунд если кошелек не был найден
+    Либо же удалённый кошель в случае успеха
+  */
+
+  async deleteWalletById(walletID: number): Promise<WalletETH> {
     let wallet = await this.findOne({ id: walletID })
     if (!wallet) {
       throw new NotFoundException(`Wallet with id ${walletID} not found`)
@@ -45,7 +62,11 @@ export class EthRepository extends Repository<WalletETH> {
     return await wallet.remove()
   }
 
-  async getBalanceSumm() {
+  /*
+    Получение суммы балансов всех eth кошельков
+  */
+
+  async getBalanceSumm(): Promise<number> {
     let query = this.createQueryBuilder('wallet')
     query.select('SUM(wallet.balance)', 'sum')
     let result = await query.getRawOne()
@@ -55,13 +76,24 @@ export class EthRepository extends Repository<WalletETH> {
     return result.sum
   }
 
-  async getAllWallets() {
+  async getAllWallets(): Promise<WalletETH[]> {
     return await this.find()
   }
 
-  async getWalletById(id: number) {
+  /*
+    Получение кошеля по id
+    Ничего не выбрасывает в сулчае ненахода
+  */
+
+  async getWalletById(id: number): Promise<WalletETH> {
     return await this.findOne({ id })
   }
+
+  /*
+    Получение кошелька по его id
+    В интерфейсе указывается какую именно информацию необходимо получить
+    Если кошель не будет найден выбросит NotFound
+  */
 
   async getWallet(props: IGetWalletProps) {
     const { walletID, user, transactions } = props
@@ -89,7 +121,13 @@ export class EthRepository extends Repository<WalletETH> {
     return result
   }
 
-  async getUserAdresses(user: User) {
+  /*
+    Получение списка адресов кошельков клиента
+  */
+
+  async getUserAdresses(
+    user: User
+  ): Promise<{ address: string; id: number }[]> {
     let query = this.createQueryBuilder('wallet')
       .select('wallet.address')
       .addSelect('wallet.id')
@@ -98,6 +136,10 @@ export class EthRepository extends Repository<WalletETH> {
 
     return result
   }
+
+  /*
+    Получение суммы балансов всех eth кошельков пользователя
+  */
 
   async getUserBalanceSumm(user: User): Promise<Number> {
     let query = this.createQueryBuilder('wallet')

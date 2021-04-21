@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { EntityRepository, In, Repository } from 'typeorm'
 import { TransactionETH } from '../entities/Transaction-eth.entity'
-import { TransactionEthModel } from '../entities/Transaction-eth.model'
+import { TransactionEthModel } from '../interfaces/Transaction-eth.model'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { NumToEth } from '../../helpers/NumToEth'
 import { dbErrorCodes } from 'src/config/db-error-codes'
@@ -14,10 +14,15 @@ import { dbErrorCodes } from 'src/config/db-error-codes'
 export class EthTransactionRepository extends Repository<TransactionETH> {
   private readonly logger = new Logger(EthTransactionRepository.name)
 
+  /*
+    Добавление новых транзакций к кошельку по модели
+    В случае если транзакция с переданым хешем уже существует выбросит conflict
+  */
+
   async addTransactionsByModel(
     wallet: WalletETH,
     transactions: TransactionEthModel[]
-  ) {
+  ): Promise<WalletETH> {
     let walletTransactions = await wallet.transactions
 
     transactions.forEach(async element => {
@@ -46,7 +51,11 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     }
   }
 
-  async getLastTsxHash(wallet: WalletETH) {
+  /*
+    Получение хеша последней транзакции по кошельку
+  */
+
+  async getLastTsxHash(wallet: WalletETH): Promise<string> {
     let transactions = await wallet.transactions
 
     if (!transactions.length) {
@@ -56,7 +65,12 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     return transactions[transactions.length - 1].hash
   }
 
-  async getTransactionsByWalletIds(ids: Number[]) {
+  /*
+    Получение транзакций по айдишникам кошельков
+    Так-же происходит сортировка по времени ASC
+  */
+
+  async getTransactionsByWalletIds(ids: Number[]): Promise<TransactionETH[]> {
     const results = await this.find({
       where: { wallet: { id: In(ids) } },
       order: { time: 'ASC' },

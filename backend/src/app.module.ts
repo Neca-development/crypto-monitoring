@@ -41,8 +41,8 @@ import { join } from 'path'
     EthWalletProviderService,
     EmailService,
     EthMonitoringService,
-    BtcWalletProviderService,
-    BtcMonitoringService
+    BtcMonitoringService,
+    BtcWalletProviderService
   ]
 })
 export class AppModule {}
