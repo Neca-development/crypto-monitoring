@@ -1,4 +1,5 @@
 import { User } from 'src/auth/user/user.entity'
+import { ERC20Token } from 'src/tokens/entities/ERC20-token.entity'
 import {
   BaseEntity,
   Column,
@@ -17,7 +18,7 @@ export class WalletETH extends BaseEntity {
   @Column({ unique: true })
   address: string
 
-  @Column('decimal', { precision: 50, scale: 18 })
+  @Column('decimal', { precision: 40, scale: 18 })
   balance: number
 
   @ManyToOne(type => User, user => user.ethWallets, {
@@ -32,4 +33,10 @@ export class WalletETH extends BaseEntity {
     cascade: true
   })
   transactions: Promise<TransactionETH[]>
+
+  @OneToMany(type => ERC20Token, token => token.wallet, {
+    eager: false,
+    cascade: true
+  })
+  erc20tokens: Promise<ERC20Token[]>
 }

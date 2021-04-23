@@ -16,7 +16,6 @@ import { BtcService } from './services/btc.service'
 import { EthService } from './services/eth.service'
 import { IGetWalletProps } from './interfaces/IGetWalletProps'
 import { GetUserWalletsInfo } from '../dto/admin.wallets-user-info.dto'
-import { getConnection } from 'typeorm'
 import { UserRole } from 'src/auth/enum/user-role.enum'
 
 /*

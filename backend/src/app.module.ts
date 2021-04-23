@@ -16,6 +16,11 @@ import { BtcTransactionRepository } from './wallet/repositories/btc.transaction.
 import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { ERC20TokenProviderService } from './tokens/erc20-token-provider.service'
+import { ERC20TokenRepository } from './tokens/repositories/ERC20-token.repository'
+import { ERC20TokenTypeRepository } from './tokens/repositories/ERC20-token-type.repository'
+import { ERC20TransactionRepository } from './tokens/repositories/ERC20-transaction.repository'
+import { ERC20TokenService } from './tokens/erc20-token.service'
 
 @Module({
   imports: [
@@ -40,8 +45,8 @@ import { join } from 'path'
     BtcService,
     EthWalletProviderService,
     EmailService,
-    EthMonitoringService,
-    BtcMonitoringService,
+    // EthMonitoringService,
+    // BtcMonitoringService,
     BtcWalletProviderService
   ]
 })
