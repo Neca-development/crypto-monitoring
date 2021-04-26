@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ERC20TokenService } from 'src/tokens/erc20-token.service'
+import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
