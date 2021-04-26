@@ -24,7 +24,7 @@ export class ERC20Transaction extends BaseEntity {
   @Column()
   to: string
 
-  @Column('timestamp', { nullable: true })
+  @Column('timestamp')
   time: Date
 
   @Column('decimal', { precision: 40, scale: 18 })

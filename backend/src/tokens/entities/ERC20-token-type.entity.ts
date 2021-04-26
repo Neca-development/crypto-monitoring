@@ -12,16 +12,16 @@ export class ERC20TokenType extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ nullable: false, unique: true })
+  @Column({ unique: true })
   contractAddress: string
 
-  @Column({ nullable: false, unique: true })
+  @Column({ unique: true })
   name: string
 
-  @Column({ nullable: false, unique: true })
+  @Column({ unique: true })
   symbol: string
 
-  @Column({ nullable: false })
+  @Column()
   decimals: number
 
   @OneToMany(type => ERC20Token, token => token.type, {

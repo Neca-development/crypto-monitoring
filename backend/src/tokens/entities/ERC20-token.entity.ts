@@ -3,6 +3,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn
@@ -11,6 +12,7 @@ import { ERC20TokenType } from './ERC20-token-type.entity'
 import { ERC20Transaction } from './ERC20-transaction.entity'
 
 @Entity()
+@Index(['wallet', 'type'], { unique: true })
 export class ERC20Token extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
