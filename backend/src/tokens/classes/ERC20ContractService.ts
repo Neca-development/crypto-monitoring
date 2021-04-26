@@ -3,7 +3,7 @@ import { TOKEN_ABI } from '../AbiToken'
 import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
 
 export class ERC20ContractService {
-  private contractInstance: any
+  readonly contractInstance: any
   private numForDevide: number
 
   readonly contractAddress: string

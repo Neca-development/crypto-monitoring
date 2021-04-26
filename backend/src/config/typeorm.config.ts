@@ -12,6 +12,7 @@
 
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
 import Config from 'config'
+import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
 
 const dbConfig: any = Config.get('db')
 
@@ -23,5 +24,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   password: process.env.RDS_PASSWORD || dbConfig.password,
   database: process.env.RDS_DB_NAME || dbConfig.database,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize
+  synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
+  subscribers: [EthWalletsPool]
 }

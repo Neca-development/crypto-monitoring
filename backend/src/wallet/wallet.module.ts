@@ -17,6 +17,7 @@ import { EthService } from './services/eth.service'
 import { EthWalletProviderService } from './services/eth.wallet-provider.service'
 import { WalletController } from './wallet.controller'
 import { WalletService } from './wallet.service'
+import { ERC20ContractsService } from 'src/tokens/services/erc20-contracts.service'
 
 @Module({
   controllers: [WalletController],
@@ -27,7 +28,8 @@ import { WalletService } from './wallet.service'
     BtcService,
     EthService,
     ERC20TokenService,
-    ERC20TokenProviderService
+    ERC20TokenProviderService,
+    ERC20ContractsService
   ],
   imports: [
     HttpModule,

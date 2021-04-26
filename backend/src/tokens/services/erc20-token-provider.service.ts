@@ -1,11 +1,7 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common'
-import * as _ from 'lodash'
-import { ERC20ContractService } from '../classes/ERC20ContractService'
-import { ERC20TokenTypeRepository } from '../repositories/ERC20-token-type.repository'
-import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
-import { InjectRepository } from '@nestjs/typeorm'
 import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
 import { IERC20TokenModel } from '../interfaces/IERC20Token'
+import { ERC20ContractsService } from './erc20-contracts.service'
 
 /*
   Сервис взаимодействует с Web3 и сторонними api
@@ -16,48 +12,15 @@ import { IERC20TokenModel } from '../interfaces/IERC20Token'
 export class ERC20TokenProviderService {
   private readonly logger = new Logger(ERC20TokenProviderService.name)
 
-  private contractTokenServices: Map<string, ERC20ContractService> = new Map()
+  private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
   constructor(
-    @InjectRepository(ERC20TokenTypeRepository)
-    private erc20TokenTypeRepository: ERC20TokenTypeRepository,
+    private erc20ContractsService: ERC20ContractsService,
     private httpService: HttpService
   ) {}
 
-  private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
-
-  async onModuleInit() {
-    let types = await this.erc20TokenTypeRepository.getAllTypes()
-
-    types.forEach(type => {
-      let contractService = new ERC20ContractService(type)
-      this.contractTokenServices.set(type.name, contractService)
-    })
-
-    this.logger.log(`TokenProvicderService initialized`)
-  }
-
-  private async getTokens(address: string) {
-    let tokens: IERC20TokenModel[] = []
-
-    for await (let service of this.contractTokenServices) {
-      let balance = await service[1].getAddressBalance(address)
-      this.logger.debug(`Balance for address ${address} is ${balance}`)
-
-      if (balance) {
-        this.logger.debug(`Balance found: ${balance}`)
-        let token = this.createToken(balance, service[1].tokenType)
-        this.logger.debug(`Created new token`)
-        console.log(token)
-        tokens.push(token)
-      }
-    }
-
-    return tokens
-  }
-
   async getTokensByAddress(address: string) {
-    let tokens = await this.getTokens(address)
+    let tokens = await this.erc20ContractsService.getTokensForAddress(address)
     this.logger.debug(`Tokens is`)
     console.log(tokens)
 
@@ -106,15 +69,6 @@ export class ERC20TokenProviderService {
     return transactions
   }
 
-  createToken(balance: number, type: ERC20TokenType) {
-    let token: IERC20TokenModel = {
-      balance,
-      type,
-      transactions: []
-    }
-    return token
-  }
-
   /*
     Возвращает транзакции в asc порядке по времени
   */
@@ -155,7 +109,6 @@ export class ERC20TokenProviderService {
     return transactions.reverse()
   }
 }
-
 //0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
 //this.web3.utils.sha3('Transfer(address,address,uint256)')
 
@@ -212,34 +165,6 @@ export class ERC20TokenProviderService {
 
 // const subscribedEvents = {}
 // // Subscriber method
-// const subscribeLogEvent = (contract, eventName) => {
-//   const eventJsonInterface = _.find(
-//     contract._jsonInterface,
-//     o => o.name === eventName && o.type === 'event'
-//   )
-//   const subscription = this.web3.eth.subscribe(
-//     'logs',
-//     {
-//       address: contract.options.address,
-//       topics: [eventJsonInterface.signature]
-//     },
-//     async (error, result) => {
-//       console.log(result)
-//       if (!error) {
-//         const eventObj = this.web3.eth.abi.decodeLog(
-//           eventJsonInterface.inputs,
-//           result.data,
-//           result.topics.slice(1)
-//         )
-//         console.log(`New ${eventName}!`, eventObj)
-//         console.log(
-//           await this.web3HTTP.eth.getTransaction(result.transactionHash)
-//         )
-//       }
-//     }
-//   )
-//   subscribedEvents[eventName] = subscription
-// }
 
 // subscribeLogEvent(tokenInst, 'Transfer')
 // }
