@@ -20,7 +20,6 @@ export class RefreshToken extends BaseEntity {
 
   @ManyToOne(type => User, user => user.refreshTokens, {
     eager: true,
-    cascade: false,
     onDelete: 'CASCADE'
   })
   user: User

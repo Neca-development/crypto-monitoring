@@ -8,6 +8,8 @@ import {
 import * as bcrypt from 'bcryptjs'
 import { UserRole } from '../enum/user-role.enum'
 import { RefreshToken } from '../jwt/refreshToken/refreshToken.entity'
+import { WalletBTC } from '../../wallet/entities/Wallet-btc.entity'
+import { WalletETH } from 'src/wallet/entities/Wallet-eth.entity'
 
 /* 
    @password: Хешированый с помощью bcrypt-а пароль
@@ -43,6 +45,18 @@ export class User extends BaseEntity {
     cascade: true
   })
   refreshTokens: Promise<RefreshToken[]>
+
+  @OneToMany(type => WalletBTC, walletBtc => walletBtc.user, {
+    eager: false,
+    cascade: true
+  })
+  btcWallets: Promise<WalletBTC[]>
+
+  @OneToMany(type => WalletETH, walletEth => walletEth.user, {
+    eager: false,
+    cascade: true
+  })
+  ethWallets: Promise<WalletETH[]>
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt)

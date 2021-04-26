@@ -5,6 +5,7 @@ import {
   Get,
   Patch,
   Post,
+  UseFilters,
   UseGuards,
   ValidationPipe
 } from '@nestjs/common'
@@ -22,8 +23,10 @@ import { RolesGuard } from './guards/guards/roles.guard'
 import { Roles } from './guards/guards/roles.decorator'
 import { UserRole } from './enum/user-role.enum'
 import { GetClientsDto } from '../dto/admin.client-getClients'
+import { QueryFailedErrorFilter } from 'src/filters/Database.filter'
 
 @Controller('auth')
+@UseFilters(new QueryFailedErrorFilter())
 export class AuthController {
   constructor(private authService: AuthService) {}
 
