@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
@@ -13,6 +14,7 @@ export class EthService {
 
   constructor(
     private WalletProviderService: EthWalletProviderService,
+    private erc20tokenservice: ERC20TokenService,
     @InjectRepository(EthTransactionRepository)
     private ethTsxRepository: EthTransactionRepository,
     @InjectRepository(EthRepository)
@@ -41,7 +43,11 @@ export class EthService {
       walletModel.transactions
     )
 
-    return walletWithTransactions
+    let walletWithTokens: any = await this.erc20tokenservice.checkAndAddWalletTokens(
+      wallet
+    )
+
+    return walletWithTokens
   }
 
   async getWalletsSummBalance(): Promise<Number> {

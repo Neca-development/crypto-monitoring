@@ -2,6 +2,11 @@ import { HttpModule, Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserRepository } from 'src/auth/user/user.repository'
+import { ERC20TokenProviderService } from 'src/tokens/services/erc20-token-provider.service'
+import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
+import { ERC20TokenTypeRepository } from 'src/tokens/repositories/ERC20-token-type.repository'
+import { ERC20TokenRepository } from 'src/tokens/repositories/ERC20-token.repository'
+import { ERC20TransactionRepository } from 'src/tokens/repositories/ERC20-transaction.repository'
 import { BtcRepository } from './repositories/btc.repository'
 import { BtcTransactionRepository } from './repositories/btc.transaction.repository'
 import { EthRepository } from './repositories/eth.repository'
@@ -20,7 +25,9 @@ import { WalletService } from './wallet.service'
     EthWalletProviderService,
     BtcWalletProviderService,
     BtcService,
-    EthService
+    EthService,
+    ERC20TokenService,
+    ERC20TokenProviderService
   ],
   imports: [
     HttpModule,
@@ -29,7 +36,10 @@ import { WalletService } from './wallet.service'
       EthRepository,
       EthTransactionRepository,
       BtcRepository,
-      BtcTransactionRepository
+      BtcTransactionRepository,
+      ERC20TokenRepository,
+      ERC20TransactionRepository,
+      ERC20TokenTypeRepository
     ]),
     PassportModule.register({
       defaultStrategy: 'jwt'

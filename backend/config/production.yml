@@ -14,6 +14,7 @@ db:
   username: 'admin'
   password: '1234'
   synchronize: true
+  database: 'cryptomonitoringdev'
 
 email:
   service: 'gmail'
