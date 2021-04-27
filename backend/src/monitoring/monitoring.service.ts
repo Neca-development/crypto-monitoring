@@ -17,7 +17,7 @@ export class MonitoringService {
 
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
-  private web3 = new Web3.default(this.infuraTestUrl)
+  private web3 = new Web3.default(this.infuraUrl)
 
   constructor(
     @InjectRepository(EthRepository) private ethRepository: EthRepository,
@@ -136,7 +136,7 @@ export class MonitoringService {
     // Official https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.etherscanApiKey}&offset=5&page=1
     let response = await this.httpService
       .get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=5&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+        `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.etherscanApiKey}&offset=5&page=1`,
         {}
       )
       .toPromise()
