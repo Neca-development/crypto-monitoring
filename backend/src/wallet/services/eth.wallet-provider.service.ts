@@ -73,16 +73,6 @@ export class EthWalletProviderService {
       )
     }
 
-    if (response.data.message != 'OK') {
-      this.logger.error(
-        `Cannot get transactions for addres ${address}`,
-        JSON.stringify(response.data)
-      )
-
-      throw new BadRequestException(
-        'Cannot get get transactions for this address, try later'
-      )
-    }
 
     let wallet: WalletEthModel = {
       balance: +balance,
