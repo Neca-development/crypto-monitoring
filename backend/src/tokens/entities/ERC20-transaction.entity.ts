@@ -2,12 +2,14 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm'
 import { ERC20Token } from './ERC20-token.entity'
 
 @Entity()
+@Index(['hash', 'token'], { unique: true })
 export class ERC20Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number

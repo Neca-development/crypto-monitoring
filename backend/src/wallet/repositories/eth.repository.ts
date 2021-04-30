@@ -23,6 +23,10 @@ export class EthRepository extends Repository<WalletETH> {
     В случае если кошель с переданным адресом уже существует выбросит Conflict
   */
 
+  async getWalletByAddress(address: string) {
+    return await this.findOneOrFail({ address })
+  }
+
   async addWaletByModel(props: {
     address: string
     balance: number

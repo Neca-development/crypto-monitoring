@@ -16,5 +16,11 @@
         "decimals": 18,
         "contractAddress": "0xfab46e002bbf0b4509813474841e0716e6730136",
         "name": "FaucetToken"
+    },
+    {
+        "symbol": "YEENUS",
+        "decimals": 8,
+        "contractAddress": "0xf6ff95d53e08c9660dc7820fd5a775484f77183a",
+        "name": "Yeenus"
     }
 ]

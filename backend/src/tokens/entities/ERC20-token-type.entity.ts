@@ -29,4 +29,12 @@ export class ERC20TokenType extends BaseEntity {
     cascade: true
   })
   erc20tokens: Promise<ERC20Token[]>
+
+  numToTokenValue(number: number) {
+    if (this.decimals > 0 && number > 0) {
+      number = number / Math.pow(10, this.decimals)
+    }
+
+    return number
+  }
 }
