@@ -1,4 +1,4 @@
-import { HttpModule, Module } from '@nestjs/common'
+import { CacheModule, HttpModule, Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserRepository } from 'src/auth/user/user.repository'
@@ -18,6 +18,7 @@ import { EthWalletProviderService } from './services/eth.wallet-provider.service
 import { WalletController } from './wallet.controller'
 import { WalletService } from './wallet.service'
 import { ERC20ContractsService } from 'src/tokens/services/erc20-contracts.service'
+import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
 
 @Module({
   controllers: [WalletController],
@@ -29,7 +30,8 @@ import { ERC20ContractsService } from 'src/tokens/services/erc20-contracts.servi
     EthService,
     ERC20TokenService,
     ERC20TokenProviderService,
-    ERC20ContractsService
+    ERC20ContractsService,
+    EthWalletsPool
   ],
   imports: [
     HttpModule,

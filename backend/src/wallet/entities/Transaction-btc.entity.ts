@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   Timestamp
@@ -17,6 +18,7 @@ import { WalletBTC } from './Wallet-btc.entity'
 */
 
 @Entity()
+@Index(['hash', 'wallet'], { unique: true })
 export class TransactionBTC extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
@@ -27,7 +29,7 @@ export class TransactionBTC extends BaseEntity {
   @Column()
   hash: string
 
-  @Column('timestamp', { nullable: true })
+  @Column('timestamp')
   time: Date
 
   @Column()

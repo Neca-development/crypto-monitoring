@@ -1,50 +1,66 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ERC20ContractService } from '../classes/ERC20ContractService'
+import { ERC20ContractInstance } from '../classes/ERC20ContractInstance'
 import { IERC20TokenModel } from '../interfaces/IERC20Token'
 import { ERC20TokenTypeRepository } from '../repositories/ERC20-token-type.repository'
 import { web3wss } from '../web3'
 import * as _ from 'lodash'
 import { EthWalletsPool } from '../classes/ETHWalletsPool'
+import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
+import { ERC20TokenRepository } from '../repositories/ERC20-token.repository'
+import { ERC20TransactionRepository } from '../repositories/ERC20-transaction.repository'
+import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
+import { EthRepository } from 'src/wallet/repositories/eth.repository'
 
+/*
+  Сервис отвечающий за взаимодействие web3 и контрактами токенов
+  Так-же отвечает за мониторинг транзакций токенов
+*/
 @Injectable()
 export class ERC20ContractsService {
   private logger = new Logger(ERC20ContractsService.name)
-  private contractTokenServices: Map<string, ERC20ContractService> = new Map()
+  private contractInstances: Map<string, ERC20ContractInstance> = new Map()
 
   constructor(
     @InjectRepository(ERC20TokenTypeRepository)
-    private erc20TokenTypeRepository: ERC20TokenTypeRepository,
-    private ETHWalletsPool: EthWalletsPool
+    private tokenTypeRepository: ERC20TokenTypeRepository,
+    private ETHWalletsPool: EthWalletsPool,
+    @InjectRepository(ERC20TokenRepository)
+    private tokenRepository: ERC20TokenRepository,
+    @InjectRepository(ERC20TransactionRepository)
+    private transactionRepository: ERC20TransactionRepository,
+    @InjectRepository(EthRepository)
+    private ethRepository: EthRepository
   ) {}
 
   async onModuleInit() {
-    let types = await this.erc20TokenTypeRepository.getAllTypes()
+    let types = await this.tokenTypeRepository.getAllTypes()
 
     types.forEach(type => {
-      let contractService = new ERC20ContractService(type)
-      this.contractTokenServices.set(type.name, contractService)
+      let contractInstance = new ERC20ContractInstance(type)
+      this.contractInstances.set(type.name, contractInstance)
+      this.subscribeForNewTransactions(contractInstance)
     })
 
-    this.logger.log(`ERC20 ContractsService initialized`)
+    this.logger.log(`${ERC20ContractsService.name} initialized`)
+    console.log(types)
   }
 
   async getTokensForAddress(address: string) {
     let tokens: IERC20TokenModel[] = []
 
-    for await (let service of this.contractTokenServices) {
-      let balance = await service[1].getAddressBalance(address)
+    for await (let contract of this.contractInstances) {
+      let balance = await contract[1].getAddressBalance(address)
       this.logger.debug(`Balance for address ${address} is ${balance}`)
 
-      if (balance) {
+      if (balance > 0) {
         this.logger.debug(`Balance found: ${balance}`)
         let token: IERC20TokenModel = {
           balance,
-          type: service[1].tokenType,
+          type: contract[1].tokenType,
           transactions: []
         }
         this.logger.debug(`Created new token`)
-        console.log(token)
         tokens.push(token)
       }
     }
@@ -52,28 +68,143 @@ export class ERC20ContractsService {
     return tokens
   }
 
-  subscribeForNewTransactions(contract, eventName) {
+  walletExists(address: string): boolean {
+    return this.ETHWalletsPool.walletExists(address)
+  }
+
+  private async subscribeForNewTransactions(
+    contractService: ERC20ContractInstance
+  ) {
     const eventJsonInterface = _.find(
-      contract._jsonInterface,
-      o => o.name === eventName && o.type === 'event'
+      contractService.contract._jsonInterface,
+      o => o.name === 'Transfer' && o.type === 'event'
     )
     const subscription = web3wss.eth.subscribe(
       'logs',
       {
-        address: contract.options.address,
+        address: contractService.contract.options.address,
         topics: [eventJsonInterface.signature]
       },
       async (error, result) => {
-        console.log(result)
+        if (error) {
+          this.logger.error(`Error found in subscribe`)
+          console.log(error)
+        }
         if (!error) {
           const eventObj = web3wss.eth.abi.decodeLog(
             eventJsonInterface.inputs,
             result.data,
             result.topics.slice(1)
           )
-          console.log(`New ${eventName}!`, eventObj)
+          this.logger.log(`New transaction!`)
+          console.log(eventObj)
+          console.log(result)
+
+          this.proccesNewTransaction(
+            {
+              hash: result.transactionHash,
+              from: eventObj.from,
+              to: eventObj.to,
+              value: eventObj.tokens
+            },
+            contractService
+          )
         }
       }
     )
+  }
+
+  private async proccesNewTransaction(
+    props: { hash: string; from: string; to: string; value: string },
+    contractInstance: ERC20ContractInstance
+  ) {
+    if (+props.value === 0) {
+      return
+    }
+
+    let walletFrom = this.walletExists(props.from)
+    let walletTo = this.walletExists(props.to)
+
+    if (walletFrom || walletTo) {
+      this.logger.debug(`Some wallet found!`)
+
+      this.logger.debug(`Map now`)
+      console.log(this.ETHWalletsPool.walletAdresses)
+
+      let date = new Date()
+      date.setMilliseconds(0)
+      let dateWithoutMs = new Date(date)
+      let transaction: IERC20TranscationModel = {
+        type: true,
+        time: dateWithoutMs,
+        from: props.from,
+        to: props.to,
+        hash: props.hash,
+        value: contractInstance.tokenType.numToTokenValue(+props.value)
+      }
+
+      if (walletTo) {
+        transaction.type = true
+        this.addTransactionToAddress(
+          transaction,
+          contractInstance,
+          transaction.to
+        )
+      }
+
+      if (walletFrom) {
+        transaction.type = false
+        this.addTransactionToAddress(
+          transaction,
+          contractInstance,
+          transaction.from
+        )
+      }
+    }
+  }
+
+  private async addTransactionToAddress(
+    tsx: IERC20TranscationModel,
+    contractInstance: ERC20ContractInstance,
+    address: string
+  ) {
+    this.logger.debug(`Transaction is`)
+    console.log(tsx)
+
+    contractInstance.tokenType
+    let token = await this.tokenRepository.getTokenByWalletAddress({
+      address,
+      tokenType: contractInstance.tokenType
+    })
+
+    this.logger.debug(`Token is`)
+    console.log(token)
+
+    let newTokenCreated: boolean = false
+
+    if (!token) {
+      let wallet = await this.ethRepository.getWalletByAddress(address)
+      token = await this.tokenRepository.createToken({
+        balance: await contractInstance.getAddressBalance(address),
+        type: contractInstance.tokenType
+      })
+      token.wallet = wallet
+      newTokenCreated = true
+      this.logger.debug(`Token not found, creating new token..`)
+      console.log(token)
+    }
+
+    await this.transactionRepository.addTransactionByModel(tsx, token)
+
+    if (!newTokenCreated) {
+      if (tsx.type == true) {
+        token.balance += tsx.value
+      } else token.balance -= tsx.value
+    }
+
+    await token.save()
+
+    this.logger.debug(`At the end token is`)
+    console.log(token)
   }
 }

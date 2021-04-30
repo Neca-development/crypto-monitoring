@@ -1,47 +1,70 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm'
 import { WalletETH } from 'src/wallet/entities/Wallet-eth.entity'
 import { EthRepository } from 'src/wallet/repositories/eth.repository'
 import {
+  Connection,
   EntitySubscriberInterface,
-  EventSubscriber,
   InsertEvent,
   RemoveEvent
 } from 'typeorm'
 
-@EventSubscriber()
+/*
+  Здесь кешируются адресса eth кошельков в виде map
+  Работает с помощью eventListener-ов typeorm
+*/
 @Injectable()
-export class EthWalletsPool implements EntitySubscriberInterface<WalletETH> {
+export class EthWalletsPool implements EntitySubscriberInterface {
   constructor(
-    @InjectRepository(WalletETH) private ethRepository: EthRepository
-  ) {}
+    @InjectRepository(EthRepository) private ethRepository: EthRepository,
+    @InjectConnection() readonly connection: Connection
+  ) {
+    connection.subscribers.push(this)
+  }
 
   private logger = new Logger(EthWalletsPool.name)
 
-  private walletsMap: Map<string, WalletETH> = new Map()
+  readonly walletAdresses: Set<string> = new Set()
 
-  getWallet(address: string): WalletETH {
-    return this.walletsMap.get(address)
+  walletExists(address: string): boolean {
+    return this.walletAdresses.has(address)
   }
 
   async onModuleInit() {
     let wallets = await this.ethRepository.getAllWallets()
     wallets.forEach(wallet => {
-      this.walletsMap.set(wallet.address, wallet)
+      this.walletAdresses.add(wallet.address)
     })
   }
 
+  private addWallet(address: string) {
+    this.walletAdresses.add(address)
+    this.logger.debug('Wallet added')
+    this.logger.debug('Map now')
+    console.log(this.walletAdresses)
+  }
+
+  private deleteWallet(address: string) {
+    this.walletAdresses.delete(address)
+
+    this.logger.debug('Wallet deleted')
+    this.logger.debug('Map now')
+    console.log(this.walletAdresses)
+  }
+
+  listenTo() {
+    return WalletETH
+  }
+
   afterInsert(event: InsertEvent<WalletETH>) {
-    this.walletsMap.set(event.entity.address, event.entity)
-    this.logger.debug(`Wallet added`)
-    console.log(event)
-    console.log(this.walletsMap)
+    if (event.entity.address) {
+      this.addWallet(event.entity.address)
+    }
   }
 
   afterRemove(event: RemoveEvent<WalletETH>) {
-    this.walletsMap.delete(event.databaseEntity.address)
-    this.logger.debug(`Wallet deleted`)
-    console.log(event)
-    console.log(this.walletsMap)
+    if (event.entity.address) {
+      this.deleteWallet(event.entity.address)
+    }
   }
 }

@@ -2,9 +2,9 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  Timestamp
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { WalletETH } from './Wallet-eth.entity'
 
@@ -22,6 +22,7 @@ import { WalletETH } from './Wallet-eth.entity'
 */
 
 @Entity()
+@Index(['hash', 'wallet'], { unique: true })
 export class TransactionETH extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
@@ -38,7 +39,7 @@ export class TransactionETH extends BaseEntity {
   @Column()
   to: string
 
-  @Column('timestamp', { nullable: true })
+  @Column('timestamp')
   time: Date
 
   @Column('decimal', { precision: 40, scale: 18 })

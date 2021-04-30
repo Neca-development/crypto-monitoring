@@ -16,7 +16,6 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { EthMonitoringService } from './monitoring/eth-monitoring.service'
 import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
-import { ERC20ContractsService } from './tokens/services/erc20-contracts.service'
 
 // TODO
 // Подключить мониторинги перед депой
@@ -43,8 +42,8 @@ import { ERC20ContractsService } from './tokens/services/erc20-contracts.service
     BtcService,
     EthWalletProviderService,
     EmailService,
-    // EthMonitoringService,
-    // BtcMonitoringService,
+    EthMonitoringService,
+    BtcMonitoringService,
     BtcWalletProviderService
   ]
 })

@@ -4,7 +4,7 @@ import { IERC20TokenModel } from '../interfaces/IERC20Token'
 import { ERC20ContractsService } from './erc20-contracts.service'
 
 /*
-  Сервис взаимодействует с Web3 и сторонними api
+  Сервис взаимодействует со сторонними api
   Для получения информации по токенам и их транзакциям
 */
 
@@ -30,15 +30,13 @@ export class ERC20TokenProviderService {
         token
       )
 
-      this.logger.debug(`Transactions for token `)
-      this.logger.debug(token)
-      this.logger.debug(transactions)
+      this.logger.debug(`Transactions for token`)
 
       token.transactions = transactions
     }
 
     this.logger.debug(`Tokens for address ${address}`)
-    this.logger.debug(tokens)
+    console.log(tokens)
     return tokens
   }
 
