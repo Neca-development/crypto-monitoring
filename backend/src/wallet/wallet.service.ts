@@ -17,6 +17,16 @@ import { EthService } from './services/eth.service'
 import { IGetWalletProps } from './interfaces/IGetWalletProps'
 import { GetUserWalletsInfo } from '../dto/admin.wallets-user-info.dto'
 import { UserRole } from 'src/auth/enum/user-role.enum'
+import { HashtagAddToTsxDto } from 'src/dto/admin.add-hashtag.dto'
+import { BtcTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx-btc.repository'
+import { ERC20TsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.erc20.repository'
+import { EthTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.eth.repository'
+import { TransactionType } from './enum/TransactionType.enum'
+import { EthTransactionRepository } from './repositories/eth.transaction.repository'
+import { BtcTransactionRepository } from './repositories/btc.transaction.repository'
+import { ERC20TransactionRepository } from 'src/tokens/repositories/ERC20-transaction.repository'
+import { HashtagDeleteDto } from 'src/dto/admin.delete-hashtag.dto'
+import { HashtagEditDto } from 'src/dto/admin.edit-hashtag.dto'
 
 /*
   Сервис отвечающий за кошельки
@@ -36,8 +46,20 @@ export class WalletService {
     private EthService: EthService,
     private httpService: HttpService,
     @InjectRepository(UserRepository)
-    private userRepository: UserRepository
-  ) {}
+    private userRepository: UserRepository,
+    @InjectRepository(ERC20TsxHashtagRepository)
+    private hashtagErc20Repository: ERC20TsxHashtagRepository,
+    @InjectRepository(BtcTsxHashtagRepository)
+    private hashtagBtcRepository: BtcTsxHashtagRepository,
+    @InjectRepository(EthTsxHashtagRepository)
+    private hashtagEthRepository: EthTsxHashtagRepository,
+    @InjectRepository(EthTransactionRepository)
+    private ethTransactionRepository: EthTransactionRepository,
+    @InjectRepository(BtcTransactionRepository)
+    private btcTransactionRepository: BtcTransactionRepository,
+    @InjectRepository(ERC20TransactionRepository)
+    private erc20transcationRepository: ERC20TransactionRepository
+  ) { }
 
   /*
     Добавление нового кошелька
@@ -426,5 +448,72 @@ export class WalletService {
     //   order: { time: 'ASC' },
     //   loadEagerRelations: false
     // })
+  }
+
+  async addHashToTransaction(addHashtagDto: HashtagAddToTsxDto) {
+    const { type, transactionID, text } = addHashtagDto
+
+    let tsx: any
+    switch (type) {
+      case TransactionType.btc:
+        tsx = await this.btcTransactionRepository.getTransactionById(transactionID)
+        if (!tsx) {
+          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+        }
+        return await this.hashtagBtcRepository.addHashTagToTsx(tsx, text)
+      case TransactionType.eth:
+        tsx = await this.ethTransactionRepository.getTransactionById(transactionID)
+        if (!tsx) {
+          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+        }
+        return await this.hashtagEthRepository.addHashTagToTsx(tsx, text)
+      case TransactionType.erc20token:
+        tsx = await this.erc20transcationRepository.getTransactionById(transactionID)
+        if (!tsx) {
+          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+        }
+        return await this.hashtagErc20Repository.addHashTagToTsx(tsx, text)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
+  async deleteHashtag(deleteHashtagDto: HashtagDeleteDto) {
+    const { hashtagID, type } = deleteHashtagDto
+
+    switch (type) {
+      case TransactionType.btc:
+        return await this.hashtagBtcRepository.deleteHashtagByID(hashtagID)
+      case TransactionType.eth:
+        return await this.hashtagEthRepository.deleteHashtagByID(hashtagID)
+      case TransactionType.erc20token:
+        return await this.hashtagErc20Repository.deleteHashtagByID(hashtagID)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
+  async editHashtag(edithHashtagDto: HashtagEditDto) {
+    const { type, hashtagID, newText } = edithHashtagDto
+
+    const props: any = {}
+
+    if (newText) {
+      props.newText = newText
+    }
+
+    switch (type) {
+      case TransactionType.btc:
+        return await this.hashtagBtcRepository.editHashtag(hashtagID, props)
+      case TransactionType.eth:
+        return await this.hashtagEthRepository.editHashtag(hashtagID, props)
+      case TransactionType.erc20token:
+        return await this.hashtagErc20Repository.editHashtag(hashtagID, props)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
   }
 }

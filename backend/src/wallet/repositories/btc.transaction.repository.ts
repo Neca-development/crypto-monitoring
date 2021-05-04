@@ -79,4 +79,8 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
 
     return results
   }
+
+  async getTransactionById(id: number) {
+    return await this.findOne({id})
+  }
 }

@@ -19,6 +19,9 @@ import { WalletController } from './wallet.controller'
 import { WalletService } from './wallet.service'
 import { ERC20ContractsService } from 'src/tokens/services/erc20-contracts.service'
 import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
+import { ERC20TsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.erc20.repository'
+import { BtcTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx-btc.repository'
+import { EthTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.eth.repository'
 
 @Module({
   controllers: [WalletController],
@@ -43,7 +46,10 @@ import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
       BtcTransactionRepository,
       ERC20TokenRepository,
       ERC20TransactionRepository,
-      ERC20TokenTypeRepository
+      ERC20TokenTypeRepository,
+      ERC20TsxHashtagRepository,
+      BtcTsxHashtagRepository,
+      EthTsxHashtagRepository
     ]),
     PassportModule.register({
       defaultStrategy: 'jwt'

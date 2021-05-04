@@ -1,9 +1,11 @@
+import { EthTsxHashtag } from 'src/hashtags/entitites/hashtag-tsx.eth.entity'
 import {
   BaseEntity,
   Column,
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm'
 import { WalletETH } from './Wallet-eth.entity'
@@ -50,4 +52,10 @@ export class TransactionETH extends BaseEntity {
     onDelete: 'CASCADE'
   })
   wallet: WalletETH
+
+  @OneToMany(type => EthTsxHashtag, hashtag => hashtag.transaction, {
+    eager: false,
+    cascade: true
+  })
+  hashtags: Promise<EthTsxHashtag[]>
 }

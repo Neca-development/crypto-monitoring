@@ -1,11 +1,12 @@
+import { ERC20TsxHashtag } from 'src/hashtags/entitites/hashtag-tsx-erc20.entity'
 import {
   BaseEntity,
   Column,
   Entity,
   Index,
   ManyToOne,
-  PrimaryGeneratedColumn,
-  Timestamp
+  OneToMany,
+  PrimaryGeneratedColumn
 } from 'typeorm'
 import { WalletBTC } from './Wallet-btc.entity'
 
@@ -46,4 +47,10 @@ export class TransactionBTC extends BaseEntity {
     onDelete: 'CASCADE'
   })
   wallet: WalletBTC
+
+  @OneToMany(type => ERC20TsxHashtag, hashtag => hashtag.transaction, {
+    eager: false,
+    cascade: true
+  })
+  hashtags: Promise<ERC20TsxHashtag[]>
 }

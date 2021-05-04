@@ -1,9 +1,11 @@
+import { ERC20TsxHashtag } from 'src/hashtags/entitites/hashtag-tsx-erc20.entity'
 import {
   BaseEntity,
   Column,
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm'
 import { ERC20Token } from './ERC20-token.entity'
@@ -38,4 +40,10 @@ export class ERC20Transaction extends BaseEntity {
     nullable: false
   })
   token: ERC20Token
+
+  @OneToMany(type => ERC20TsxHashtag, hashtag => hashtag.transaction, {
+    eager: false,
+    cascade: true
+  })
+  hashtags: Promise<ERC20TsxHashtag[]>
 }

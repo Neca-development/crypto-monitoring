@@ -77,4 +77,8 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
       throw new InternalServerErrorException('Cannot add transactions')
     }
   }
+
+  async getTransactionById(id: number) {
+    return await this.findOne({id})
+  }
 }

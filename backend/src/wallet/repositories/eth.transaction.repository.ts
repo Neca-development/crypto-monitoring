@@ -79,4 +79,8 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
 
     return results
   }
+
+  async getTransactionById(id: number) {
+    return await this.findOne({id})
+  }
 }
