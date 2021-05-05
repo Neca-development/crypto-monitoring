@@ -17,6 +17,7 @@ import { EthService } from './services/eth.service'
 import { EthWalletProviderService } from './services/eth.wallet-provider.service'
 import { WalletController } from './wallet.controller'
 import { WalletService } from './wallet.service'
+
 import { ERC20ContractsService } from 'src/tokens/services/erc20-contracts.service'
 import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
 import { ERC20TsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.erc20.repository'

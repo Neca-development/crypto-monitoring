@@ -19,7 +19,7 @@ export class ERC20Transaction extends BaseEntity {
   @Column()
   type: boolean
 
-  @Column({ unique: true })
+  @Column()
   hash: string
 
   @Column()

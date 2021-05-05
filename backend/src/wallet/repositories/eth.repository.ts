@@ -4,6 +4,7 @@ import {
   Logger,
   NotFoundException
 } from '@nestjs/common'
+import moment from 'moment'
 import { User } from 'src/auth/user/user.entity'
 import { dbErrorCodes } from 'src/config/db-error-codes'
 import { NumToEth } from 'src/helpers/NumToEth'
@@ -19,7 +20,7 @@ export class EthRepository extends Repository<WalletETH> {
     Добавление кошелька по модели
     Создаёт кошель в бд
     Затем его возвращает
-    
+
     В случае если кошель с переданным адресом уже существует выбросит Conflict
   */
 
@@ -31,7 +32,7 @@ export class EthRepository extends Repository<WalletETH> {
     address: string
     balance: number
   }): Promise<WalletETH> {
-    let wallet = this.create()
+    const wallet = this.create()
     wallet.address = props.address
     wallet.balance = NumToEth(props.balance)
 
@@ -59,7 +60,7 @@ export class EthRepository extends Repository<WalletETH> {
   */
 
   async deleteWalletById(walletID: number): Promise<WalletETH> {
-    let wallet = await this.findOne({ id: walletID })
+    const wallet = await this.findOne({ id: walletID })
     if (!wallet) {
       throw new NotFoundException(`Wallet with id ${walletID} not found`)
     }
@@ -71,9 +72,9 @@ export class EthRepository extends Repository<WalletETH> {
   */
 
   async getBalanceSumm(): Promise<number> {
-    let query = this.createQueryBuilder('wallet')
+    const query = this.createQueryBuilder('wallet')
     query.select('SUM(wallet.balance)', 'sum')
-    let result = await query.getRawOne()
+    const result = await query.getRawOne()
     if (result.sum == null) {
       return 0
     }
@@ -102,13 +103,13 @@ export class EthRepository extends Repository<WalletETH> {
   async getWallet(props: IGetWalletProps) {
     const { walletID, user, transactions } = props
 
-    let wallet = await this.getWalletById(walletID)
+    const wallet = await this.getWalletById(walletID)
 
     if (!wallet) {
       throw new NotFoundException(`Wallet with id ${walletID} found`)
     }
 
-    let result: any = {
+    const result: any = {
       id: wallet.id,
       balance: wallet.balance,
       address: wallet.address
@@ -132,11 +133,11 @@ export class EthRepository extends Repository<WalletETH> {
   async getUserAdresses(
     user: User
   ): Promise<{ address: string; id: number }[]> {
-    let query = this.createQueryBuilder('wallet')
+    const query = this.createQueryBuilder('wallet')
       .select('wallet.address')
       .addSelect('wallet.id')
       .where('wallet.userId = :userID', { userID: user.id })
-    let result = await query.getMany()
+    const result = await query.getMany()
 
     return result
   }
@@ -145,15 +146,16 @@ export class EthRepository extends Repository<WalletETH> {
     Получение суммы балансов всех eth кошельков пользователя
   */
 
-  async getUserBalanceSumm(user: User): Promise<Number> {
-    let query = this.createQueryBuilder('wallet')
+  async getUserBalanceSumm(user: User): Promise<number> {
+    const query = this.createQueryBuilder('wallet')
     query
       .select('SUM(wallet.balance)', 'sum')
       .where('wallet.userId = :userID', { userID: user.id })
-    let result = await query.getRawOne()
+    const result = await query.getRawOne()
     if (result.sum == null) {
       return 0
     }
-    return result.sum
+    return +result.sum
   }
+  
 }

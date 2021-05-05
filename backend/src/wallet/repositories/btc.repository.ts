@@ -125,7 +125,7 @@ export class BtcRepository extends Repository<WalletBTC> {
     Получение суммы балансов всех btc кошельков пользователя
   */
 
-  async getUserBalanceSumm(user: User) {
+  async getUserBalanceSumm(user: User): Promise<number> {
     let query = this.createQueryBuilder('wallet')
     query
       .select('SUM(wallet.balance)', 'sum')
@@ -134,7 +134,7 @@ export class BtcRepository extends Repository<WalletBTC> {
     if (result.sum == null) {
       return 0
     }
-    return result.sum
+    return +result.sum
   }
 
   /*

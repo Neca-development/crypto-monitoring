@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import moment from 'moment'
+import { User } from 'src/auth/user/user.entity'
 import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
@@ -13,13 +15,13 @@ export class EthService {
   private logger = new Logger(EthService.name)
 
   constructor(
-    private WalletProviderService: EthWalletProviderService,
+    private walletProviderService: EthWalletProviderService,
     private erc20tokenservice: ERC20TokenService,
     @InjectRepository(EthTransactionRepository)
     private ethTsxRepository: EthTransactionRepository,
     @InjectRepository(EthRepository)
     private ethRepository: EthRepository
-  ) {}
+  ) { }
 
   /*
     Создание нового кошелька
@@ -32,25 +34,25 @@ export class EthService {
   */
 
   async createWallet(address: string): Promise<WalletETH> {
-    let walletModel = await this.WalletProviderService.getEthWallet(address)
-    let wallet = await this.ethRepository.addWaletByModel({
+    const walletModel = await this.walletProviderService.getEthWallet(address)
+    const wallet = await this.ethRepository.addWaletByModel({
       address: walletModel.address,
       balance: walletModel.balance
     })
 
-    let walletWithTransactions: WalletETH = await this.ethTsxRepository.addTransactionsByModel(
+    const walletWithTransactions: WalletETH = await this.ethTsxRepository.addTransactionsByModel(
       wallet,
       walletModel.transactions
     )
 
-    let walletWithTokens: any = await this.erc20tokenservice.checkAndAddWalletTokens(
+    const walletWithTokens: any = await this.erc20tokenservice.checkAndAddWalletTokens(
       wallet
     )
 
     return walletWithTokens
   }
 
-  async getWalletsSummBalance(): Promise<Number> {
+  async getWalletsSummBalance(): Promise<number> {
     return await this.ethRepository.getBalanceSumm()
   }
 
@@ -69,7 +71,7 @@ export class EthService {
   */
 
   async getInfoByUser(props: IGetUserWalletsInfo) {
-    let result: any = {}
+    const result: any = {}
 
     if (props.totalBalance) {
       result.totalBalance = await this.ethRepository.getUserBalanceSumm(
@@ -85,9 +87,9 @@ export class EthService {
       // TODO
       // Оптимизировать запрос
 
-      let userWallets = await props.user.ethWallets
+      const userWallets = await props.user.ethWallets
 
-      let walletsIds = userWallets.map(wallet => wallet.id)
+      const walletsIds = userWallets.map(wallet => wallet.id)
 
       result.transactions = await this.ethTsxRepository.getTransactionsByWalletIds(
         walletsIds
@@ -95,5 +97,104 @@ export class EthService {
     }
 
     return result
+  }
+
+  /*
+    Получение отчета по сумме балансов кошелька за последние n дней
+    Возвращает массив по типу
+    {
+      date: '2021-03-20'
+      value: 666
+    }
+  */
+
+  async getWalletBalanceStats(days, wallet: WalletETH) {
+    let totalBalance = +wallet.balance
+    let summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, [wallet])
+
+    const summsMap: Map<string, number> = new Map()
+
+    summs.forEach(sum => {
+      summsMap.set(sum.date, sum.value)
+    })
+
+    console.log(`Map is`)
+    console.log(summsMap)
+
+    const summsReport = [{
+      date: moment().format('YYYY-MM-DD'),
+      value: totalBalance
+    }]
+
+    for (let i = 1; i < days; i++) {
+
+      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
+      const sumForDay = summsMap.get(date)
+      if (sumForDay) {
+        totalBalance += sumForDay
+      }
+
+      const record: any = {
+        date,
+        value: totalBalance
+      }
+
+
+      summsReport.push(record)
+    }
+
+    return summsReport
+  }
+
+  /*
+  Получение отчета по сумме балансов всех eth кошельков пользователя за последние n дней
+  Возвращает массив по типу
+  {
+    date: '2021-03-20'
+    value: 666
+  }
+*/
+
+
+
+  async getUserBalanceStats(days: number, user: User) {
+    let totalBalance = await this.ethRepository.getUserBalanceSumm(user)
+    const wallets = await user.ethWallets
+    if (!wallets.length) {
+      return []
+    }
+    const summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, wallets)
+    const summsMap: Map<string, number> = new Map()
+
+    summs.forEach(sum => {
+      summsMap.set(sum.date, sum.value)
+    })
+
+    console.log(`Map is`)
+    console.log(summsMap)
+
+    const summsReport = [{
+      date: moment().format('YYYY-MM-DD'),
+      value: totalBalance
+    }]
+
+    for (let i = 1; i < days; i++) {
+
+      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
+      const sumForDay = summsMap.get(date)
+      if (sumForDay) {
+        totalBalance += sumForDay
+      }
+
+      const record: any = {
+        date,
+        value: totalBalance
+      }
+
+
+      summsReport.push(record)
+    }
+
+    return summsReport
   }
 }

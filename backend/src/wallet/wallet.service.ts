@@ -386,7 +386,7 @@ export class WalletService {
 
     /*
       Здесь по каждому пользователю формируется объект
-      Содержащий id пользователя 
+      Содержащий id пользователя
       Его имя
       И список его кошельков (Кошельки смешанны)
     */
@@ -511,6 +511,53 @@ export class WalletService {
         return await this.hashtagEthRepository.editHashtag(hashtagID, props)
       case TransactionType.erc20token:
         return await this.hashtagErc20Repository.editHashtag(hashtagID, props)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
+  async onModuleInit() {
+    let userStats = await this.getUserBalanceStats(15, WalletType.eth)
+    console.log(userStats)
+  }
+
+  async getUserBalanceStats(userID: number, type: WalletType) {
+
+    const user = await this.userRepository.getUserById(userID)
+
+    if (!user) {
+      throw new NotFoundException('User with id not found')
+    }
+
+    switch (type) {
+      case WalletType.btc:
+        return await this.BtcService.getUserBalanceStats(30, user)
+      case WalletType.eth:
+        return await this.EthService.getUserBalanceStats(30, user)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
+  async getWalletBalancesStats(walletID: number, type: WalletType) {
+
+    let wallet: any
+
+    switch (type) {
+      case WalletType.btc:
+        wallet = await this.BtcService.getWallet({ walletID, user: false, transactions: false })
+        if (!wallet) {
+          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
+        }
+        return await this.BtcService.getWalletBalanceStats(30, wallet)
+      case WalletType.eth:
+        wallet = await this.EthService.getWallet({ walletID, user: false, transactions: false })
+        if (!wallet) {
+          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
+        }
+        return await this.BtcService.getWalletBalanceStats(30, wallet)
 
       default:
         throw new BadRequestException(`Invalid wallet type ${type}`)
