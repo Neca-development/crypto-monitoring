@@ -517,11 +517,6 @@ export class WalletService {
     }
   }
 
-  async onModuleInit() {
-    let userStats = await this.getUserBalanceStats(15, WalletType.eth)
-    console.log(userStats)
-  }
-
   async getUserBalanceStats(userID: number, type: WalletType) {
 
     const user = await this.userRepository.getUserById(userID)
