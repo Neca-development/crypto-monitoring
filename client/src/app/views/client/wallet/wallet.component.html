@@ -14,9 +14,26 @@
         ><b>Owner:</b> {{ wallet.holderName }}</span
       >
     </h2>
-    <button mat-flat-button color="primary" class="client__block-explorer">
+    <a
+      *ngIf="wallet.type === 'BTC'"
+      [href]="'https://www.blockchain.com/btc/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
       Block Explorer
-    </button>
+    </a>
+    <a
+      *ngIf="wallet.type === 'ETH'"
+      [href]="'https://etherscan.io/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
+      Block Explorer
+    </a>
   </div>
   <div class="client__row">
     <div class="client__left">

@@ -47,9 +47,24 @@
         >
           {{ wallet.address }}
         </span>
-        <button mat-button color="primary" routerLink="link">
+        <a
+          *ngIf="wallet.type === 'BTC'"
+          [href]="'https://www.blockchain.com/btc/address/' + wallet.address"
+          target="_blank"
+          mat-button
+          color="primary"
+        >
           Block Explorer
-        </button>
+        </a>
+        <a
+          *ngIf="wallet.type === 'ETH'"
+          [href]="'https://etherscan.io/address/' + wallet.address"
+          target="_blank"
+          mat-button
+          color="primary"
+        >
+          Block Explorer
+        </a>
       </div>
     </div>
   </div>

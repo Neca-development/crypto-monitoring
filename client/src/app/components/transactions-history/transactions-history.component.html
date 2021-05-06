@@ -60,7 +60,24 @@
           Block Explorer
         </th>
         <td mat-cell *matCellDef="let row">
-          <button mat-button color="primary">Block Explorer</button>
+          <a
+            *ngIf="row.chain === 'BTC'"
+            [href]="'https://www.blockchain.com/btc/tx/' + row.hash"
+            target="_blank"
+            mat-button
+            color="primary"
+          >
+            Block Explorer
+          </a>
+          <a
+            *ngIf="row.chain === 'ETH'"
+            [href]="'https://etherscan.io/tx/' + row.hash"
+            target="_blank"
+            mat-button
+            color="primary"
+          >
+            Block Explorer
+          </a>
         </td>
       </ng-container>
 
