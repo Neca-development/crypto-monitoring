@@ -14,14 +14,20 @@
       <div class="client__currency-list">
         <div class="client__currency">
           <mat-icon class="client__currency-head">generating_tokens</mat-icon>
-          <span>{{ user.totalBtcBalance }} <b>BTC</b></span>
+          <span
+            >{{ +user.totalBtcBalance === 0 ? 0 : user.totalBtcBalance }}
+            <b>BTC</b></span
+          >
           <span class="client__currency-hint"
             >{{ user.totalBtcBalanceEur | number: "1.0-2" }} <b>EUR</b></span
           >
         </div>
         <div class="client__currency">
           <mat-icon class="client__currency-head">generating_tokens</mat-icon>
-          <span>{{ user.totalEthBalance }} <b>ETH</b></span>
+          <span>
+            {{ +user.totalEthBalance === 0 ? 0 : user.totalEthBalance }}
+            <b> ETH</b>
+          </span>
           <span class="client__currency-hint"
             >{{ user.totalEthBalanceEur | number: "1.0-2" }} <b>EUR</b></span
           >

@@ -43,7 +43,8 @@
       <div class="client__currency">
         <mat-icon class="client__currency-head">generating_tokens</mat-icon>
         <span
-          >{{ wallet.balance }} <b>{{ wallet.type }}</b></span
+          >{{ +wallet.balance === 0 ? 0 : wallet.balance }}
+          <b>{{ wallet.type }}</b></span
         >
       </div>
       <div class="client__currency">
