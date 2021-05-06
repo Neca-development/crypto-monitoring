@@ -30,11 +30,11 @@ export class ERC20TokenType extends BaseEntity {
   })
   erc20tokens: Promise<ERC20Token[]>
 
-  numToTokenValue(number: number) {
-    if (this.decimals > 0 && number > 0) {
-      number = number / Math.pow(10, this.decimals)
+  numToTokenValue(num: number) {
+    if (this.decimals > 0 && num > 0) {
+      num = num / Math.pow(10, this.decimals)
     }
 
-    return number
+    return num
   }
 }

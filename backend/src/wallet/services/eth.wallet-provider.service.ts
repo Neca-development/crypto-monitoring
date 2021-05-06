@@ -27,7 +27,7 @@ import { WalletEthModel } from '../interfaces/Wallet-eth.model'
 
 @Injectable()
 export class EthWalletProviderService {
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService) { }
 
   private readonly logger = new Logger(EthWalletProviderService.name)
 

@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  Patch,
   Post,
+  Put,
   Query,
   UseGuards,
   ValidationPipe
@@ -18,12 +20,15 @@ import { Roles } from 'src/auth/guards/guards/roles.decorator'
 import { UserRole } from 'src/auth/enum/user-role.enum'
 import { AuthGuard } from '@nestjs/passport'
 import { RolesGuard } from 'src/auth/guards/guards/roles.guard'
+import { HashtagAddToTsxDto } from 'src/dto/admin.add-hashtag.dto'
+import { HashtagEditDto } from 'src/dto/admin.edit-hashtag.dto'
+import { HashtagDeleteDto } from 'src/dto/admin.delete-hashtag.dto'
 
 @Controller('wallet')
 @Roles(UserRole.admin)
 @UseGuards(AuthGuard(), RolesGuard)
 export class WalletController {
-  constructor(private walletService: WalletService) {}
+  constructor(private walletService: WalletService) { }
 
   @Get()
   getWallet(@Query(ValidationPipe) getWalletDto: GetWalletDto) {
@@ -53,5 +58,20 @@ export class WalletController {
   @Delete()
   deleteWallet(@Body(ValidationPipe) deleteWalletDto: DeleteWalletDto) {
     return this.walletService.deleteWallet(deleteWalletDto)
+  }
+
+  @Post('/transaction/hashtag')
+  addHastag(@Body(ValidationPipe) addHashtagDto: HashtagAddToTsxDto) {
+    return this.walletService.addHashToTransaction(addHashtagDto)
+  }
+
+  @Patch('/transaction/hashtag')
+  editHashtag(@Body(ValidationPipe) editHashtagDto: HashtagEditDto) {
+    return this.walletService.editHashtag(editHashtagDto)
+  }
+
+  @Delete('/transaction/hashtag')
+  deleteHashtag(@Body(ValidationPipe) deleteHashtag: HashtagDeleteDto) {
+    return this.walletService.deleteHashtag(deleteHashtag)
   }
 }

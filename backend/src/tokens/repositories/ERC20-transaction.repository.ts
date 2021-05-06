@@ -23,6 +23,9 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
     let tokenTransactions = await token.transactions
 
     let transaction = this.create()
+    if (tsxModel.type === false) {
+      tsxModel.value = -Math.abs(tsxModel.value)
+    }
     transaction.hash = tsxModel.hash
     transaction.time = tsxModel.time
     transaction.type = tsxModel.type
@@ -54,6 +57,9 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
 
     transactions.forEach(async tsxModel => {
       let transaction = this.create()
+      if (tsxModel. type === false) {
+        tsxModel.value = -Math.abs(tsxModel.value)
+      }
       transaction.hash = tsxModel.hash
       transaction.time = tsxModel.time
       transaction.type = tsxModel.type
@@ -76,5 +82,9 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
       this.logger.error(tokenTransactions)
       throw new InternalServerErrorException('Cannot add transactions')
     }
+  }
+
+  async getTransactionById(id: number) {
+    return await this.findOne({id})
   }
 }

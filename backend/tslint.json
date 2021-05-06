@@ -83,9 +83,9 @@
         ],
         "ordered-imports": false,
         "prefer-const": true,
-        "quotemark": [ true, "double" ],
+        "quotemark": [ true, "single" ],
         "radix": true,
-        "semicolon": [ true, "always" ],
+        "semicolon": [ false, "always" ],
         "triple-equals": [ true, "allow-null-check" ],
         "typedef-whitespace": [
             true,

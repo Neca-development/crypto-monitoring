@@ -7,6 +7,8 @@ import { BtcWalletProviderService } from './btc.wallet-provider.service'
 import { IGetUserWalletsInfo } from '../interfaces/IGetInfoByUser.props'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
 import { WalletBtcModel } from '../interfaces/Wallet-btc.model'
+import moment from 'moment'
+import { User } from 'src/auth/user/user.entity'
 
 @Injectable()
 export class BtcService {
@@ -17,7 +19,7 @@ export class BtcService {
     private btcTransactionRepository: BtcTransactionRepository,
     @InjectRepository(BtcRepository)
     private btcRepository: BtcRepository
-  ) {}
+  ) { }
 
   /*
     Создание нового кошелька
@@ -92,5 +94,113 @@ export class BtcService {
     }
 
     return result
+  }
+
+
+  /*
+  Получение отчета по сумме балансов кошелька за последние n дней
+  Возвращает массив по типу
+  {
+    date: '2021-03-20'
+    value: 666
+  }
+*/
+
+  async getWalletBalanceStats(days, wallet: WalletBTC) {
+    let totalBalance = +wallet.balance
+    let summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(days, [wallet])
+
+    if (!summs.length) {
+      return []
+    }
+
+    const summsMap: Map<string, number> = new Map()
+
+    summs.forEach(sum => {
+      summsMap.set(sum.date, sum.value)
+    })
+
+    console.log(`Map is`)
+    console.log(summsMap)
+
+    const summsReport = [{
+      date: moment().format('YYYY-MM-DD'),
+      value: totalBalance
+    }]
+
+    for (let i = 1; i < days; i++) {
+
+      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
+      const sumForDay = summsMap.get(date)
+      if (sumForDay) {
+        totalBalance += sumForDay
+      }
+
+      const record: any = {
+        date,
+        value: totalBalance
+      }
+
+
+      summsReport.push(record)
+    }
+
+    return summsReport
+  }
+
+  /*
+Получение отчета по сумме балансов всех eth кошельков пользователя за последние n дней
+Возвращает массив по типу
+{
+  date: '2021-03-20'
+  value: 666
+}
+*/
+
+
+  async getUserBalanceStats(days: number, user: User) {
+    let totalBalance = await this.btcRepository.getUserBalanceSumm(user)
+    totalBalance = +totalBalance
+    const wallets = await user.btcWallets
+
+    if (!wallets.length) {
+      return []
+    }
+    
+    const summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(days, wallets)
+
+    if (!summs.length) {
+      return []
+    }
+
+    const summsMap: Map<string, number> = new Map()
+
+    summs.forEach(sum => {
+      summsMap.set(sum.date, sum.value)
+    })
+
+    const summsReport = [{
+      date: moment().format('YYYY-MM-DD'),
+      value: totalBalance
+    }]
+
+    for (let i = 1; i < days; i++) {
+
+      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
+      const sumForDay = summsMap.get(date)
+      if (sumForDay) {
+        totalBalance += sumForDay
+      }
+
+      const record: any = {
+        date,
+        value: totalBalance
+      }
+
+
+      summsReport.push(record)
+    }
+
+    return summsReport
   }
 }

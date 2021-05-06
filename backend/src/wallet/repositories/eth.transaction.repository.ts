@@ -9,6 +9,7 @@ import { TransactionEthModel } from '../interfaces/Transaction-eth.model'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { NumToEth } from '../../helpers/NumToEth'
 import { dbErrorCodes } from 'src/config/db-error-codes'
+import moment from 'moment'
 
 @EntityRepository(TransactionETH)
 export class EthTransactionRepository extends Repository<TransactionETH> {
@@ -19,14 +20,18 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     В случае если транзакция с переданым хешем уже существует выбросит conflict
   */
 
+
   async addTransactionsByModel(
     wallet: WalletETH,
     transactions: TransactionEthModel[]
   ): Promise<WalletETH> {
-    let walletTransactions = await wallet.transactions
+    const walletTransactions = await wallet.transactions
 
     transactions.forEach(async element => {
-      let transaction = this.create()
+      if (element.type === false) {
+        element.value = -Math.abs(element.value)
+      }
+      const transaction = this.create()
       transaction.hash = element.hash
       transaction.time = element.time
       transaction.type = element.type
@@ -56,7 +61,7 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
   */
 
   async getLastTsxHash(wallet: WalletETH): Promise<string> {
-    let transactions = await wallet.transactions
+    const transactions = await wallet.transactions
 
     if (!transactions.length) {
       return 'No transactions found'
@@ -70,7 +75,7 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     Так-же происходит сортировка по времени ASC
   */
 
-  async getTransactionsByWalletIds(ids: Number[]): Promise<TransactionETH[]> {
+  async getTransactionsByWalletIds(ids: number[]): Promise<TransactionETH[]> {
     const results = await this.find({
       where: { wallet: { id: In(ids) } },
       order: { time: 'ASC' },
@@ -78,5 +83,52 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     })
 
     return results
+  }
+
+  async getTransactionById(id: number) {
+    return await this.findOne({ id })
+  }
+
+  /*
+    Отчёт
+    Показывает на какую сумму были транзакции по дням
+    Значения возвращаются на последние n дней
+    Сумма возвращается number-ом, включая отрицатльные значения
+    Возвращает массив по типу
+
+    date: 2021-03-21
+    value: -666
+  */
+
+  async getSumOfWalletsTsxByDays(days: number, wallets: WalletETH[]): Promise<[{ date: string, value: number }]> {
+
+    const walletIds = []
+
+    wallets.forEach(wallet => {
+      walletIds.push(wallet.id)
+    })
+
+    this.logger.debug(`Walltids`)
+    console.log(walletIds)
+    const query = this.createQueryBuilder('transaction')
+    query
+      .select('date_trunc(\'day\', transaction.time)::timestamp as date')
+      .addSelect('SUM(transaction.value) as value')
+      .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
+      .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
+      .orderBy('date_trunc(\'day\', transaction.time)::timestamp', 'ASC')
+      .groupBy('date_trunc(\'day\', transaction.time)::timestamp')
+
+
+    const summs = await query.getRawMany()
+
+    summs.forEach(sum => {
+      sum.date = moment(sum.date).format('YYYY-MM-DD')
+      sum.value = +sum.value
+    })
+
+    this.logger.debug(`Result of query is`)
+    console.log(summs)
+    return summs as [{ date: string, value: number }]
   }
 }
