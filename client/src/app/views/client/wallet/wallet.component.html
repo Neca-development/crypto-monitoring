@@ -31,7 +31,7 @@
       </div>
       <div class="client__currency">
         <mat-icon class="client__currency-head">euro_symbol</mat-icon>
-        <span>{{ wallet.balanceEur }} <b>EUR</b></span>
+        <span>{{ wallet.balanceEur | number: "1.0-2" }} <b>EUR</b></span>
       </div>
     </div>
   </div>

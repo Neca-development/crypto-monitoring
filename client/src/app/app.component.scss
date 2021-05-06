@@ -70,3 +70,73 @@
     }
   }
 }
+
+.loading-container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(255, 255, 255);
+  z-index: -5;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all ease-in 0.18s;
+
+  &.active {
+    transition: all ease-out 0.18s;
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+.loader {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  border: 4px solid #f1f1f1;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: -10px -10px 15px rgba(255, 255, 255, 1),
+    10px 10px 10px rgba(0, 0, 0, 0.1),
+    inset -10px -10px 15px rgba(255, 255, 255, 0.5),
+    inset 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  bottom: 25px;
+  right: 25px;
+  background: #f1f1f1;
+  border-radius: 50%;
+  border: 4px solid #f1f1f1;
+  box-shadow: inset -10px -10px 15px rgba(255, 255, 255, 0.5),
+    inset 10px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loader span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(#14ffe9, #ffeb3b, #ff00e9);
+  z-index: -1;
+  filter: blur(20px);
+  animation: animate 0.8s linear infinite;
+}
+
+.loader:hover span {
+  animation-play-state: paused;
+}
+
+@keyframes animate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
