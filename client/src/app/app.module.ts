@@ -24,6 +24,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSelectModule } from "@angular/material/select";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
@@ -72,6 +73,7 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatTooltipModule,
   ],
   providers: [
     LoadingService,

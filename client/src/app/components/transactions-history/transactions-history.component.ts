@@ -22,9 +22,11 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = [
     "coin",
     "txHash",
-    "address",
+    "from",
+    "to",
     "date",
     "type",
+    "val",
     "link",
   ];
   dataSource: MatTableDataSource<Transaction>;
