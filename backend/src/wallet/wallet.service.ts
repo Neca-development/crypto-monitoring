@@ -399,12 +399,14 @@ export class WalletService {
         ethResults.totalBalance
       )
       result.totalERC20BalanceEur = 0
-      for await (let balance of erc20tokensResult.totalBalance) {
-        let eur = await this.vaultConvertationService.erc20toEur(
-          balance.sum,
-          balance.contract_address
-        )
-        result.totalERC20BalanceEur += eur
+      if (erc20tokensResult && erc20tokensResult.totalBalance) {
+        for await (let balance of erc20tokensResult.totalBalance) {
+          let eur = await this.vaultConvertationService.erc20toEur(
+            balance.sum,
+            balance.contract_address
+          )
+          result.totalERC20BalanceEur += eur
+        }
       }
     }
 
@@ -432,7 +434,7 @@ export class WalletService {
         result.transactions.push(element)
       })
 
-      if (erc20tokensResult.transactions) {
+      if (erc20tokensResult && erc20tokensResult.transactions) {
         erc20tokensResult.transactions.forEach(element => {
           element.chain = ERC20_TOKEN_TYPE
           result.transactions.push(element)

@@ -81,6 +81,8 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
   ): Promise<TransactionETH[]> {
     const query = this.createQueryBuilder('transaction')
     const selections = ['transaction']
+
+    if(!walletIds.length) return []
     query
       .innerJoin('transaction.wallet', 'wallet')
       .where('wallet.id in (:...walletIds)', { walletIds })
@@ -116,12 +118,14 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
   async getSumOfWalletsTsxByDays(
     days: number,
     wallets: WalletETH[]
-  ): Promise<[{ date: string; value: number }]> {
+  ): Promise<{ date: string; value: number }[]> {
     const walletIds = []
 
     wallets.forEach(wallet => {
       walletIds.push(wallet.id)
     })
+
+    if(!walletIds.length) return []
 
     this.logger.debug(`Walltids`)
     console.log(walletIds)
