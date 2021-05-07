@@ -2,6 +2,7 @@ import { HttpService, Injectable, Logger } from '@nestjs/common'
 import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
 import { IERC20TokenModel } from '../interfaces/IERC20Token'
 import { ERC20ContractsService } from './erc20-contracts.service'
+import { NumToEth } from 'src/helpers/NumToEth'
 
 /*
   Сервис взаимодействует со сторонними api
@@ -94,7 +95,8 @@ export class ERC20TokenProviderService {
         from: tsx.from,
         to: tsx.to,
         hash: tsx.hash,
-        value: +tsx.value
+        value: +tsx.value,
+        fee: NumToEth(+tsx.gasPrice) * +tsx.gasUsed
       }
 
       if (+tsx.tokenDecimal > 0) {

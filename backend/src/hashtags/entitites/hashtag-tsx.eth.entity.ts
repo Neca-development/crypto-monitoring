@@ -3,11 +3,13 @@ import {
     BaseEntity,
     Column,
     Entity,
+    Index,
     ManyToOne,
     PrimaryGeneratedColumn
   } from 'typeorm'
 
   @Entity()
+  @Index(['transaction', 'text'], { unique: true })
   export class EthTsxHashtag extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number

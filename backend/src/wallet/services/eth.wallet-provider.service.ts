@@ -6,6 +6,7 @@ import {
   Logger,
   NotFoundException
 } from '@nestjs/common'
+import { NumToEth } from 'src/helpers/NumToEth'
 import * as Web3 from 'web3'
 import { TransactionEthModel } from '../interfaces/Transaction-eth.model'
 import { WalletEthModel } from '../interfaces/Wallet-eth.model'
@@ -136,6 +137,9 @@ export class EthWalletProviderService {
       if (tsx.value == 0) {
         return
       }
+
+      console.group(`Tsx is`)
+      console.log(tsx)
       let type = tsx.to == address.toLowerCase() ? true : false
       let transaction: TransactionEthModel = {
         type,
@@ -143,7 +147,8 @@ export class EthWalletProviderService {
         from: tsx.from,
         to: tsx.to,
         hash: tsx.hash,
-        value: +tsx.value
+        value: +tsx.value,
+        fee: NumToEth(+tsx.gasPrice) * +tsx.gasUsed
       }
 
       transactions.push(transaction)

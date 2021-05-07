@@ -1,4 +1,4 @@
-import { CacheModule, HttpModule, Module } from '@nestjs/common'
+import {  HttpModule, Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserRepository } from 'src/auth/user/user.repository'
@@ -23,6 +23,7 @@ import { EthWalletsPool } from 'src/tokens/classes/ETHWalletsPool'
 import { ERC20TsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.erc20.repository'
 import { BtcTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx-btc.repository'
 import { EthTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.eth.repository'
+import { VaultConvertationService } from 'src/convertation/vault-convertation.service'
 
 @Module({
   controllers: [WalletController],
@@ -35,7 +36,8 @@ import { EthTsxHashtagRepository } from 'src/hashtags/repositories/hashtag-tsx.e
     ERC20TokenService,
     ERC20TokenProviderService,
     ERC20ContractsService,
-    EthWalletsPool
+    EthWalletsPool,
+    VaultConvertationService
   ],
   imports: [
     HttpModule,

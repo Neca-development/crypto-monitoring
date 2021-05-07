@@ -27,6 +27,11 @@ import { BtcTransactionRepository } from './repositories/btc.transaction.reposit
 import { ERC20TransactionRepository } from 'src/tokens/repositories/ERC20-transaction.repository'
 import { HashtagDeleteDto } from 'src/dto/admin.delete-hashtag.dto'
 import { HashtagEditDto } from 'src/dto/admin.edit-hashtag.dto'
+import { ERC20TokenRepository } from 'src/tokens/repositories/ERC20-token.repository'
+import { ERC20_TOKEN_TYPE } from 'src/tokens/enum/token-const'
+import { VaultConvertationService } from '../convertation/vault-convertation.service'
+import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
+import { IERC20UserInfo } from 'src/tokens/SubTypes/IERC20UserInfo'
 
 /*
   Сервис отвечающий за кошельки
@@ -44,7 +49,6 @@ export class WalletService {
   constructor(
     private BtcService: BtcService,
     private EthService: EthService,
-    private httpService: HttpService,
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     @InjectRepository(ERC20TsxHashtagRepository)
@@ -58,8 +62,12 @@ export class WalletService {
     @InjectRepository(BtcTransactionRepository)
     private btcTransactionRepository: BtcTransactionRepository,
     @InjectRepository(ERC20TransactionRepository)
-    private erc20transcationRepository: ERC20TransactionRepository
-  ) { }
+    private erc20transcationRepository: ERC20TransactionRepository,
+    @InjectRepository(ERC20TokenRepository)
+    private ERC20TokenRepository: ERC20TokenRepository,
+    private vaultConvertationService: VaultConvertationService,
+    private erc20tokenService: ERC20TokenService
+  ) {}
 
   /*
     Добавление нового кошелька
@@ -129,64 +137,47 @@ export class WalletService {
   async getWalletsStats(getWalletsStatsDto: GetWalletsStats) {
     let response: any = {}
 
-    if (
-      getWalletsStatsDto.ethBalanceSumm ||
-      getWalletsStatsDto.ethBalanceSummEur
-    ) {
+    const {
+      btcBalanceSumm,
+      btcBalanceSummEur,
+      ethBalanceSumm,
+      ethBalanceSummEur,
+      erc20BalancesSummEur
+    } = getWalletsStatsDto
+
+    if (ethBalanceSumm || ethBalanceSummEur) {
       response.ethBalanceSumm = await this.EthService.getWalletsSummBalance()
     }
 
-    if (
-      getWalletsStatsDto.btcBalanceSumm ||
-      getWalletsStatsDto.btcBalanceSummEur
-    ) {
+    if (btcBalanceSumm || btcBalanceSummEur) {
       response.btcBalanceSumm = await this.BtcService.getWalletsSummBalance()
     }
 
-    if (getWalletsStatsDto.ethBalanceSummEur) {
-      response.ethBalanceSummEur = await this.ethToEur(response.ethBalanceSumm)
+    if (ethBalanceSummEur) {
+      response.ethBalanceSummEur = await this.vaultConvertationService.ethToEur(
+        response.ethBalanceSumm
+      )
     }
 
-    if (getWalletsStatsDto.btcBalanceSummEur) {
-      response.btcBalanceSummEur = await this.btcToEur(response.btcBalanceSumm)
+    if (btcBalanceSummEur) {
+      response.btcBalanceSummEur = await this.vaultConvertationService.btcToEur(
+        response.btcBalanceSumm
+      )
+    }
+
+    if (erc20BalancesSummEur) {
+      let eurSum = 0
+      const balances = await this.erc20tokenService.getTokenBalancesSumm()
+      for await (let balance of balances) {
+        eurSum += await this.vaultConvertationService.erc20toEur(
+          balance.sum,
+          balance.contract_address
+        )
+      }
+      response.erc20BalancesSummEur = eurSum
     }
 
     return response
-  }
-
-  // TODO
-  // Вынести в отдельный сервис
-
-  /*
-    Конвертация эфира в евро
-    Происходит с помощью стороннего api
-  */
-
-  async ethToEur(value: number): Promise<number> {
-    let result = await this.httpService
-      .get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=EUR'
-      )
-      .toPromise()
-
-    let currency = result.data.ethereum.eur
-    return value * currency
-  }
-
-  /*
-    Конвертация битка в евро
-    Происходит с помощью стороннего api
-  */
-
-  async btcToEur(value: number): Promise<number> {
-    let result = await this.httpService
-      .get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=EUR'
-      )
-      .toPromise()
-
-    let currency = result.data.bitcoin.eur
-    return value * currency
   }
 
   /*
@@ -200,7 +191,10 @@ export class WalletService {
       type,
       transactions,
       holderName,
-      balanceInEur
+      balanceInEur,
+      balanceHistory,
+      erc20tokens,
+      hashtags
     } = getWalletDto
 
     let wallet: any = {
@@ -211,7 +205,8 @@ export class WalletService {
     const props: IGetWalletProps = {
       walletID,
       transactions,
-      user: holderName
+      user: holderName,
+      tsxHashtags: hashtags
     }
 
     let result: any = {}
@@ -244,11 +239,15 @@ export class WalletService {
     if (balanceInEur) {
       switch (type) {
         case WalletType.btc: {
-          wallet.balanceEur = await this.btcToEur(wallet.balance)
+          wallet.balanceEur = await this.vaultConvertationService.btcToEur(
+            wallet.balance
+          )
           break
         }
         case WalletType.eth:
-          wallet.balanceEur = await this.ethToEur(wallet.balance)
+          wallet.balanceEur = await this.vaultConvertationService.ethToEur(
+            wallet.balance
+          )
           break
 
         default:
@@ -260,11 +259,78 @@ export class WalletService {
       wallet.holderName = result.user.fullName
     }
 
-    if (transactions) {
-      wallet.transactions = result.transactions
+    if (balanceHistory) {
+      wallet.balanceHistory = await this.getWalletBalanceHistory(
+        walletID,
+        type,
+        30
+      )
     }
 
+    let erc20TokenTransactions = []
+
+    /*
+      Проверяем запрашиваются ли токены
+      И запрашиваются ли транзакции
+      Такое возможно только если кошель - эфировский
+    */
+    if (type == WalletType.eth) {
+      if (erc20tokens) {
+        wallet.erc20tokens = await this.ERC20TokenRepository.getTokensByWalletId(
+          walletID,
+          { type: true }
+        )
+
+        if (balanceInEur) {
+          for await (let token of wallet.erc20tokens) {
+            token.eur = await this.vaultConvertationService.erc20toEur(
+              +token.balance,
+              token.type.contractAddress
+            )
+          }
+        }
+        if (transactions) {
+          console.log(wallet)
+          let tokenIds = wallet.erc20tokens.map(token => {
+            return token.id
+          })
+
+          erc20TokenTransactions = await this.erc20transcationRepository.getTsxsWithTokenTypes(
+            tokenIds
+          )
+        }
+      }
+    }
+    /*
+      Добавляем свойство chain в транзакции
+      Которе позволяет определить какого типа транзакция (ETH/TOKEN)
+      Так-же смешиваем транзакции в единый массив
+    */
+
+    if (transactions) {
+      console.log(result)
+      wallet.transactions = result.transactions.map(tsx => {
+        tsx.chain = type
+        return tsx
+      })
+
+      if (erc20TokenTransactions) {
+        erc20TokenTransactions.forEach(tsx => {
+          tsx.chain = ERC20_TOKEN_TYPE
+          wallet.transactions.push(tsx)
+        })
+      }
+    }
+
+    // console.log(wallet)
+
     return wallet
+  }
+
+  async onModuleInit() {
+    // let walletTokens = await this.ERC20TokenRepository.getTokensByWalletId(1, { transactions: true })
+    // console.log(`Wallet tokens is`)
+    // console.log(walletTokens)
   }
 
   /*
@@ -284,7 +350,8 @@ export class WalletService {
       addresses,
       balancesSumm,
       balancesSummEur,
-      transactions
+      transactions,
+      balancesHistory
     } = userWalletsInfo
 
     const user: User = await this.userRepository.getUserById(userID)
@@ -294,8 +361,6 @@ export class WalletService {
       throw new NotFoundException(`User with id ${userID} not found`)
     }
 
-    if (addresses) result.addresses = []
-    if (transactions) result.transactions = []
     if (fullName) result.fullName = user.fullName
 
     let btcResults = await this.BtcService.getInfoByUser({
@@ -312,15 +377,43 @@ export class WalletService {
       addresses
     })
 
+    let erc20tokensResult: IERC20UserInfo
+
+    if (ethResults.addresses && ethResults.addresses.length) {
+      erc20tokensResult = await this.erc20tokenService.getInfoByUser(user, {
+        transactions,
+        totalBalance: balancesSumm
+      })
+    }
+
     if (balancesSumm) {
       result.totalBtcBalance = btcResults.totalBalance
       result.totalEthBalance = ethResults.totalBalance
     }
 
     if (balancesSummEur) {
-      result.totalBtcBalanceEur = await this.btcToEur(btcResults.totalBalance)
-      result.totalEthBalanceEur = await this.ethToEur(ethResults.totalBalance)
+      result.totalBtcBalanceEur = await this.vaultConvertationService.btcToEur(
+        btcResults.totalBalance
+      )
+      result.totalEthBalanceEur = await this.vaultConvertationService.ethToEur(
+        ethResults.totalBalance
+      )
+      result.totalERC20BalanceEur = 0
+      for await (let balance of erc20tokensResult.totalBalance) {
+        let eur = await this.vaultConvertationService.erc20toEur(
+          balance.sum,
+          balance.contract_address
+        )
+        result.totalERC20BalanceEur += eur
+      }
     }
+
+    if (balancesHistory) {
+      result.balanceHistory = await this.getUserBalanceHistory(user, 30)
+    }
+
+    if (addresses) result.addresses = []
+    if (transactions) result.transactions = []
 
     /*
       Транзакции смешиваются в один массив
@@ -338,6 +431,13 @@ export class WalletService {
         element.chain = WalletType.eth
         result.transactions.push(element)
       })
+
+      if (erc20tokensResult.transactions) {
+        erc20tokensResult.transactions.forEach(element => {
+          element.chain = ERC20_TOKEN_TYPE
+          result.transactions.push(element)
+        })
+      }
     }
 
     // TODO
@@ -450,27 +550,73 @@ export class WalletService {
     // })
   }
 
+  async getWalletBalanceHistory(
+    walletID: number,
+    type: WalletType,
+    days: number
+  ) {
+    let wallet: any
+
+    switch (type) {
+      case WalletType.btc:
+        wallet = await this.BtcService.getWallet({
+          walletID,
+          user: false,
+          transactions: false
+        })
+        if (!wallet) {
+          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
+        }
+        return await this.BtcService.getWalletBalanceStats(days, wallet)
+      case WalletType.eth:
+        wallet = await this.EthService.getWallet({
+          walletID,
+          user: false,
+          transactions: false
+        })
+        if (!wallet) {
+          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
+        }
+        return await this.EthService.getWalletBalanceStats(days, wallet)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
   async addHashToTransaction(addHashtagDto: HashtagAddToTsxDto) {
     const { type, transactionID, text } = addHashtagDto
 
     let tsx: any
     switch (type) {
       case TransactionType.btc:
-        tsx = await this.btcTransactionRepository.getTransactionById(transactionID)
+        tsx = await this.btcTransactionRepository.getTransactionById(
+          transactionID
+        )
         if (!tsx) {
-          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+          throw new NotFoundException(
+            `Transaction with id ${transactionID} not found`
+          )
         }
         return await this.hashtagBtcRepository.addHashTagToTsx(tsx, text)
       case TransactionType.eth:
-        tsx = await this.ethTransactionRepository.getTransactionById(transactionID)
+        tsx = await this.ethTransactionRepository.getTransactionById(
+          transactionID
+        )
         if (!tsx) {
-          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+          throw new NotFoundException(
+            `Transaction with id ${transactionID} not found`
+          )
         }
         return await this.hashtagEthRepository.addHashTagToTsx(tsx, text)
       case TransactionType.erc20token:
-        tsx = await this.erc20transcationRepository.getTransactionById(transactionID)
+        tsx = await this.erc20transcationRepository.getTransactionById(
+          transactionID
+        )
         if (!tsx) {
-          throw new NotFoundException(`Transaction with id ${transactionID} not found`)
+          throw new NotFoundException(
+            `Transaction with id ${transactionID} not found`
+          )
         }
         return await this.hashtagErc20Repository.addHashTagToTsx(tsx, text)
 
@@ -517,45 +663,17 @@ export class WalletService {
     }
   }
 
-  async getUserBalanceStats(userID: number, type: WalletType) {
+  /*
+    Получение истории балансов по всем кошелькам пользователя
+  */
 
-    const user = await this.userRepository.getUserById(userID)
+  async getUserBalanceHistory(user: User, days: number) {
+    let ethHistory = await this.EthService.getUserBalanceStats(days, user)
+    let btcHistory = await this.BtcService.getUserBalanceStats(days, user)
 
-    if (!user) {
-      throw new NotFoundException('User with id not found')
-    }
-
-    switch (type) {
-      case WalletType.btc:
-        return await this.BtcService.getUserBalanceStats(30, user)
-      case WalletType.eth:
-        return await this.EthService.getUserBalanceStats(30, user)
-
-      default:
-        throw new BadRequestException(`Invalid wallet type ${type}`)
-    }
-  }
-
-  async getWalletBalancesStats(walletID: number, type: WalletType) {
-
-    let wallet: any
-
-    switch (type) {
-      case WalletType.btc:
-        wallet = await this.BtcService.getWallet({ walletID, user: false, transactions: false })
-        if (!wallet) {
-          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
-        }
-        return await this.BtcService.getWalletBalanceStats(30, wallet)
-      case WalletType.eth:
-        wallet = await this.EthService.getWallet({ walletID, user: false, transactions: false })
-        if (!wallet) {
-          throw new NotFoundException(`Wallet with id  ${walletID} not found`)
-        }
-        return await this.BtcService.getWalletBalanceStats(30, wallet)
-
-      default:
-        throw new BadRequestException(`Invalid wallet type ${type}`)
+    return {
+      ethHistory,
+      btcHistory
     }
   }
 }

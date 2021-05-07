@@ -16,11 +16,13 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { EthMonitoringService } from './monitoring/eth-monitoring.service'
 import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
+import { LoggerModule } from 'nestjs-pino'
 
 // TODO
 // Подключить мониторинги перед депой
 @Module({
   imports: [
+    LoggerModule.forRoot({ pinoHttp: { enabled: false } }),
     HttpModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     TypeOrmModule.forFeature([

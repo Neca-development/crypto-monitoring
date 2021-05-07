@@ -47,6 +47,9 @@ export class TransactionETH extends BaseEntity {
   @Column('decimal', { precision: 40, scale: 18 })
   value: number
 
+  @Column('decimal', { precision: 30, scale: 18 })
+  fee: number
+
   @ManyToOne(type => WalletETH, wallet => wallet.transactions, {
     eager: true,
     onDelete: 'CASCADE'

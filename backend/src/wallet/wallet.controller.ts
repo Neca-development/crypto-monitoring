@@ -35,6 +35,11 @@ export class WalletController {
     return this.walletService.getWallet(getWalletDto)
   }
 
+  @Get('/:id/stats')
+  getWalletStats(@Query(ValidationPipe) getWalletDto: GetWalletDto) {
+    return this.walletService.getWallet(getWalletDto)
+  }
+
   @Get('/user')
   userWalletsInfo(@Query(ValidationPipe) userWalletsInfo: GetUserWalletsInfo) {
     return this.walletService.userWalletsInfo(userWalletsInfo)

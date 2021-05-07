@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
+import { InjectPinoLogger, Logger, PinoLogger } from 'nestjs-pino'
 import { InjectRepository } from '@nestjs/typeorm'
 import moment from 'moment'
 import { User } from 'src/auth/user/user.entity'
@@ -12,16 +13,15 @@ import { EthWalletProviderService } from './eth.wallet-provider.service'
 
 @Injectable()
 export class EthService {
-  private logger = new Logger(EthService.name)
-
   constructor(
     private walletProviderService: EthWalletProviderService,
     private erc20tokenservice: ERC20TokenService,
     @InjectRepository(EthTransactionRepository)
     private ethTsxRepository: EthTransactionRepository,
     @InjectRepository(EthRepository)
-    private ethRepository: EthRepository
-  ) { }
+    private ethRepository: EthRepository,
+    @InjectPinoLogger(EthService.name) private readonly logger: PinoLogger
+  ) {}
 
   /*
     Создание нового кошелька
@@ -60,7 +60,7 @@ export class EthService {
     return await this.ethRepository.deleteWalletById(walletID)
   }
 
-  async getWallet(props: IGetWalletProps): Promise<WalletETH> {
+  async getWallet(props: IGetWalletProps) {
     return await this.ethRepository.getWallet(props)
   }
 
@@ -92,7 +92,8 @@ export class EthService {
       const walletsIds = userWallets.map(wallet => wallet.id)
 
       result.transactions = await this.ethTsxRepository.getTransactionsByWalletIds(
-        walletsIds
+        walletsIds,
+        { hashtags: true }
       )
     }
 
@@ -110,7 +111,9 @@ export class EthService {
 
   async getWalletBalanceStats(days, wallet: WalletETH) {
     let totalBalance = +wallet.balance
-    let summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, [wallet])
+    let summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, [
+      wallet
+    ])
 
     const summsMap: Map<string, number> = new Map()
 
@@ -121,24 +124,35 @@ export class EthService {
     console.log(`Map is`)
     console.log(summsMap)
 
-    const summsReport = [{
-      date: moment().format('YYYY-MM-DD'),
-      value: totalBalance
-    }]
+    const summsReport = [
+      {
+        date: moment().format('YYYY-MM-DD'),
+        value: totalBalance
+      }
+    ]
 
     for (let i = 1; i < days; i++) {
-
       const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
-        totalBalance += sumForDay
+        if (sumForDay > 0) {
+          totalBalance -= sumForDay
+        } else {
+          totalBalance += sumForDay
+        }
+      }
+
+      //0.000841888999999707
+      this.logger.debug(`Balance now`, totalBalance)
+      if (totalBalance < 0.001) {
+        console.log(`Balance < 0.01 found`)
+        totalBalance = 0
       }
 
       const record: any = {
         date,
         value: totalBalance
       }
-
 
       summsReport.push(record)
     }
@@ -155,35 +169,49 @@ export class EthService {
   }
 */
 
-
-
   async getUserBalanceStats(days: number, user: User) {
     let totalBalance = await this.ethRepository.getUserBalanceSumm(user)
+    this.logger.debug(`Total balance ${totalBalance}`)
     const wallets = await user.ethWallets
     if (!wallets.length) {
       return []
     }
-    const summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, wallets)
+    const summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(
+      days,
+      wallets
+    )
     const summsMap: Map<string, number> = new Map()
 
     summs.forEach(sum => {
       summsMap.set(sum.date, sum.value)
     })
 
-    console.log(`Map is`)
+    this.logger.debug(`Map is`)
     console.log(summsMap)
 
-    const summsReport = [{
-      date: moment().format('YYYY-MM-DD'),
-      value: totalBalance
-    }]
+    const summsReport = [
+      {
+        date: moment().format('YYYY-MM-DD'),
+        value: totalBalance
+      }
+    ]
 
     for (let i = 1; i < days; i++) {
-
       const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
-        totalBalance += sumForDay
+        if (sumForDay > 0) {
+          totalBalance += sumForDay
+        } else {
+          totalBalance -= sumForDay
+        }
+      }
+
+      //0.000841888999999707
+      this.logger.debug(`Balance now`, totalBalance)
+      if (totalBalance < 0.001) {
+        console.log(`Balance < 0.01 found`)
+        totalBalance = 0
       }
 
       const record: any = {
@@ -191,9 +219,11 @@ export class EthService {
         value: totalBalance
       }
 
-
       summsReport.push(record)
     }
+
+    this.logger.debug(`Summs report is `)
+    console.log(summs)
 
     return summsReport
   }

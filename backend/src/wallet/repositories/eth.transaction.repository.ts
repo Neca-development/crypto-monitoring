@@ -20,7 +20,6 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     В случае если транзакция с переданым хешем уже существует выбросит conflict
   */
 
-
   async addTransactionsByModel(
     wallet: WalletETH,
     transactions: TransactionEthModel[]
@@ -38,6 +37,7 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
       transaction.from = element.from
       transaction.to = element.to
       transaction.value = NumToEth(element.value)
+      transaction.fee = element.fee
 
       walletTransactions.push(transaction)
     })
@@ -75,12 +75,25 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     Так-же происходит сортировка по времени ASC
   */
 
-  async getTransactionsByWalletIds(ids: number[]): Promise<TransactionETH[]> {
-    const results = await this.find({
-      where: { wallet: { id: In(ids) } },
-      order: { time: 'ASC' },
-      loadEagerRelations: false
-    })
+  async getTransactionsByWalletIds(
+    walletIds: number[],
+    options?: { hashtags?: boolean }
+  ): Promise<TransactionETH[]> {
+    const query = this.createQueryBuilder('transaction')
+    const selections = ['transaction']
+    query
+      .innerJoin('transaction.wallet', 'wallet')
+      .where('wallet.id in (:...walletIds)', { walletIds })
+      .orderBy('transaction.time', 'ASC')
+
+    if (options && options.hashtags) {
+      query.leftJoin('transaction.hashtags', 'hashtags')
+      selections.push('hashtags')
+    }
+
+    query.select(selections)
+
+    const results = await query.getMany()
 
     return results
   }
@@ -100,8 +113,10 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     value: -666
   */
 
-  async getSumOfWalletsTsxByDays(days: number, wallets: WalletETH[]): Promise<[{ date: string, value: number }]> {
-
+  async getSumOfWalletsTsxByDays(
+    days: number,
+    wallets: WalletETH[]
+  ): Promise<[{ date: string; value: number }]> {
     const walletIds = []
 
     wallets.forEach(wallet => {
@@ -112,23 +127,22 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     console.log(walletIds)
     const query = this.createQueryBuilder('transaction')
     query
-      .select('date_trunc(\'day\', transaction.time)::timestamp as date')
+      .select("date_trunc('day', transaction.time)::timestamp as date")
       .addSelect('SUM(transaction.value) as value')
       .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
       .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
-      .orderBy('date_trunc(\'day\', transaction.time)::timestamp', 'ASC')
-      .groupBy('date_trunc(\'day\', transaction.time)::timestamp')
-
+      .orderBy("date_trunc('day', transaction.time)::timestamp", 'ASC')
+      .groupBy("date_trunc('day', transaction.time)::timestamp")
 
     const summs = await query.getRawMany()
 
     summs.forEach(sum => {
       sum.date = moment(sum.date).format('YYYY-MM-DD')
-      sum.value = +sum.value
+      sum.value = sum.value
     })
 
     this.logger.debug(`Result of query is`)
     console.log(summs)
-    return summs as [{ date: string, value: number }]
+    return summs as [{ date: string; value: number }]
   }
 }

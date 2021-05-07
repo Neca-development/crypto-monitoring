@@ -28,7 +28,7 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
 
     transactions.forEach(async element => {
       let transaction = this.create()
-      if (element. type === false) {
+      if (element.type === false) {
         element.value = -Math.abs(element.value)
       }
       transaction.hash = element.hash
@@ -74,60 +74,76 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
     Так-же происходит сортировка по времени ASC
   */
 
-  async getTransactionsByIds(ids: Number[]): Promise<TransactionBTC[]> {
-    const results = await this.find({
-      where: { wallet: { id: In(ids) } },
-      order: { time: 'ASC' },
-      loadEagerRelations: false
-    })
+  /*
+  Получение транзакций по айдишникам кошельков
+  Так-же происходит сортировка по времени ASC
+*/
+
+  async getTransactionsByWalletIds(walletIds: number[], options?: { hashtags?: boolean }): Promise<TransactionBTC[]> {
+    const query = this.createQueryBuilder('transaction')
+    const selections = ['transaction']
+
+    query
+    .innerJoin('transaction.wallet', 'wallet')
+    .where('wallet.id in (:...walletIds)', { walletIds })
+    .orderBy('transaction.time', 'ASC')
+
+    if (options && options.hashtags) {
+      query.leftJoin('transaction.hashtags', 'hashtags')
+      selections.push('hashtags')
+    }
+
+    query.select(selections)
+
+    const results = await query.getMany()
 
     return results
   }
 
   async getTransactionById(id: number) {
-    return await this.findOne({id})
+    return await this.findOne({ id })
   }
 
-    /*
-    Отчёт
-    Показывает на какую сумму были транзакции по дням
-    Значения возвращаются на последние n дней
-    Сумма возвращается number-ом, включая отрицатльные значения
-    Возвращает массив по типу
+  /*
+  Отчёт
+  Показывает на какую сумму были транзакции по дням
+  Значения возвращаются на последние n дней
+  Сумма возвращается number-ом, включая отрицатльные значения
+  Возвращает массив по типу
 
-    date: 2021-03-21
-    value: -666
-  */
+  date: 2021-03-21
+  value: -666
+*/
 
-    async getSumOfWalletsTsxByDays(days: number, wallets: WalletBTC[]): Promise<[{ date: string, value: number }]> {
+  async getSumOfWalletsTsxByDays(days: number, wallets: WalletBTC[]): Promise<[{ date: string, value: number }]> {
 
-      const walletIds = []
-  
-      wallets.forEach(wallet => {
-        walletIds.push(wallet.id)
-      })
-  
-      this.logger.debug(`Walltids`)
-      console.log(walletIds)
-      const query = this.createQueryBuilder('transaction')
-      query
-        .select('date_trunc(\'day\', transaction.time)::timestamp as date')
-        .addSelect('SUM(transaction.value) as value')
-        .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
-        .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
-        .orderBy('date_trunc(\'day\', transaction.time)::timestamp', 'ASC')
-        .groupBy('date_trunc(\'day\', transaction.time)::timestamp')
-  
-  
-      const summs = await query.getRawMany()
-  
-      summs.forEach(sum => {
-        sum.date = moment(sum.date).format('YYYY-MM-DD')
-        sum.value = +sum.value
-      })
-  
-      this.logger.debug(`Result of query is`)
-      console.log(summs)
-      return summs as [{ date: string, value: number }]
-    }
+    const walletIds = []
+
+    wallets.forEach(wallet => {
+      walletIds.push(wallet.id)
+    })
+
+    this.logger.debug(`Walltids`)
+    console.log(walletIds)
+    const query = this.createQueryBuilder('transaction')
+    query
+      .select('date_trunc(\'day\', transaction.time)::timestamp as date')
+      .addSelect('SUM(transaction.value) as value')
+      .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
+      .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
+      .orderBy('date_trunc(\'day\', transaction.time)::timestamp', 'ASC')
+      .groupBy('date_trunc(\'day\', transaction.time)::timestamp')
+
+
+    const summs = await query.getRawMany()
+
+    summs.forEach(sum => {
+      sum.date = moment(sum.date).format('YYYY-MM-DD')
+      sum.value = +sum.value
+    })
+
+    this.logger.debug(`Result of query is`)
+    console.log(summs)
+    return summs as [{ date: string, value: number }]
+  }
 }

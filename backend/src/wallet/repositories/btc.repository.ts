@@ -74,35 +74,72 @@ export class BtcRepository extends Repository<WalletBTC> {
   }
 
   /*
-    Получение кошелька по его id
-    В интерфейсе указывается какую именно информацию необходимо получить
-    Если кошель не будет найден выбросит NotFound
-  */
+   Получение кошелька по его id
+   В интерфейсе указывается какую именно информацию необходимо получить
+   Если кошель не будет найден выбросит NotFound
+
+   Хештеги в транзакциях возвращаются в виде
+   __hashtags__
+
+   Но обратится к ним можно через transaction.hashtags
+
+   На данный момент костыль без решения
+
+   https://stackoverflow.com/questions/65608223/the-find-function-in-typeorm-return-field-with-underscores
+ */
 
   async getWallet(props: IGetWalletProps) {
-    const { walletID, user, transactions } = props
+    const { walletID, user, transactions, tsxHashtags } = props
 
-    let wallet = await this.getWalletById(walletID)
+    let query = this.createQueryBuilder('wallet')
 
-    if (!wallet) {
-      throw new NotFoundException(`Wallet with id ${walletID} found`)
-    }
+    const selections = ['wallet']
 
-    let result: any = {
-      id: wallet.id,
-      balance: wallet.balance,
-      address: wallet.address
-    }
+    query.where('wallet.id = :walletID', { walletID })
 
     if (user) {
-      result.user = wallet.user
+      query.innerJoinAndSelect('wallet.user', 'user')
+      selections.push('user')
     }
 
     if (transactions) {
-      result.transactions = await wallet.transactions
+      query.innerJoinAndSelect('wallet.transactions', 'transactions')
+      query.orderBy('transactions.time', 'ASC')
+      selections.push('transactions')
+
+      if (tsxHashtags) {
+        query.leftJoinAndSelect(
+          'transactions.hashtags',
+          'hashtags',
+          'transactions.id = hashtags.transactionId'
+        )
+        selections.push('hashtags')
+      }
     }
 
-    return result
+    query.select(selections)
+
+    let walletDB: any = await query.getOne()
+
+    if (!walletDB) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found`)
+    }
+
+    const wallet: any = {
+      id: walletDB.id,
+      balance: walletDB.balance,
+      address: walletDB.address
+    }
+
+    if (user) {
+      wallet.user = walletDB.user
+    }
+
+    if (transactions) {
+      wallet.transactions = walletDB.__transactions__
+    }
+
+    return wallet
   }
 
   /*
