@@ -33,3 +33,15 @@ export interface IAPIResponse<T> {
   errorMessage?: string;
   status: any;
 }
+
+export interface BTCResponse {
+  bitcoin: {
+    eur: number;
+  }
+}
+
+export interface ETHResponse {
+  ethereum: {
+    eur: number;
+  }
+}

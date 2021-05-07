@@ -73,7 +73,7 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
   providers: [
     LoadingService,
