@@ -68,6 +68,7 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
       transaction.from = tsxModel.from
       transaction.to = tsxModel.to
       transaction.value = tsxModel.value
+      transaction.fee = tsxModel.fee
 
       tokenTransactions.push(transaction)
     })

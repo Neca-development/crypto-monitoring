@@ -34,7 +34,7 @@ export class ERC20Transaction extends BaseEntity {
   @Column('decimal', { precision: 40, scale: 18 })
   value: number
 
-  @Column('decimal', { precision: 30, scale: 18 })
+  @Column('decimal', { precision: 30, scale: 18, nullable: true })
   fee: number
 
   @ManyToOne(type => ERC20Token, token => token.transactions, {
