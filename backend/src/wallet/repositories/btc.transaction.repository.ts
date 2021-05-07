@@ -37,6 +37,9 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
       transaction.from = element.from
       transaction.to = element.to
       transaction.value = element.value
+      //TODO
+      // Сейчас решение костыльное
+      transaction.fee = 0.0003
 
       walletTransactions.push(transaction)
     })
@@ -79,16 +82,19 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
   Так-же происходит сортировка по времени ASC
 */
 
-  async getTransactionsByWalletIds(walletIds: number[], options?: { hashtags?: boolean }): Promise<TransactionBTC[]> {
+  async getTransactionsByWalletIds(
+    walletIds: number[],
+    options?: { hashtags?: boolean }
+  ): Promise<TransactionBTC[]> {
     const query = this.createQueryBuilder('transaction')
     const selections = ['transaction']
 
-    if(!walletIds.length) return []
+    if (!walletIds.length) return []
 
     query
-    .innerJoin('transaction.wallet', 'wallet')
-    .where('wallet.id in (:...walletIds)', { walletIds })
-    .orderBy('transaction.time', 'ASC')
+      .innerJoin('transaction.wallet', 'wallet')
+      .where('wallet.id in (:...walletIds)', { walletIds })
+      .orderBy('transaction.time', 'ASC')
 
     if (options && options.hashtags) {
       query.leftJoin('transaction.hashtags', 'hashtags')
@@ -117,27 +123,22 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
   value: -666
 */
 
-  async getSumOfWalletsTsxByDays(days: number, wallets: WalletBTC[]): Promise<{ date: string, value: number }[]> {
-
-    const walletIds = []
-
-    wallets.forEach(wallet => {
-      walletIds.push(wallet.id)
-    })
-
-    if(!walletIds.length) return []
+  async getSumOfWalletsTsxByDays(
+    days: number,
+    walletIds: number[]
+  ): Promise<{ date: string; value: number }[]> {
+    if (!walletIds.length) return []
 
     this.logger.debug(`Walltids`)
     console.log(walletIds)
     const query = this.createQueryBuilder('transaction')
     query
-      .select('date_trunc(\'day\', transaction.time)::timestamp as date')
+      .select("date_trunc('day', transaction.time)::timestamp as date")
       .addSelect('SUM(transaction.value) as value')
       .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
       .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
-      .orderBy('date_trunc(\'day\', transaction.time)::timestamp', 'ASC')
-      .groupBy('date_trunc(\'day\', transaction.time)::timestamp')
-
+      .orderBy("date_trunc('day', transaction.time)::timestamp", 'ASC')
+      .groupBy("date_trunc('day', transaction.time)::timestamp")
 
     const summs = await query.getRawMany()
 
@@ -146,8 +147,47 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
       sum.value = +sum.value
     })
 
-    this.logger.debug(`Result of query is`)
+    this.logger.debug(`Result of btc:getSumOfWalletsTsxByDays query is`)
     console.log(summs)
-    return summs as [{ date: string, value: number }]
+    return summs as [{ date: string; value: number }]
+  }
+
+  /*
+    Отчёт
+    Показывает сумму комиссий оплаченных кошельками
+    Значения возвращаются на последние n дней
+    Сумма возвращается number-ом
+    Возвращает массив по типу
+
+    date: 2021-03-21
+    value: 666
+  */
+
+  async getSumOfWalletsFees(
+    days: number,
+    walletIds: number[]
+  ): Promise<{ date: string; value: number }[]> {
+    if (!walletIds.length) return []
+
+    const query = this.createQueryBuilder('transaction')
+    query
+      .select("date_trunc('day', transaction.time)::timestamp as date")
+      .addSelect('SUM(transaction.fee) as value')
+      .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
+      .andWhere(`transaction.type = false`)
+      .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
+      .orderBy("date_trunc('day', transaction.time)::timestamp", 'ASC')
+      .groupBy("date_trunc('day', transaction.time)::timestamp")
+
+    const summs = await query.getRawMany()
+
+    summs.forEach(sum => {
+      sum.date = moment(sum.date).format('YYYY-MM-DD')
+      sum.value = +sum.value
+    })
+
+    this.logger.debug(`Result of btc:getSumOfWalletsFees query is`)
+    console.log(summs)
+    return summs
   }
 }
