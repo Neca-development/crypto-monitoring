@@ -1,112 +1,76 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common'
-import * as _ from 'lodash'
-import { ERC20ContractService } from './classes/ERC20ContractService'
-import { ERC20TokenTypeRepository } from './repositories/ERC20-token-type.repository'
-import { ERC20TokenType } from './entities/ERC20-token-type.entity'
-import { InjectRepository } from '@nestjs/typeorm'
-import { ERC20TokenRepository } from './repositories/ERC20-token.repository'
-import { ERC20Token } from './entities/ERC20-token.entity'
-import { IERC20TranscationModel } from './interfaces/IERC20Transaction'
-import { ERC20TransactionRepository } from './repositories/ERC20-transaction.repository'
+import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
+import { IERC20TokenModel } from '../interfaces/IERC20Token'
+import { ERC20ContractsService } from './erc20-contracts.service'
+import { NumToEth } from 'src/helpers/NumToEth'
+
+/*
+  Сервис взаимодействует со сторонними api
+  Для получения информации по токенам и их транзакциям
+*/
 
 @Injectable()
 export class ERC20TokenProviderService {
   private readonly logger = new Logger(ERC20TokenProviderService.name)
 
-  private contractTokenServices: Map<string, ERC20ContractService> = new Map()
+  private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
   constructor(
-    @InjectRepository(ERC20TokenTypeRepository)
-    private erc20TokenTypeRepository: ERC20TokenTypeRepository,
-    @InjectRepository(ERC20TokenRepository)
-    private tokenRepository: ERC20TokenRepository,
-    @InjectRepository(ERC20TransactionRepository)
-    private transactionRepository: ERC20TransactionRepository,
+    private erc20ContractsService: ERC20ContractsService,
     private httpService: HttpService
   ) {}
 
-  private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
-
-  async onModuleInit() {
-    this.logger.log(`TokenService initialized`)
-
-    let types = await this.erc20TokenTypeRepository.getAllTypes()
-
-    types.forEach(type => {
-      let contractService: ERC20ContractService = new ERC20ContractService(type)
-      this.contractTokenServices.set(type.name, contractService)
-    })
-  }
-
-  private async getTokens(address: string) {
-    let tokens: ERC20Token[] = []
-
-    for await (let service of this.contractTokenServices) {
-      console.log(`In foreach`)
-      let balance = await service[1].getAddressBalance(address)
-      this.logger.debug(`Balance for address ${address} is ${balance}`)
-
-      if (balance) {
-        console.log(`Balance found`)
-        let token = await this.createToken(balance, service[1].tokenType)
-        if (token) {
-          this.logger.debug(`Created new token`)
-          console.log(token)
-          tokens.push(token)
-        }
-      }
-    }
-
-    return tokens
-  }
-
   async getTokensByAddress(address: string) {
-    let tokens = await this.getTokens(address)
+    let tokens = await this.erc20ContractsService.getTokensForAddress(address)
     this.logger.debug(`Tokens is`)
     console.log(tokens)
 
-    tokens.forEach(async token => {
+    for await (let token of tokens) {
       let transactions: IERC20TranscationModel[] = await this.getTokenTransactions(
         address,
         token
       )
 
-      this.logger.debug(`Transactions for token `)
-      this.logger.debug(token)
-      this.logger.debug(transactions)
+      this.logger.debug(`Transactions for token`)
 
-      await this.transactionRepository.addTransactionsByModel(
-        transactions.reverse(),
-        token
-      )
-    })
+      token.transactions = transactions
+    }
 
     this.logger.debug(`Tokens for address ${address}`)
-    this.logger.debug(tokens)
+    console.log(tokens)
     return tokens
   }
 
-  async createToken(balance: number, type: ERC20TokenType) {
-    let token = await this.tokenRepository.createToken({ balance, type })
-    return token
-  }
+  /*
+    Возвращает транзакции в asc порядке по времени
+  */
 
-  async getTokenTransactions(ethWalletAddress: string, token: ERC20Token) {
-    // Не забыть добавить ropsten
+  async getTokenTransactions(
+    ethWalletAddress: string,
+    token: IERC20TokenModel
+  ) {
     let requestUrl = `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&address=${ethWalletAddress}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${this.etherscanApiKey}`
 
     let result = await this.httpService.get(requestUrl).toPromise()
 
     let rawTransactions = result.data.result
 
-    let transactions = this.transformTransactions(
-      rawTransactions,
-      ethWalletAddress,
-      token.type.symbol
-    )
+    let transactions: IERC20TranscationModel[] = []
+
+    if (rawTransactions.length) {
+      transactions = this.transformTransactions(
+        rawTransactions,
+        ethWalletAddress,
+        token.type.symbol
+      )
+    }
 
     return transactions
   }
+
+  /*
+    Возвращает транзакции в asc порядке по времени
+  */
 
   private transformTransactions(
     rawTransactions: any,
@@ -116,11 +80,11 @@ export class ERC20TokenProviderService {
     let transactions: IERC20TranscationModel[] = []
 
     rawTransactions.forEach(tsx => {
-      if (tsx.value == 0) {
+      if (tsx.tokenSymbol != _tokenSymbol) {
         return
       }
 
-      if (tsx.tokenSymbol != _tokenSymbol) {
+      if (tsx.value == 0) {
         return
       }
 
@@ -131,7 +95,8 @@ export class ERC20TokenProviderService {
         from: tsx.from,
         to: tsx.to,
         hash: tsx.hash,
-        value: +tsx.value
+        value: +tsx.value,
+        fee: NumToEth(+tsx.gasPrice) * +tsx.gasUsed
       }
 
       if (+tsx.tokenDecimal > 0) {
@@ -141,10 +106,9 @@ export class ERC20TokenProviderService {
       transactions.push(transaction)
     })
 
-    return transactions
+    return transactions.reverse()
   }
 }
-
 //0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
 //this.web3.utils.sha3('Transfer(address,address,uint256)')
 
@@ -201,34 +165,6 @@ export class ERC20TokenProviderService {
 
 // const subscribedEvents = {}
 // // Subscriber method
-// const subscribeLogEvent = (contract, eventName) => {
-//   const eventJsonInterface = _.find(
-//     contract._jsonInterface,
-//     o => o.name === eventName && o.type === 'event'
-//   )
-//   const subscription = this.web3.eth.subscribe(
-//     'logs',
-//     {
-//       address: contract.options.address,
-//       topics: [eventJsonInterface.signature]
-//     },
-//     async (error, result) => {
-//       console.log(result)
-//       if (!error) {
-//         const eventObj = this.web3.eth.abi.decodeLog(
-//           eventJsonInterface.inputs,
-//           result.data,
-//           result.topics.slice(1)
-//         )
-//         console.log(`New ${eventName}!`, eventObj)
-//         console.log(
-//           await this.web3HTTP.eth.getTransaction(result.transactionHash)
-//         )
-//       }
-//     }
-//   )
-//   subscribedEvents[eventName] = subscription
-// }
 
 // subscribeLogEvent(tokenInst, 'Transfer')
 // }
