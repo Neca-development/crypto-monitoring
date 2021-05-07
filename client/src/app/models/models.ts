@@ -20,6 +20,7 @@ export interface Transaction {
   ToAdress: string;
   date: Date;
   type: "In" | "Out";
+  time: string;
 }
 
 export interface IAuthorizedUser {
