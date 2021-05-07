@@ -1,4 +1,4 @@
-<div class="container client">
+<div *ngIf="wallet" class="container client">
   <button
     mat-button
     color="accent"
@@ -14,9 +14,26 @@
         ><b>Owner:</b> {{ wallet.holderName }}</span
       >
     </h2>
-    <button mat-flat-button color="primary" class="client__block-explorer">
+    <a
+      *ngIf="wallet.type === 'BTC'"
+      [href]="'https://www.blockchain.com/btc/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
       Block Explorer
-    </button>
+    </a>
+    <a
+      *ngIf="wallet.type === 'ETH'"
+      [href]="'https://etherscan.io/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
+      Block Explorer
+    </a>
   </div>
   <div class="client__row">
     <div class="client__left">
@@ -26,12 +43,13 @@
       <div class="client__currency">
         <mat-icon class="client__currency-head">generating_tokens</mat-icon>
         <span
-          >{{ wallet.balance }} <b>{{ wallet.type }}</b></span
+          >{{ +wallet.balance === 0 ? 0 : wallet.balance }}
+          <b>{{ wallet.type }}</b></span
         >
       </div>
       <div class="client__currency">
         <mat-icon class="client__currency-head">euro_symbol</mat-icon>
-        <span>{{ wallet.balanceEur }} <b>EUR</b></span>
+        <span>{{ wallet.balanceEur | number: "1.0-2" }} <b>EUR</b></span>
       </div>
     </div>
   </div>
@@ -46,5 +64,6 @@
   </div> -->
   <app-transactions-history
     [data]="wallet.transactions"
+    [type]="wallet.type"
   ></app-transactions-history>
 </div>

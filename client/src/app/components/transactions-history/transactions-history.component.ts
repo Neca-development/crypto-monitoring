@@ -17,13 +17,16 @@ import { Transaction } from "src/app/models/models";
 })
 export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   @Input() data: Transaction[];
+  @Input() type?: string;
   tags: string[] = ["lorem", "ipsum", "dolor", "sit", "amet"];
   displayedColumns: string[] = [
     "coin",
     "txHash",
-    "address",
+    "from",
+    "to",
     "date",
     "type",
+    "val",
     "link",
   ];
   dataSource: MatTableDataSource<Transaction>;

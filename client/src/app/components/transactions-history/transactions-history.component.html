@@ -27,19 +27,37 @@
       <!-- ID Column -->
       <ng-container matColumnDef="coin">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Coin</th>
-        <td mat-cell *matCellDef="let row">{{ row.chain }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.chain || type }}</td>
       </ng-container>
 
       <!-- Progress Column -->
       <ng-container matColumnDef="txHash">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>TX Hash</th>
-        <td mat-cell *matCellDef="let row">{{ row.hash }}</td>
+        <td class="text-overflow" mat-cell *matCellDef="let row">
+          <span [matTooltip]="row.hash">
+            {{ row.hash }}
+          </span>
+        </td>
       </ng-container>
 
       <!-- Name Column -->
-      <ng-container matColumnDef="address">
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>From Address</th>
+        <td class="text-overflow" mat-cell *matCellDef="let row">
+          <span [matTooltip]="row.from">
+            {{ row.from }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="to">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>To Address</th>
-        <td mat-cell *matCellDef="let row">{{ row.to }}</td>
+        <td class="text-overflow" mat-cell *matCellDef="let row">
+          <span [matTooltip]="row.to">
+            {{ row.to }}
+          </span>
+        </td>
       </ng-container>
 
       <!-- Color Column -->
@@ -55,12 +73,35 @@
           {{ row.type }}
         </td>
       </ng-container>
+      <ng-container matColumnDef="val">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.value }}
+        </td>
+      </ng-container>
       <ng-container matColumnDef="link">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           Block Explorer
         </th>
         <td mat-cell *matCellDef="let row">
-          <button mat-button color="primary">Block Explorer</button>
+          <a
+            *ngIf="row.chain === 'BTC' || type === 'BTC'"
+            [href]="'https://www.blockchain.com/btc/tx/' + row.hash"
+            target="_blank"
+            mat-button
+            color="primary"
+          >
+            Block Explorer
+          </a>
+          <a
+            *ngIf="row.chain === 'ETH' || type === 'ETH'"
+            [href]="'https://etherscan.io/tx/' + row.hash"
+            target="_blank"
+            mat-button
+            color="primary"
+          >
+            Block Explorer
+          </a>
         </td>
       </ng-container>
 

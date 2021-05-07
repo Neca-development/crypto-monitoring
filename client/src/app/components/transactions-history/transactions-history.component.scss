@@ -30,11 +30,19 @@
     }
     th {
       font-size: 14px;
+      padding: 15px;
+      user-select: none;
     }
     td {
-      padding-bottom: 15px;
-      padding-top: 15px;
+      padding: 15px;
       font-size: 13px;
+      &.text-overflow span {
+        display: inline-block;
+        max-width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     * {
       background: transparent;

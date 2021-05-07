@@ -11,9 +11,9 @@ import { AddUserComponent } from "./add-user/add-user.component";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
-  searchVal: string;
-  users: any;
-  stats: any;
+  searchVal = "";
+  users: any = [];
+  stats: any = {};
 
   constructor(
     private _usersService: UsersService,
