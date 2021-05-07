@@ -36,6 +36,8 @@ import { WalletComponent } from "./views/client/wallet/wallet.component";
 import { MainComponent } from "./views/client/main/main.component";
 import { LoadingService } from "./services/loading.service";
 import { HttpRequestInterceptor } from "./http-request-interceptor";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { ChartComponent } from "./components/chart/chart.component";
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     TransactionsHistoryComponent,
     WalletComponent,
     MainComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +77,7 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     MatPaginatorModule,
     MatSortModule,
     MatTooltipModule,
+    NgxChartsModule,
   ],
   providers: [
     LoadingService,

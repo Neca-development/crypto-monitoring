@@ -10,7 +10,7 @@ import { NgxChartsModule } from "@swimlane/ngx-charts";
 export class ChartComponent {
   multi: any = [
     {
-      name: "Balancef",
+      name: "Balance",
       series: [
         {
           name: "2021-05-07",
@@ -135,7 +135,7 @@ export class ChartComponent {
       ],
     },
   ];
-  view: any[] = [700, 300];
+  view: any[] = [null, 450];
 
   // options
   legend = true;
@@ -145,7 +145,7 @@ export class ChartComponent {
   yAxis = true;
   showYAxisLabel = true;
   showXAxisLabel = true;
-  xAxisLabel = "name";
+  xAxisLabel = "Date";
   yAxisLabel = "Value";
   timeline = true;
 
