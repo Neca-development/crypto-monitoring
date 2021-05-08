@@ -19,8 +19,4 @@ email:
   service: 'gmail'
   user: 'monitoringcrypto@gmail.com'
   receiver: 'cscrypto29@gmail.com'
-<<<<<<< HEAD
   password: '123123Opus'
-=======
-  password: '123123Opus'
->>>>>>> m2-deploy

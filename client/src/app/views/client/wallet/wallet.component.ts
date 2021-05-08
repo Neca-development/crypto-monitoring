@@ -39,8 +39,8 @@ export class WalletComponent implements OnInit {
     console.log('average cost', this.averageCost);
     this.purchasePrice = +this.averageCost * +this.wallet.balance || 0;
     console.log('crypto:', this.ethOrBtc);
-    this.profitEUR = this.ethOrBtc - +this.purchasePrice;
-    this.profitPercent = this.profitEUR / this.ethOrBtc * 100;
+    this.profitEUR = +this.wallet.balanceEur - +this.purchasePrice;
+    this.profitPercent = this.profitEUR / this.purchasePrice * 100;
     console.log(this.wallet);
   }
 }
