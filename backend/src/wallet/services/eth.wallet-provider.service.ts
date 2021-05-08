@@ -41,8 +41,6 @@ export class EthWalletProviderService {
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
   private web3 = new Web3.default(this.infuraUrl)
-<<<<<<< HEAD
-=======
 
   /*
     Получение со стороннего api кошелька и его транзакций в виде WalletEthModel
@@ -50,7 +48,6 @@ export class EthWalletProviderService {
     Получает кошель и транзакции
     Преобразует кошель в WalletEthModel
     И его транзакции в TransactionEthModel
->>>>>>> m2-deploy
 
     Транзакции возвращаются отфильтрованные по времени в asc порядке
     Где в самом начале - старые, в конце - новые
@@ -106,11 +103,7 @@ export class EthWalletProviderService {
     try {
       response = await this.httpService
         .get(
-<<<<<<< HEAD
-          `https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=${this.etherscanApiKey}}`,
-=======
           `https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
->>>>>>> m2-deploy
           {}
         )
         .toPromise()
@@ -126,8 +119,6 @@ export class EthWalletProviderService {
       )
     }
 
-<<<<<<< HEAD
-=======
     return response.data.result
   }
 
@@ -135,7 +126,6 @@ export class EthWalletProviderService {
     Трансформация сырых транзакций в TransactionEthModel[]
     Возвращает массив транзакций в desc ортировке
   */
->>>>>>> m2-deploy
 
   private transformTransactions(
     rawTransactions: any,
