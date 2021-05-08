@@ -40,7 +40,7 @@ export class EthWalletProviderService {
 
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
-  private web3 = new Web3.default(this.infuraTestUrl)
+  private web3 = new Web3.default(this.infuraUrl)
 
   /*
     Получение со стороннего api кошелька и его транзакций в виде WalletEthModel
@@ -103,7 +103,7 @@ export class EthWalletProviderService {
     try {
       response = await this.httpService
         .get(
-          `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+          `https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
           {}
         )
         .toPromise()
