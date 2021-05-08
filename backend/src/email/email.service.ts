@@ -3,6 +3,11 @@ import { createTransport } from 'nodemailer'
 import * as Mail from 'nodemailer/lib/mailer'
 import Config from 'config'
 
+/*
+  Сервис email уведомлений
+  Отправляет email уведомления от ящика указанного в конфиге
+*/
+
 @Injectable()
 export class EmailService {
   private nodemailerTransport
@@ -28,7 +33,7 @@ export class EmailService {
     return this.nodemailerTransport.sendMail(options)
   }
 
-  sendTestMail() {
+  private sendTestMail() {
     this.sendMail({
       to: 'QVing612@gmail.com',
       subject: 'test',

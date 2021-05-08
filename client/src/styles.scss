@@ -96,3 +96,35 @@ body {
       inset -4px -4px 11px white;
   }
 }
+
+.search {
+  position: relative;
+  &__input {
+    width: 100%;
+    justify-self: end;
+    padding: 11px 21px 11px 50px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
+    line-height: 140.62%;
+    border: 0;
+    background-color: var(--base-bg);
+    box-shadow: var(--inner-shadow);
+
+    ::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    &:active,
+    &:focus {
+      outline: none;
+      box-shadow: 5px 5px 4px rgb(193 193 193 / 17%),
+        -4px -3px 6px 0px rgb(243 243 243);
+    }
+  }
+  &__icon {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+  }
+}

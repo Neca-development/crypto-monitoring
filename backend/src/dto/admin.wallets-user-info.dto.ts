@@ -27,4 +27,8 @@ export class GetUserWalletsInfo {
   @IsOptional()
   @ToBoolean()
   transactions: boolean
+
+  @IsOptional()
+  @ToBoolean()
+  balancesHistory: boolean
 }

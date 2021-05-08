@@ -14,7 +14,18 @@ import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 export class BtcRepository extends Repository<WalletBTC> {
   private readonly logger = new Logger(BtcRepository.name)
 
-  async addWaletByModel(props: { address: string; balance: number }) {
+  /*
+    Добавление кошелька по модели
+    Создаёт кошель в бд
+    Затем его возвращает
+    
+    В случае если кошель с переданным адресом уже существует выбросит Conflict
+  */
+
+  async addWaletByModel(props: {
+    address: string
+    balance: number
+  }): Promise<WalletBTC> {
     let wallet = this.create()
     wallet.address = props.address
     wallet.balance = props.balance
@@ -31,7 +42,13 @@ export class BtcRepository extends Repository<WalletBTC> {
     }
   }
 
-  async deleteWalletById(walletID: number) {
+  /*
+    Удаление кошелька по id
+    выбрасывает нотфоунд если кошелек не был найден
+    Возвращает удалённый кошель
+  */
+
+  async deleteWalletById(walletID: number): Promise<WalletBTC> {
     let wallet = await this.findOne({ id: walletID })
     if (!wallet) {
       throw new NotFoundException(`Wallet with id ${walletID} not found`)
@@ -40,9 +57,9 @@ export class BtcRepository extends Repository<WalletBTC> {
   }
 
   /*
-    Получение суммы балансов всех кошельков
+    Получение суммы балансов всех btc кошельков
   */
-  async getBalanceSumm() {
+  async getBalanceSumm(): Promise<number> {
     let query = this.createQueryBuilder('wallet')
     query.select('SUM(wallet.balance)', 'sum')
     let result = await query.getRawOne()
@@ -56,33 +73,82 @@ export class BtcRepository extends Repository<WalletBTC> {
     return await this.find()
   }
 
+  /*
+   Получение кошелька по его id
+   В интерфейсе указывается какую именно информацию необходимо получить
+   Если кошель не будет найден выбросит NotFound
+
+   Хештеги в транзакциях возвращаются в виде
+   __hashtags__
+
+   Но обратится к ним можно через transaction.hashtags
+
+   На данный момент костыль без решения
+
+   https://stackoverflow.com/questions/65608223/the-find-function-in-typeorm-return-field-with-underscores
+ */
+
   async getWallet(props: IGetWalletProps) {
-    const { walletID, user, transactions } = props
+    const { walletID, user, transactions, tsxHashtags } = props
 
-    let wallet = await this.getWalletById(walletID)
+    let query = this.createQueryBuilder('wallet')
 
-    if (!wallet) {
-      throw new NotFoundException(`Wallet with id ${walletID} found`)
-    }
+    const selections = ['wallet']
 
-    let result: any = {
-      id: wallet.id,
-      balance: wallet.balance,
-      address: wallet.address
-    }
+    query.where('wallet.id = :walletID', { walletID })
 
     if (user) {
-      result.user = wallet.user
+      query.innerJoinAndSelect('wallet.user', 'user')
+      selections.push('user')
     }
 
     if (transactions) {
-      result.transactions = await wallet.transactions
+      query.innerJoinAndSelect('wallet.transactions', 'transactions')
+      query.orderBy('transactions.time', 'ASC')
+      selections.push('transactions')
+
+      if (tsxHashtags) {
+        query.leftJoinAndSelect(
+          'transactions.hashtags',
+          'hashtags',
+          'transactions.id = hashtags.transactionId'
+        )
+        selections.push('hashtags')
+      }
     }
 
-    return result
+    query.select(selections)
+
+    let walletDB: any = await query.getOne()
+
+    if (!walletDB) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found`)
+    }
+
+    const wallet: any = {
+      id: walletDB.id,
+      balance: walletDB.balance,
+      address: walletDB.address
+    }
+
+    if (user) {
+      wallet.user = walletDB.user
+    }
+
+    if (transactions) {
+      wallet.transactions = walletDB.__transactions__
+    }
+
+    return wallet
   }
 
-  async getUserAdresses(user: User) {
+  /*
+    Получение списка адресов кошельков клиента
+  */
+
+  async getUserAdresses(
+    user: User
+  ): Promise<{ address: string; id: number }[]> {
     let query = this.createQueryBuilder('wallet')
       .select('wallet.address')
       .addSelect('wallet.id')
@@ -92,7 +158,11 @@ export class BtcRepository extends Repository<WalletBTC> {
     return result
   }
 
-  async getUserBalanceSumm(user: User) {
+  /*
+    Получение суммы балансов всех btc кошельков пользователя
+  */
+
+  async getUserBalanceSumm(user: User): Promise<number> {
     let query = this.createQueryBuilder('wallet')
     query
       .select('SUM(wallet.balance)', 'sum')
@@ -101,24 +171,15 @@ export class BtcRepository extends Repository<WalletBTC> {
     if (result.sum == null) {
       return 0
     }
-    return result.sum
+    return +result.sum
   }
 
-  // async getInfoByUser(props: IGetUserWalletsInfo) {
-  //   const { user, wallets, transactions } = props
+  /*
+    Получение кошеля по id
+    Ничего не выбрасывает в случае ненахоода
+  */
 
-  //   const userWallets = await user.btcWallets
-
-  //   let result: any = {}
-
-  //   if (wallets) {
-  //     result.wallets = userWallets
-  //   }
-
-  //   let allTransactions: TransactionBTC[] = []
-  // }
-
-  async getWalletById(id: number) {
+  async getWalletById(id: number): Promise<WalletBTC> {
     return await this.findOne({ id })
   }
 }

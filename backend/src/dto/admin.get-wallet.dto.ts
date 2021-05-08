@@ -19,9 +19,21 @@ export class GetWalletDto {
 
   @IsOptional()
   @ToBoolean()
+  transactions: boolean
+
+  @IsOptional()
+  @ToBoolean()
+  hashtags: boolean
+
+  @IsOptional()
+  @ToBoolean()
   balanceInEur: boolean
 
   @IsOptional()
   @ToBoolean()
-  transactions: boolean
+  balanceHistory: boolean
+
+  @IsOptional()
+  @ToBoolean()
+  erc20tokens: boolean
 }

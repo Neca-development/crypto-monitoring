@@ -7,18 +7,22 @@ import { BtcService } from './wallet/services/btc.service'
 import { EthWalletProviderService } from './wallet/services/eth.wallet-provider.service'
 import { EmailService } from './email/email.service'
 import { EmailModule } from './email/email.module'
-import { EthMonitoringService } from './monitoring/eth-monitoring.service'
 import { EthRepository } from './wallet/repositories/eth.repository'
 import { EthTransactionRepository } from './wallet/repositories/eth.transaction.repository'
 import { BtcWalletProviderService } from './wallet/services/btc.wallet-provider.service'
 import { BtcRepository } from './wallet/repositories/btc.repository'
 import { BtcTransactionRepository } from './wallet/repositories/btc.transaction.repository'
-import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { EthMonitoringService } from './monitoring/eth-monitoring.service'
+import { BtcMonitoringService } from './monitoring/btc-monitoring.service'
+import { LoggerModule } from 'nestjs-pino'
 
+// TODO
+// Подключить мониторинги перед депой
 @Module({
   imports: [
+    LoggerModule.forRoot({ pinoHttp: { enabled: false } }),
     HttpModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     TypeOrmModule.forFeature([
@@ -41,8 +45,8 @@ import { join } from 'path'
     EthWalletProviderService,
     EmailService,
     EthMonitoringService,
-    BtcWalletProviderService,
-    BtcMonitoringService
+    BtcMonitoringService,
+    BtcWalletProviderService
   ]
 })
 export class AppModule {}

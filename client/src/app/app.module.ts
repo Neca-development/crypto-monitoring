@@ -6,7 +6,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -24,6 +24,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSelectModule } from "@angular/material/select";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
@@ -33,6 +34,8 @@ import { ClientComponent } from "./views/client/client.component";
 import { TransactionsHistoryComponent } from "./components/transactions-history/transactions-history.component";
 import { WalletComponent } from "./views/client/wallet/wallet.component";
 import { MainComponent } from "./views/client/main/main.component";
+import { LoadingService } from "./services/loading.service";
+import { HttpRequestInterceptor } from "./http-request-interceptor";
 
 @NgModule({
   declarations: [
@@ -70,8 +73,16 @@ import { MainComponent } from "./views/client/main/main.component";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatTooltipModule
   ],
-  providers: [],
+  providers: [
+    LoadingService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

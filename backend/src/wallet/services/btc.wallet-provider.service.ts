@@ -4,19 +4,24 @@ import {
   Logger,
   NotFoundException
 } from '@nestjs/common'
-import { WalletBtcModel } from '../entities/Wallet-btc.model'
+import { WalletBtcModel } from '../interfaces/Wallet-btc.model'
 import { NumToBtc } from '../../helpers/NumToBtc'
-import { TransactionBtcModel } from '../entities/Transaction-btc.model'
+import { TransactionBtcModel } from '../interfaces/Transaction-btc.model'
 
 /*
-    Mainnet infura
-    http: https://mainnet.infura.io/v3/28b42a756903430db51aed449ff78ad6
-    ws: wss://mainnet.infura.io/ws/v3/28b42a756903430db51aed449ff78ad6
+  Mainnet infura
+  http: https://mainnet.infura.io/v3/28b42a756903430db51aed449ff78ad6
+  ws: wss://mainnet.infura.io/ws/v3/28b42a756903430db51aed449ff78ad6
   
-    Test:
-    http: https://ropsten.infura.io/v3/43adaa094d794787ba472b1e7d7e00c6
-    wss: wss://ropsten.infura.io/ws/v3/43adaa094d794787ba472b1e7d7e00c6
-  */
+  Test:
+  http: https://ropsten.infura.io/v3/43adaa094d794787ba472b1e7d7e00c6
+  wss: wss://ropsten.infura.io/ws/v3/43adaa094d794787ba472b1e7d7e00c6
+*/
+
+/*
+  Сервис отвечающий добавление кошелька
+  Связывается со сторонними api чтобы получить данные о криптовых кошельках
+*/
 
 @Injectable()
 export class BtcWalletProviderService {

@@ -17,13 +17,16 @@ import { Transaction } from "src/app/models/models";
 })
 export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   @Input() data: Transaction[];
+  @Input() type?: string;
   tags: string[] = ["lorem", "ipsum", "dolor", "sit", "amet"];
   displayedColumns: string[] = [
     "coin",
     "txHash",
-    "address",
+    "from",
+    "to",
     "date",
     "type",
+    "val",
     "link",
   ];
   dataSource: MatTableDataSource<Transaction>;
@@ -42,9 +45,9 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
+    // @ts-ignore
+    const filterValue = (event.target as HTMLInputElement).value as Date;
+    this.dataSource.data = this.data.filter((t) => new Date(t.time).toDateString() === filterValue.toDateString());
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }

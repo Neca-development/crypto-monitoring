@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
+<<<<<<< HEAD
   serverUrl: "",
+=======
+  serverUrl: "http://135.181.148.82",
+>>>>>>> m2-deploy
 };
 
 /*
