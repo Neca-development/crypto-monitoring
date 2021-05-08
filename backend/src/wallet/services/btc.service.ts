@@ -19,7 +19,7 @@ export class BtcService {
     private btcTransactionRepository: BtcTransactionRepository,
     @InjectRepository(BtcRepository)
     private btcRepository: BtcRepository
-  ) { }
+  ) {}
 
   /*
     Создание нового кошелька
@@ -97,7 +97,6 @@ export class BtcService {
     return result
   }
 
-
   /*
   Получение отчета по сумме балансов кошелька за последние n дней
   Возвращает массив по типу
@@ -109,51 +108,70 @@ export class BtcService {
 
   async getWalletBalanceStats(days, wallet: WalletBTC) {
     let totalBalance = +wallet.balance
-    let summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(days, [wallet])
-
-    if (!summs.length) {
-      return []
-    }
+    let summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(
+      days,
+      [wallet.id]
+    )
+    const feesSumm = await this.btcTransactionRepository.getSumOfWalletsFees(
+      days,
+      [wallet.id]
+    )
 
     const summsMap: Map<string, number> = new Map()
+    const feesMap: Map<string, number> = new Map()
 
     summs.forEach(sum => {
       summsMap.set(sum.date, sum.value)
     })
 
-    console.log(`Map is`)
+    feesSumm.forEach(sum => {
+      feesMap.set(sum.date, +sum.value)
+    })
+
+    this.logger.debug(`Map is`)
     console.log(summsMap)
 
-    const summsReport = [{
-      date: moment().format('YYYY-MM-DD'),
-      value: totalBalance
-    }]
+    const summsReport = [
+      {
+        date: moment().format('YYYY-MM-DD'),
+        value: totalBalance
+      }
+    ]
 
     for (let i = 1; i < days; i++) {
-
       const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
         if (sumForDay > 0) {
-          totalBalance += sumForDay
-        } else {
           totalBalance -= sumForDay
+        } else {
+          totalBalance += sumForDay
         }
       }
 
-      if (totalBalance < 0) {
-        this.logger.debug(`Balance < 0.01 found :${totalBalance}`)
-        totalBalance = 0
+      const ethFee = feesMap.get(date)
+      this.logger.debug(`Fee summ is ${ethFee}`)
+      if (ethFee) {
+        totalBalance -= ethFee
       }
+
+      //0.000841888999999707
+      // this.logger.debug(`Balance now ${totalBalance}`)
+      // if (totalBalance < 0.00001) {
+      //   this.logger.debug(`Balance < 0.01 found`)
+      //   totalBalance = 0
+      // }
 
       const record: any = {
         date,
         value: totalBalance
       }
 
-
       summsReport.push(record)
     }
+
+    this.logger.debug(`Summs btc report is`)
+    console.log(summsReport)
 
     return summsReport
   }
@@ -167,54 +185,76 @@ export class BtcService {
 }
 */
 
-
   async getUserBalanceStats(days: number, user: User) {
     let totalBalance = await this.btcRepository.getUserBalanceSumm(user)
     totalBalance = +totalBalance
     const wallets = await user.btcWallets
-
-    if (!wallets.length) {
-      return []
+    if(!wallets.length) {
+      return
     }
-
-    const summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(days, wallets)
-
-    if (!summs.length) {
-      return []
-    }
+    const walletIds = wallets.map(wallet => wallet.id)
+    let summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(
+      days,
+      walletIds
+    )
+    const feesSumm = await this.btcTransactionRepository.getSumOfWalletsFees(
+      days,
+      walletIds
+    )
 
     const summsMap: Map<string, number> = new Map()
+    const feesMap: Map<string, number> = new Map()
 
     summs.forEach(sum => {
       summsMap.set(sum.date, sum.value)
     })
 
-    const summsReport = [{
-      date: moment().format('YYYY-MM-DD'),
-      value: totalBalance
-    }]
+    feesSumm.forEach(sum => {
+      feesMap.set(sum.date, +sum.value)
+    })
+
+    this.logger.debug(`Map is`)
+    console.log(summsMap)
+
+    const summsReport = [
+      {
+        date: moment().format('YYYY-MM-DD'),
+        value: totalBalance
+      }
+    ]
 
     for (let i = 1; i < days; i++) {
-
       const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
-        totalBalance += sumForDay
+        if (sumForDay > 0) {
+          totalBalance += sumForDay
+        } else {
+          totalBalance -= sumForDay
+        }
       }
 
-      if (totalBalance < 0) {
-        this.logger.debug(`Balance < 0.01 found :${totalBalance}`)
-        totalBalance = 0
+      const fee = feesMap.get(date)
+      this.logger.debug(`Fee summ is ${fee}`)
+      if (fee) {
+        totalBalance -= fee
       }
+
+      //0.000841888999999707
+      // this.logger.debug(`Balance now ${totalBalance}`)
+      // if (totalBalance < 0.00001) {
+      //   this.logger.debug(`Balance < 0.01 found`)
+      //   totalBalance = 0
+      // }
 
       const record: any = {
         date,
         value: totalBalance
       }
 
-
       summsReport.push(record)
     }
+
 
     return summsReport
   }

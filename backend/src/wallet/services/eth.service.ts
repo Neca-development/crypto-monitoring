@@ -10,6 +10,8 @@ import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 import { EthRepository } from '../repositories/eth.repository'
 import { EthTransactionRepository } from '../repositories/eth.transaction.repository'
 import { EthWalletProviderService } from './eth.wallet-provider.service'
+import { json } from 'express'
+import { ERC20TransactionRepository } from 'src/tokens/repositories/ERC20-transaction.repository'
 
 @Injectable()
 export class EthService {
@@ -20,7 +22,9 @@ export class EthService {
     private ethTsxRepository: EthTransactionRepository,
     @InjectRepository(EthRepository)
     private ethRepository: EthRepository,
-    @InjectPinoLogger(EthService.name) private readonly logger: PinoLogger
+    @InjectPinoLogger(EthService.name) private readonly logger: PinoLogger,
+    @InjectRepository(ERC20TransactionRepository)
+    private erc20tsxRepository: ERC20TransactionRepository
   ) {}
 
   /*
@@ -112,13 +116,144 @@ export class EthService {
   async getWalletBalanceStats(days, wallet: WalletETH) {
     let totalBalance = +wallet.balance
     let summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(days, [
-      wallet
+      wallet.id
+    ])
+    const feesSumm = await this.ethTsxRepository.getSumOfWalletsFees(days, [
+      wallet.id
+    ])
+    const tokenFees = await this.erc20tsxRepository.getSumOfWalletsFees(days, [
+      wallet.id
     ])
 
     const summsMap: Map<string, number> = new Map()
+    const ethFeesMap: Map<string, number> = new Map()
+    const tokenFeesMap: Map<string, number> = new Map()
 
     summs.forEach(sum => {
       summsMap.set(sum.date, sum.value)
+    })
+
+    feesSumm.forEach(sum => {
+      ethFeesMap.set(sum.date, +sum.value)
+    })
+
+    tokenFees.forEach(sum => {
+      tokenFeesMap.set(sum.date, +sum.value)
+    })
+
+    console.log(`Map is`)
+    console.log(summsMap)
+
+    const summsReport = [
+      {
+        date: moment().format('YYYY-MM-DD'),
+        value: totalBalance
+      }
+    ]
+
+    for (let i = 1; i < days; i++) {
+      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
+      const sumForDay = summsMap.get(date)
+      if (sumForDay) {
+        if (sumForDay > 0) {
+          totalBalance -= sumForDay
+        } else {
+          totalBalance += sumForDay
+        }
+      }
+      const ethFee = ethFeesMap.get(date)
+      this.logger.debug(`Fee summ is ${ethFee}`)
+      if (ethFee) {
+        totalBalance -= ethFee
+      }
+
+      const tokenFee = tokenFeesMap.get(date)
+      this.logger.debug(`Fee summ is ${tokenFee}`)
+      if (tokenFee) {
+        totalBalance -= tokenFee
+      }
+
+      if (totalBalance < 0.001) {
+        totalBalance = 0
+      }
+
+
+      //0.000841888999999707
+      //   this.logger.debug(`Balance now`, totalBalance)
+      // if (totalBalance < 0.001) {
+      //   console.log(`Balance < 0.01 found`)
+      //   totalBalance = 0
+      // }
+
+      const record: any = {
+        date,
+        value: totalBalance
+      }
+
+      summsReport.push(record)
+    }
+
+    return summsReport
+  }
+
+  /*
+  Получение отчета по сумме балансов всех eth кошельков пользователя за последние n дней
+  Возвращает массив по типу
+  {
+    date: '2021-03-20'
+    value: 666
+  }
+*/
+
+  async onModuleInit() {
+    // const wallet = await this.ethRepository.getWalletById(1)
+    // const feesSumm = await this.ethTsxRepository.getSumOfWalletsFees(30, [
+    //   wallet.id
+    // ])
+    // console.log(`Sum of fess is`)
+    // console.log(feesSumm)
+  }
+
+  async getUserBalanceStats(days: number, user: User) {
+    let totalBalance = await this.ethRepository.getUserBalanceSumm(user)
+    this.logger.debug(
+      `Total balance in eth:getUserBalanceStats ${totalBalance}`
+    )
+    const wallets = await user.ethWallets
+
+    if (!wallets.length) {
+      return []
+    }
+    const walletIds = wallets.map(wallet => {
+      return wallet.id
+    })
+    let summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(
+      days,
+      walletIds
+    )
+    const feesSumm = await this.ethTsxRepository.getSumOfWalletsFees(
+      days,
+      walletIds
+    )
+    const tokenFees = await this.erc20tsxRepository.getSumOfWalletsFees(
+      days,
+      walletIds
+    )
+
+    const summsMap: Map<string, number> = new Map()
+    const ethFeesMap: Map<string, number> = new Map()
+    const tokenFeesMap: Map<string, number> = new Map()
+
+    summs.forEach(sum => {
+      summsMap.set(sum.date, sum.value)
+    })
+
+    feesSumm.forEach(sum => {
+      ethFeesMap.set(sum.date, +sum.value)
+    })
+
+    tokenFees.forEach(sum => {
+      tokenFeesMap.set(sum.date, +sum.value)
     })
 
     console.log(`Map is`)
@@ -142,12 +277,28 @@ export class EthService {
         }
       }
 
-      //0.000841888999999707
-      this.logger.debug(`Balance now`, totalBalance)
+      const ethFee = ethFeesMap.get(date)
+      this.logger.debug(`Fee summ is ${ethFee}`)
+      if (ethFee) {
+        totalBalance -= ethFee
+      }
+
+      const tokenFee = tokenFeesMap.get(date)
+      this.logger.debug(`Fee summ is ${tokenFee}`)
+      if (tokenFee) {
+        totalBalance -= tokenFee
+      }
+
       if (totalBalance < 0.001) {
-        console.log(`Balance < 0.01 found`)
         totalBalance = 0
       }
+
+      //0.000841888999999707
+      //   this.logger.debug(`Balance now`, totalBalance)
+      // if (totalBalance < 0.001) {
+      //   console.log(`Balance < 0.01 found`)
+      //   totalBalance = 0
+      // }
 
       const record: any = {
         date,
@@ -156,74 +307,6 @@ export class EthService {
 
       summsReport.push(record)
     }
-
-    return summsReport
-  }
-
-  /*
-  Получение отчета по сумме балансов всех eth кошельков пользователя за последние n дней
-  Возвращает массив по типу
-  {
-    date: '2021-03-20'
-    value: 666
-  }
-*/
-
-  async getUserBalanceStats(days: number, user: User) {
-    let totalBalance = await this.ethRepository.getUserBalanceSumm(user)
-    this.logger.debug(`Total balance ${totalBalance}`)
-    const wallets = await user.ethWallets
-    if (!wallets.length) {
-      return []
-    }
-    const summs = await this.ethTsxRepository.getSumOfWalletsTsxByDays(
-      days,
-      wallets
-    )
-    const summsMap: Map<string, number> = new Map()
-
-    summs.forEach(sum => {
-      summsMap.set(sum.date, sum.value)
-    })
-
-    this.logger.debug(`Map is`)
-    console.log(summsMap)
-
-    const summsReport = [
-      {
-        date: moment().format('YYYY-MM-DD'),
-        value: totalBalance
-      }
-    ]
-
-    for (let i = 1; i < days; i++) {
-      const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
-      const sumForDay = summsMap.get(date)
-      if (sumForDay) {
-        if (sumForDay > 0) {
-          totalBalance += sumForDay
-        } else {
-          totalBalance -= sumForDay
-        }
-      }
-
-      //0.000841888999999707
-      this.logger.debug(`Balance now`, totalBalance)
-      if (totalBalance < 0.001) {
-        console.log(`Balance < 0.01 found`)
-        totalBalance = 0
-      }
-
-      const record: any = {
-        date,
-        value: totalBalance
-      }
-
-      summsReport.push(record)
-    }
-
-    this.logger.debug(`Summs report is `)
-    console.log(summs)
 
     return summsReport
   }

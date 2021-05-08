@@ -33,19 +33,20 @@ export class EthWalletsPool implements EntitySubscriberInterface {
   async onModuleInit() {
     let wallets = await this.ethRepository.getAllWallets()
     wallets.forEach(wallet => {
-      this.walletAdresses.add(wallet.address)
+      this.walletAdresses.add(wallet.address.toLowerCase())
     })
+
   }
 
   private addWallet(address: string) {
-    this.walletAdresses.add(address)
+    this.walletAdresses.add(address.toLowerCase())
     this.logger.debug('Wallet added')
     this.logger.debug('Map now')
     console.log(this.walletAdresses)
   }
 
   private deleteWallet(address: string) {
-    this.walletAdresses.delete(address)
+    this.walletAdresses.delete(address.toLowerCase())
 
     this.logger.debug('Wallet deleted')
     this.logger.debug('Map now')

@@ -42,6 +42,10 @@ export class TransactionBTC extends BaseEntity {
   @Column('decimal', { precision: 30, scale: 8 })
   value: number
 
+  @Column('decimal', { precision: 20, scale: 8, nullable: true })
+  fee: number
+
+
   @ManyToOne(type => WalletBTC, wallet => wallet.transactions, {
     eager: true,
     onDelete: 'CASCADE'

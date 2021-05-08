@@ -9,6 +9,8 @@ import { EntityRepository, Repository } from 'typeorm'
 import { ERC20Token } from '../entities/ERC20-token.entity'
 import { ERC20Transaction } from '../entities/ERC20-transaction.entity'
 import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
+import moment from 'moment'
+import { WalletETH } from 'src/wallet/entities/Wallet-eth.entity'
 
 // TODO
 // Потестить можно ли не запрашивать транзакции у токена
@@ -134,6 +136,9 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
   async getUserTsxsWithTokenTypes(
     userID: number
   ): Promise<IERC20TsxWithTokenType[]> {
+
+    if(!userID) return []
+
     let query = this.createQueryBuilder('transaction')
     query
       .innerJoin('transaction.token', 'token')
@@ -151,5 +156,43 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
       .addSelect('type.name as token_name')
 
     return await query.getRawMany()
+  }
+
+  async onModuleInit() {
+    const result = await this.getSumOfWalletsFees(30, [1])
+  }
+
+  async getSumOfWalletsFees(
+    days: number,
+    walletIds: number[]
+  ): Promise<{ date: string; value: number }[]> {
+
+
+    if(!walletIds.length) return []
+
+    this.logger.debug(`Wallet ids in getSumOfWalletsFees`)
+    console.log(walletIds)
+    const query = this.createQueryBuilder('transaction')
+    query
+      .innerJoin('transaction.token', 'token')
+      .innerJoin('token.wallet', 'awllet')
+      .select("date_trunc('day', transaction.time)::timestamp as date")
+      .addSelect('SUM(transaction.fee) as value')
+      .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
+      .andWhere(`transaction.type = false`)
+      .andWhere('token.walletId IN (:...walletIds)', { walletIds })
+      .orderBy("date_trunc('day', transaction.time)::timestamp", 'ASC')
+      .groupBy("date_trunc('day', transaction.time)::timestamp")
+
+    const summs = await query.getRawMany()
+
+    summs.forEach(sum => {
+      sum.date = moment(sum.date).format('YYYY-MM-DD')
+      sum.value = +sum.value
+    })
+
+    this.logger.debug(`Result of erc20.getSumOfWalletsFees query is`)
+    this.logger.debug(JSON.stringify(summs))
+    return summs as [{ date: string; value: number }]
   }
 }
