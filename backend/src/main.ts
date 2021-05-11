@@ -6,6 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   let server: any = Config.get('server')
+
   await app.listen(server.port)
 }
 bootstrap()

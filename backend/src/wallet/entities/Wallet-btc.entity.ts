@@ -20,6 +20,9 @@ export class WalletBTC extends BaseEntity {
   @Column('decimal', { precision: 30, scale: 8 })
   balance: number
 
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
+  mediumBuyPrice: number
+
   @ManyToOne(type => User, user => user.btcWallets, {
     eager: true,
     cascade: false,

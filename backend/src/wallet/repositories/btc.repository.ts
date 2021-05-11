@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   InternalServerErrorException,
   Logger,
@@ -8,6 +9,7 @@ import { User } from 'src/auth/user/user.entity'
 import { dbErrorCodes } from 'src/config/db-error-codes'
 import { EntityRepository, Repository } from 'typeorm'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
+import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 
 @EntityRepository(WalletBTC)
@@ -77,6 +79,7 @@ export class BtcRepository extends Repository<WalletBTC> {
    Получение кошелька по его id
    В интерфейсе указывается какую именно информацию необходимо получить
    Если кошель не будет найден выбросит NotFound
+   Изначально возвращается с id, балансом, адресом, средней ценой закупки
 
    Хештеги в транзакциях возвращаются в виде
    __hashtags__
@@ -88,7 +91,7 @@ export class BtcRepository extends Repository<WalletBTC> {
    https://stackoverflow.com/questions/65608223/the-find-function-in-typeorm-return-field-with-underscores
  */
 
-  async getWallet(props: IGetWalletProps) {
+   async getWallet(props: IGetWalletProps) {
     const { walletID, user, transactions, tsxHashtags } = props
 
     let query = this.createQueryBuilder('wallet')
@@ -128,6 +131,7 @@ export class BtcRepository extends Repository<WalletBTC> {
     const wallet: any = {
       id: walletDB.id,
       balance: walletDB.balance,
+      mediumBuyPrice: walletDB.mediumBuyPrice,
       address: walletDB.address
     }
 
@@ -181,5 +185,48 @@ export class BtcRepository extends Repository<WalletBTC> {
 
   async getWalletById(id: number): Promise<WalletBTC> {
     return await this.findOne({ id })
+  }
+
+  /*
+    Установление средней цены закупки кошелька
+    В случае если кошель не будет найден выбросит NotFound
+    Если передать цену ниже нуля - BadRequest
+  */
+
+  async setMediumBuyPriceById(walletID: number, price: number) {
+    if (price < 0) {
+      throw new BadRequestException('Price must be more than 0!')
+    }
+
+    let wallet = await this.getWalletById(walletID)
+
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found!`)
+    }
+
+    wallet.mediumBuyPrice = price
+
+    await wallet.save()
+
+    return wallet
+  }
+
+  /*
+    Удаление средней цены закупки кошелька в null
+    В случае если кошель не будет найден выбросит NotFound
+  */
+
+  async deleteMediumBuyPriceById(walletID: number) {
+    let wallet = await this.getWalletById(walletID)
+
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found!`)
+    }
+
+    wallet.mediumBuyPrice = null
+
+    await wallet.save()
+
+    return wallet
   }
 }
