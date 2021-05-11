@@ -12,14 +12,14 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-label>Filter by tag</mat-label>
         <mat-select>
           <mat-option *ngFor="let tag of tags" [value]="tag">
             {{ tag }}
           </mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
     </div>
   </div>
   <div class="tr-his__table">
@@ -86,17 +86,17 @@
             <mat-chip
               selectable="true"
               removable="true"
-              *ngFor="let tag of tags"
-              (removed)="remove(tag)"
+              *ngFor="let tag of row.__hashtags__"
+              (removed)="removeTag(tag.id, row.id, row.chain || type)"
             >
-              {{ tag }}
+              {{ tag.text }}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
           </mat-chip-list>
           <input
             placeholder="New tag..."
             [matChipInputFor]="tagsList"
-            (matChipInputTokenEnd)="add($event)"
+            (matChipInputTokenEnd)="addTag($event, row.chain || type, row.id)"
             class="tr-his__tags-input"
           />
         </td>

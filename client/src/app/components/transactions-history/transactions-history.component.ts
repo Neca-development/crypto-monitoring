@@ -5,12 +5,12 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { MatChipInputEvent } from "@angular/material/chips";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Transaction } from "src/app/models/models";
+import { TransactionService } from "./../../services/transaction.service";
 
 @Component({
   selector: "app-transactions-history",
@@ -20,7 +20,6 @@ import { Transaction } from "src/app/models/models";
 export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   @Input() data: Transaction[];
   @Input() type?: string;
-  tags: string[] = ["lorem", "ipsum", "dolor"];
   displayedColumns: string[] = [
     "coin",
     "txHash",
@@ -36,7 +35,7 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor() {}
+  constructor(private _transactionService: TransactionService) {}
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource(this.data);
@@ -56,13 +55,19 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     }
   }
 
-  add(event: MatChipInputEvent): void {
+  async addTag(
+    event: MatChipInputEvent,
+    coin: string,
+    rowId: number
+  ): Promise<void> {
     const input = event.input;
     const value = event.value;
 
+    const tagId = await this._transactionService.addHashtag(rowId, coin, value);
     // Add our fruit
     if ((value || "").trim()) {
-      this.tags.push(value.trim());
+      const idx = this.data.findIndex((el: Transaction) => el.id === rowId);
+      this.data[idx].__hashtags__.push({ id: tagId, text: value.trim() });
     }
 
     // Reset the input value
@@ -71,11 +76,17 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     }
   }
 
-  remove(tag: any): void {
-    const index = this.tags.indexOf(tag);
+  async removeTag(tagId: any, row: number, coin: string): Promise<void> {
+    const rowIdx = this.data.findIndex((el: Transaction) => el.id === row);
+    const index = this.data[rowIdx].__hashtags__.findIndex(
+      (el: any) => el.id === tagId
+    );
+
+    await this._transactionService.removeHashtag(tagId, coin);
+    console.log(index);
 
     if (index >= 0) {
-      this.tags.splice(index, 1);
+      this.data[rowIdx].__hashtags__.splice(index, 1);
     }
   }
 }

@@ -14,10 +14,17 @@ export interface IWallet {
   transactions?: Transaction[];
 }
 
+export interface ITag {
+  id: number;
+  text: string;
+}
+
 export interface Transaction {
+  id: number;
   currency: string;
   TXHash: string;
   ToAdress: string;
+  __hashtags__: ITag[];
   date: Date;
   type: "In" | "Out";
 }
