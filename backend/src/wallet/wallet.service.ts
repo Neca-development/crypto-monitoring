@@ -583,7 +583,7 @@ export class WalletService {
         if (!wallet) {
           throw new NotFoundException(`Wallet with id  ${walletID} not found`)
         }
-        return await this.BtcService.getWalletBalanceStats(days, wallet)
+        return await this.BtcService.getWalletBalanceHistory(days, wallet)
       case WalletType.eth:
         wallet = await this.EthService.getWallet({
           walletID,
@@ -593,7 +593,7 @@ export class WalletService {
         if (!wallet) {
           throw new NotFoundException(`Wallet with id  ${walletID} not found`)
         }
-        return await this.EthService.getWalletBalanceStats(days, wallet)
+        return await this.EthService.getWalletBalanceHistory(days, wallet)
 
       default:
         throw new BadRequestException(`Invalid wallet type ${type}`)
@@ -685,7 +685,7 @@ export class WalletService {
 
   async getUserBalanceHistory(user: User, days: number) {
     let ethHistory = await this.EthService.getUserBalanceStats(days, user)
-    let btcHistory = await this.BtcService.getUserBalanceStats(days, user)
+    let btcHistory = await this.BtcService.getUserBalanceHistory(days, user)
 
     return {
       ethHistory,

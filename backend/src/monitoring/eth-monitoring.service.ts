@@ -8,6 +8,7 @@ import { EthTransactionRepository } from 'src/wallet/repositories/eth.transactio
 import * as Web3 from 'web3'
 import Config from 'config'
 import { NumToEth } from 'src/helpers/NumToEth'
+import { web3http } from '../helpers/web3'
 
 let emailConfig: any = Config.get('email')
 
@@ -19,15 +20,8 @@ let emailConfig: any = Config.get('email')
 
 @Injectable()
 export class EthMonitoringService {
-  private infuraUrl =
-    'https://mainnet.infura.io/v3/28b42a756903430db51aed449ff78ad6'
-
-  private infuraTestUrl =
-    'https://ropsten.infura.io/v3/43adaa094d794787ba472b1e7d7e00c6'
-
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
 
-  private web3 = new Web3.default(this.infuraTestUrl)
   private logger = new Logger(EthMonitoringService.name)
 
   constructor(
@@ -50,7 +44,7 @@ export class EthMonitoringService {
     setInterval(async () => {
       let wallets = await this.ethRepository.getAllWallets()
       let requests = wallets.map(wallet => {
-        return this.web3.eth.getBalance(wallet.address)
+        return web3http.eth.getBalance(wallet.address)
       })
       let web3balances = await Promise.all(requests)
 

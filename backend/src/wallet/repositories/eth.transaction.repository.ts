@@ -56,19 +56,27 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
     }
   }
 
-  /*
-    Получение хеша последней транзакции по кошельку
+ /*
+    Получение хеша последней (Самой свежей) транзакции по кошельку
   */
 
-  async getLastTsxHash(wallet: WalletETH): Promise<string> {
-    const transactions = await wallet.transactions
+    async getLastTsxHash(wallet: WalletETH): Promise<string> {
 
-    if (!transactions.length) {
-      return 'No transactions found'
+      let query = this.createQueryBuilder('transaction')
+      query.where('transaction.walletId = :walletID', { walletID: wallet.id })
+      query.orderBy('transaction.time', 'DESC')
+      query.select('transaction.hash')
+  
+      let result = await query.getOne()
+  
+      if (!result) {
+        return 'No transactions found'
+      }
+  
+      console.log(result)
+  
+      return result.hash
     }
-
-    return transactions[transactions.length - 1].hash
-  }
 
   /*
     Получение транзакций по айдишникам кошельков

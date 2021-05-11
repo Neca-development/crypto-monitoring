@@ -7,6 +7,10 @@ async function bootstrap() {
 
   let server: any = Config.get('server')
 
+  if (process.env.NODE_ENV == 'development') {
+    app.enableCors()
+  }
+
   await app.listen(server.port)
 }
 bootstrap()

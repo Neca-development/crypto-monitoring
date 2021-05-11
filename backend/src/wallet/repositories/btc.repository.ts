@@ -9,7 +9,6 @@ import { User } from 'src/auth/user/user.entity'
 import { dbErrorCodes } from 'src/config/db-error-codes'
 import { EntityRepository, Repository } from 'typeorm'
 import { WalletBTC } from '../entities/Wallet-btc.entity'
-import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
 
 @EntityRepository(WalletBTC)
