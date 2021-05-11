@@ -20,6 +20,7 @@ export interface ITag {
 }
 
 export interface Transaction {
+  time: string | number | Date;
   id: number;
   currency: string;
   TXHash: string;
@@ -27,7 +28,6 @@ export interface Transaction {
   __hashtags__: ITag[];
   date: Date;
   type: "In" | "Out";
-  time: string;
 }
 
 export interface IAuthorizedUser {
@@ -44,11 +44,11 @@ export interface IAPIResponse<T> {
 export interface BTCResponse {
   bitcoin: {
     eur: number;
-  }
+  };
 }
 
 export interface ETHResponse {
   ethereum: {
     eur: number;
-  }
+  };
 }
