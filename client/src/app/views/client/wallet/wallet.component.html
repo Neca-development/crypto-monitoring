@@ -38,7 +38,7 @@
   <div class="client__row">
     <div class="client__left">
       <div class="client__chart-container">
-        <app-chart></app-chart>
+        <app-chart [data]="wallet.balanceHistory"></app-chart>
       </div>
     </div>
     <div class="client__currency-list client__currency-list_l">
@@ -52,7 +52,7 @@
       <div *ngFor="let token of wallet.erc20tokens" class="client__currency">
         <mat-icon class="client__currency-head">generating_tokens</mat-icon>
         <span
-          >{{ +token.balance === 0 ? 0 : token.balance | number: "1.0-10" }}
+          >{{ +token.balance === 0 ? 0 : (token.balance | number: "1.0-10") }}
           <b>{{ token.type.symbol }}</b></span
         >
       </div>
@@ -83,10 +83,10 @@
       />
     </div>
     <!-- <span>Purchase price: {{purchasePrice | number: '1.0-2'}}</span> -->
-    <span>Profit in EUR: {{profitEUR | number: '1.0-2'}}</span>
-    <span>Profit in %: {{profitPercent | number: '1.0-2'}}</span>
+    <span>Profit in EUR: {{ profitEUR | number: "1.0-2" }}</span>
+    <span>Profit in %: {{ profitPercent | number: "1.0-2" }}</span>
   </div>
-  
+
   <app-transactions-history
     [data]="wallet.transactions"
     [type]="wallet.type"

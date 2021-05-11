@@ -18,7 +18,7 @@ export class UsersService extends BaseRequestService {
 
   async getUserById(id: number): Promise<IUser> {
     return await this.get(
-      "/wallet/user?fullName=true&addresses=true&balancesSumm=true&balancesSummEur=true&transactions=true&userID=" +
+      "/wallet/user?fullName=true&addresses=true&balancesSumm=true&balancesSummEur=true&transactions=true&balancesHistory=true&userID=" +
         id,
       null,
       false
