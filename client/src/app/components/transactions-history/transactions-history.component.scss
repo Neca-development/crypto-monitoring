@@ -38,14 +38,28 @@
       font-size: 13px;
       &.text-overflow span {
         display: inline-block;
-        max-width: 130px;
+        max-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+      input.mat-chip-input {
+        flex: none;
+      }
+
+      .mat-chip {
+        box-shadow: var(--base-shadow);
       }
     }
     * {
       background: transparent;
     }
+  }
+
+  &__tags-input {
+    padding: 10px 15px;
+    box-shadow: var(--inner-shadow);
+    margin-top: 20px;
+    border-radius: 10px;
   }
 }

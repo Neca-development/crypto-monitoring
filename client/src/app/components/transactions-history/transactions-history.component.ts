@@ -5,6 +5,8 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
+import { COMMA, ENTER } from "@angular/cdk/keycodes";
+import { MatChipInputEvent } from "@angular/material/chips";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -18,7 +20,7 @@ import { Transaction } from "src/app/models/models";
 export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   @Input() data: Transaction[];
   @Input() type?: string;
-  tags: string[] = ["lorem", "ipsum", "dolor", "sit", "amet"];
+  tags: string[] = ["lorem", "ipsum", "dolor"];
   displayedColumns: string[] = [
     "coin",
     "txHash",
@@ -27,6 +29,7 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     "date",
     "type",
     "val",
+    "tags",
     "link",
   ];
   dataSource: MatTableDataSource<Transaction>;
@@ -50,6 +53,29 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || "").trim()) {
+      this.tags.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = "";
+    }
+  }
+
+  remove(tag: any): void {
+    const index = this.tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.tags.splice(index, 1);
     }
   }
 }
