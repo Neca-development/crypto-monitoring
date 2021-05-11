@@ -27,6 +27,7 @@ export interface Transaction {
   __hashtags__: ITag[];
   date: Date;
   type: "In" | "Out";
+  time: string;
 }
 
 export interface IAuthorizedUser {
@@ -38,4 +39,16 @@ export interface IAPIResponse<T> {
   data?: T;
   errorMessage?: string;
   status: any;
+}
+
+export interface BTCResponse {
+  bitcoin: {
+    eur: number;
+  }
+}
+
+export interface ETHResponse {
+  ethereum: {
+    eur: number;
+  }
 }

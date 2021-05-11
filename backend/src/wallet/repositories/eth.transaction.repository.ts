@@ -106,6 +106,47 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
 
   /*
     Отчёт
+    Показывает сумму комиссий оплаченных кошельками
+    Значения возвращаются на последние n дней
+    Сумма возвращается number-ом
+    Возвращает массив по типу
+
+    date: 2021-03-21
+    value: 666
+  */
+
+
+  async getSumOfWalletsFees(
+    days: number,
+    walletIds: number[]
+  ): Promise<{ date: string; value: number }[]> {
+
+    if(!walletIds.length) return []
+
+    const query = this.createQueryBuilder('transaction')
+    query
+      .select("date_trunc('day', transaction.time)::timestamp as date")
+      .addSelect('SUM(transaction.fee) as value')
+      .where(`transaction.time > (CURRENT_DATE - INTERVAL \'${days} DAY\')`)
+      .andWhere(`transaction.type = false`)
+      .andWhere('transaction.walletId IN (:...walletIds)', { walletIds })
+      .orderBy("date_trunc('day', transaction.time)::timestamp", 'ASC')
+      .groupBy("date_trunc('day', transaction.time)::timestamp")
+
+    const summs = await query.getRawMany()
+
+    summs.forEach(sum => {
+      sum.date = moment(sum.date).format('YYYY-MM-DD')
+      sum.value = +sum.value
+    })
+
+    this.logger.debug(`Result of eth:getSumOfWalletsFees query is`)
+    console.log(summs)
+    return summs as [{ date: string; value: number }]
+  }
+
+  /*
+    Отчёт
     Показывает на какую сумму были транзакции по дням
     Значения возвращаются на последние n дней
     Сумма возвращается number-ом, включая отрицатльные значения
@@ -117,18 +158,11 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
 
   async getSumOfWalletsTsxByDays(
     days: number,
-    wallets: WalletETH[]
+    walletIds: number[]
   ): Promise<{ date: string; value: number }[]> {
-    const walletIds = []
-
-    wallets.forEach(wallet => {
-      walletIds.push(wallet.id)
-    })
-
+    
     if(!walletIds.length) return []
 
-    this.logger.debug(`Walltids`)
-    console.log(walletIds)
     const query = this.createQueryBuilder('transaction')
     query
       .select("date_trunc('day', transaction.time)::timestamp as date")
@@ -142,10 +176,10 @@ export class EthTransactionRepository extends Repository<TransactionETH> {
 
     summs.forEach(sum => {
       sum.date = moment(sum.date).format('YYYY-MM-DD')
-      sum.value = sum.value
+      sum.value = +sum.value
     })
 
-    this.logger.debug(`Result of query is`)
+    this.logger.debug(`Result of getSumOfWalletsTsxByDays query is`)
     console.log(summs)
     return summs as [{ date: string; value: number }]
   }

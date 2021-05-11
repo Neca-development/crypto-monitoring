@@ -236,6 +236,7 @@ export class WalletService {
       Конвертация балансов в евро
     */
 
+
     if (balanceInEur) {
       switch (type) {
         case WalletType.btc: {
@@ -259,6 +260,7 @@ export class WalletService {
       wallet.holderName = result.user.fullName
     }
 
+
     if (balanceHistory) {
       wallet.balanceHistory = await this.getWalletBalanceHistory(
         walletID,
@@ -266,6 +268,7 @@ export class WalletService {
         30
       )
     }
+
 
     let erc20TokenTransactions = []
 
@@ -290,7 +293,6 @@ export class WalletService {
           }
         }
         if (transactions) {
-          console.log(wallet)
           let tokenIds = wallet.erc20tokens.map(token => {
             return token.id
           })
@@ -308,7 +310,6 @@ export class WalletService {
     */
 
     if (transactions) {
-      console.log(result)
       wallet.transactions = result.transactions.map(tsx => {
         tsx.chain = type
         return tsx

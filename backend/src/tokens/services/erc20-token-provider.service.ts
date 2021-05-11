@@ -49,7 +49,7 @@ export class ERC20TokenProviderService {
     ethWalletAddress: string,
     token: IERC20TokenModel
   ) {
-    let requestUrl = `https://api-ropsten.etherscan.io/api?module=account&action=tokentx&address=${ethWalletAddress}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${this.etherscanApiKey}`
+    let requestUrl = `https://api.etherscan.io/api?module=account&action=tokentx&address=${ethWalletAddress}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${this.etherscanApiKey}`
 
     let result = await this.httpService.get(requestUrl).toPromise()
 

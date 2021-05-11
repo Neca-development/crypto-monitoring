@@ -14,7 +14,7 @@ export class WalletService extends BaseRequestService {
 
   async getWalletInfo(address: string, type: string): Promise<IWallet> {
     return await this.get(
-      `/wallet?walletID=${address}&type=${type}&holderName=true&transactions=true&balanceInEur=true `,
+      `/wallet?walletID=${address}&type=${type}&holderName=true&transactions=true&balanceInEur=true&hashtags=true&erc20tokens=true`,
       null,
       false
     );
@@ -26,7 +26,7 @@ export class WalletService extends BaseRequestService {
 
   async getAllStats() {
     return await this.get(
-      "/wallet/stats?ethBalanceSumm=true&ethBalanceSummEur=true&btcBalanceSumm=true&btcBalanceSummEur=true ",
+      "/wallet/stats?ethBalanceSumm=true&ethBalanceSummEur=true&btcBalanceSumm=true&btcBalanceSummEur=true&erc20BalancesSummEur=true",
       null,
       false
     );

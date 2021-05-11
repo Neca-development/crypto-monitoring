@@ -4,7 +4,7 @@ server:
 db:
   type: 'postgres'
   port: 5432
-  database: 'cryptomonitoringdev'
+  database: 'cryptomonitoringprod'
 
 admin:
   email: 'test@gmail.com'
@@ -15,6 +15,7 @@ jwt:
 
 email:
   service: 'gmail'
-  user: 'sorenharfagri@gmail.com'
-  receiver: 'QVing612@gmail.com'
-  password: 'NMzYMOZR3qw1'
+  user: 'monitoringcrypto@gmail.com'
+  receiver: 'cscrypto29@gmail.com'
+  password: '123123Opus'
+

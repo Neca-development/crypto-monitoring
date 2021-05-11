@@ -111,7 +111,7 @@ export class EthRepository extends Repository<WalletETH> {
 */
 
   // async onModuleInit() {
-  //   const result = await this.getWallet({ walletID: 1, transactions: true, tsxHashtags: true, user: true })
+  //   const result = await this.getWalletById(1)
   //   console.log(result)
   // }
 

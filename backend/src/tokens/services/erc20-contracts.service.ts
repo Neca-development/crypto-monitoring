@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ERC20ContractInstance } from '../classes/ERC20ContractInstance'
 import { IERC20TokenModel } from '../interfaces/IERC20Token'
 import { ERC20TokenTypeRepository } from '../repositories/ERC20-token-type.repository'
-import { web3wss } from '../web3'
+import { web3http, web3wss } from '../web3'
 import * as _ from 'lodash'
 import { EthWalletsPool } from '../classes/ETHWalletsPool'
 import { IERC20TranscationModel } from '../interfaces/IERC20Transaction'
@@ -98,9 +98,13 @@ export class ERC20ContractsService {
             result.data,
             result.topics.slice(1)
           )
-          this.logger.log(`New transaction!`)
+          this.logger.log(`New ERC20 token transaction!`)
           console.log(eventObj)
           console.log(result)
+
+          this.logger.debug(`Eth wallets map is`)
+          console.log(this.ETHWalletsPool.walletAdresses)
+
 
           this.proccesNewTransaction(
             {
@@ -124,6 +128,12 @@ export class ERC20ContractsService {
       return
     }
 
+    this.logger.debug(`proccesNewTransaction executed`)
+    console.log(props)
+
+    props.to = props.to.toLowerCase()
+    props.from = props.from.toLowerCase()
+
     let walletFrom = this.walletExists(props.from)
     let walletTo = this.walletExists(props.to)
 
@@ -137,7 +147,7 @@ export class ERC20ContractsService {
       date.setMilliseconds(0)
       let dateWithoutMs = new Date(date)
 
-      let extendnTxnInfo = await web3wss.eth.getTransaction(props.hash)
+      let extendnTxnInfo = await web3http.eth.getTransaction(props.hash)
       this.logger.debug(`Extended info about token txn is`)
       console.log(extendnTxnInfo)
       let transaction: IERC20TranscationModel = {
