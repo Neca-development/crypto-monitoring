@@ -179,7 +179,8 @@ export class EthMonitoringService {
       from: transaction.from,
       to: transaction.to,
       hash: transaction.hash,
-      value: +transaction.value
+      value: +transaction.value,
+      fee: NumToEth(+transaction.gasPrice) * +transaction.gasUsed
     }
 
     return tsx

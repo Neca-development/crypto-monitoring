@@ -1,7 +1,5 @@
-import { Type } from 'class-transformer'
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsOptional } from 'class-validator'
 import { ToBoolean } from 'src/helpers/ToBoolean'
-import { WalletType } from '../wallet/enum/WalletType.enum'
 
 export class GetWalletsStats {
   @IsOptional()
@@ -19,4 +17,8 @@ export class GetWalletsStats {
   @IsOptional()
   @ToBoolean()
   btcBalanceSummEur: boolean
+
+  @IsOptional()
+  @ToBoolean()
+  erc20BalancesSummEur: boolean
 }

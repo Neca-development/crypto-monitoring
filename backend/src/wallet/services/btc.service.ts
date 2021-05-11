@@ -57,7 +57,7 @@ export class BtcService {
     return await this.btcRepository.deleteWalletById(walletID)
   }
 
-  async getWallet(props: IGetWalletProps): Promise<WalletBTC> {
+  async getWallet(props: IGetWalletProps) {
     return await this.btcRepository.getWallet(props)
   }
 
@@ -88,8 +88,9 @@ export class BtcService {
 
       let walletsIds = userWallets.map(wallet => wallet.id)
 
-      result.transactions = await this.btcTransactionRepository.getTransactionsByIds(
-        walletsIds
+      result.transactions = await this.btcTransactionRepository.getTransactionsByWalletIds(
+        walletsIds,
+        { hashtags: true }
       )
     }
 
@@ -133,7 +134,16 @@ export class BtcService {
       const date = moment().subtract(i, 'days').format('YYYY-MM-DD')
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
-        totalBalance += sumForDay
+        if (sumForDay > 0) {
+          totalBalance += sumForDay
+        } else {
+          totalBalance -= sumForDay
+        }
+      }
+
+      if (totalBalance < 0) {
+        this.logger.debug(`Balance < 0.01 found :${totalBalance}`)
+        totalBalance = 0
       }
 
       const record: any = {
@@ -166,7 +176,7 @@ export class BtcService {
     if (!wallets.length) {
       return []
     }
-    
+
     const summs = await this.btcTransactionRepository.getSumOfWalletsTsxByDays(days, wallets)
 
     if (!summs.length) {
@@ -190,6 +200,11 @@ export class BtcService {
       const sumForDay = summsMap.get(date)
       if (sumForDay) {
         totalBalance += sumForDay
+      }
+
+      if (totalBalance < 0) {
+        this.logger.debug(`Balance < 0.01 found :${totalBalance}`)
+        totalBalance = 0
       }
 
       const record: any = {

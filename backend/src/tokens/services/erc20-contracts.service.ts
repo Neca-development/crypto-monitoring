@@ -11,6 +11,8 @@ import { ERC20TokenRepository } from '../repositories/ERC20-token.repository'
 import { ERC20TransactionRepository } from '../repositories/ERC20-transaction.repository'
 import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
 import { EthRepository } from 'src/wallet/repositories/eth.repository'
+import { hash } from 'bcrypt'
+import { NumToEth } from 'src/helpers/NumToEth'
 
 /*
   Сервис отвечающий за взаимодействие web3 и контрактами токенов
@@ -134,16 +136,22 @@ export class ERC20ContractsService {
       let date = new Date()
       date.setMilliseconds(0)
       let dateWithoutMs = new Date(date)
+
+      let extendnTxnInfo = await web3wss.eth.getTransaction(props.hash)
+      this.logger.debug(`Extended info about token txn is`)
+      console.log(extendnTxnInfo)
       let transaction: IERC20TranscationModel = {
         type: true,
         time: dateWithoutMs,
         from: props.from,
         to: props.to,
         hash: props.hash,
-        value: contractInstance.tokenType.numToTokenValue(+props.value)
+        value: contractInstance.tokenType.numToTokenValue(+props.value),
+        fee: NumToEth(+extendnTxnInfo.gasPrice) * extendnTxnInfo.gas
       }
 
       if (walletTo) {
+        transaction
         transaction.type = true
         this.addTransactionToAddress(
           transaction,

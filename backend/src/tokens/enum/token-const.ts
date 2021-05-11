@@ -1,0 +1,1 @@
+export const ERC20_TOKEN_TYPE = 'ERC20TOKEN'

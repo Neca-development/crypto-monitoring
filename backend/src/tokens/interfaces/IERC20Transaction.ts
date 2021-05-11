@@ -5,4 +5,5 @@ export interface IERC20TranscationModel {
   to: string
   time: Date
   value: number
+  fee: number
 }
