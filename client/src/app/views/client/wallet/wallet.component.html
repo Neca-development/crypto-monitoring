@@ -72,8 +72,8 @@
     <b>Average Purchase Price:</b> 0.002342 ETH
   </div> -->
   <div class="portfolio-section">
-    <span class="portfolio-header">Wallet Profit/Loss</span>
     <div class="search">
+      <h2 class="portfolio-section__title">Wallet Profit/Loss</h2>
       <input
         class="search__input"
         type="text"
@@ -83,8 +83,21 @@
       />
     </div>
     <!-- <span>Purchase price: {{purchasePrice | number: '1.0-2'}}</span> -->
-    <span>Profit in EUR: {{ profitEUR | number: "1.0-2" }}</span>
-    <span>Profit in %: {{ profitPercent | number: "1.0-2" }}</span>
+    <div class="portfolio-section__profit">
+      <h2 class="portfolio-section__subtitle">Profit:</h2>
+      <span
+        class="portfolio-section__value"
+        [style.color]="colorize(profitEUR)"
+      >
+        € {{ profitEUR | number: "1.0-2" }}
+      </span>
+      <span
+        class="portfolio-section__value"
+        [style.color]="colorize(profitPercent)"
+      >
+        {{ profitPercent | number: "1.0-2" }} %
+      </span>
+    </div>
   </div>
 
   <app-transactions-history
