@@ -98,46 +98,55 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
     По id кошельков
   */
 
-  async getTsxsWithTokenTypes(
-    tokenIds: number[]
-  ): Promise<
-    {
-      id: number
-      type: boolean
-      hash: string
-      from: string
-      to: string
-      time: Date
-      value: string
-      token_symbol: string
-      token_name: string
-    }[]
-  > {
+  //   Promise<
+  //   {
+  //     id: number
+  //     type: boolean
+  //     hash: string
+  //     from: string
+  //     to: string
+  //     time: Date
+  //     value: string
+  //     token_symbol: string
+  //     token_name: string
+  //   }[]
+  // >
+
+  async getTsxsWithTokenTypes(tokenIds: number[], hashtags: boolean = true): Promise<IERC20TsxWithTokenType[]> {
     if (!tokenIds.length) return []
-    
+
+    const selections = ['transaction', 'token', 'type']
+
     let query = this.createQueryBuilder('transaction')
     query
       .where('transaction.tokenId IN (:...tokenIds)', { tokenIds })
       .innerJoin('transaction.token', 'token')
       .innerJoin('token.type', 'type')
-      .select('transaction.id as id')
-      .addSelect('transaction.type as type')
-      .addSelect('transaction.hash as hash')
-      .addSelect('transaction.from as from')
-      .addSelect('transaction.to as to')
-      .addSelect('transaction.time as time')
-      .addSelect('transaction.value as value')
-      .addSelect('type.symbol as token_symbol')
-      .addSelect('type.name as token_name')
 
-    return await query.getRawMany()
+    if (hashtags) {
+      query.leftJoin('transaction.hashtags', 'hashtags')
+      selections.push('hashtags')
+    }
+
+    query.select(selections)
+    let result: any = await query.getMany()
+
+    result.forEach(txn => {
+      txn.token_symbol = txn.token.type.symbol
+      txn.token_name = txn.token.type.name
+      delete txn.token
+    })
+
+    return result
   }
 
   async getUserTsxsWithTokenTypes(
-    userID: number
+    userID: number,
+    hashtags: boolean = true
   ): Promise<IERC20TsxWithTokenType[]> {
+    if (!userID) return []
 
-    if(!userID) return []
+    const selections = ['transaction', 'token', 'type']
 
     let query = this.createQueryBuilder('transaction')
     query
@@ -145,30 +154,29 @@ export class ERC20TransactionRepository extends Repository<ERC20Transaction> {
       .innerJoin('token.type', 'type')
       .innerJoin('token.wallet', 'wallet')
       .where('wallet.userId = :userID', { userID })
-      .select('transaction.id as id')
-      .addSelect('transaction.type as type')
-      .addSelect('transaction.hash as hash')
-      .addSelect('transaction.from as from')
-      .addSelect('transaction.to as to')
-      .addSelect('transaction.time as time')
-      .addSelect('transaction.value as value')
-      .addSelect('type.symbol as token_symbol')
-      .addSelect('type.name as token_name')
 
-    return await query.getRawMany()
-  }
+    if (hashtags) {
+      query.leftJoin('transaction.hashtags', 'hashtags')
+      selections.push('hashtags')
+    }
 
-  async onModuleInit() {
-    const result = await this.getSumOfWalletsFees(30, [1])
+    query.select(selections)
+    let result: any = await query.getMany()
+
+    result.forEach(txn => {
+      txn.token_symbol = txn.token.type.symbol
+      txn.token_name = txn.token.type.name
+      delete txn.token
+    })
+
+    return result
   }
 
   async getSumOfWalletsFees(
     days: number,
     walletIds: number[]
   ): Promise<{ date: string; value: number }[]> {
-
-
-    if(!walletIds.length) return []
+    if (!walletIds.length) return []
 
     this.logger.debug(`Wallet ids in getSumOfWalletsFees`)
     console.log(walletIds)
