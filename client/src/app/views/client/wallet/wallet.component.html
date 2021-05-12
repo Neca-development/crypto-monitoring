@@ -84,7 +84,9 @@
     </div>
     <!-- <span>Purchase price: {{purchasePrice | number: '1.0-2'}}</span> -->
     <div class="portfolio-section__profit">
-      <h2 class="portfolio-section__subtitle">Profit:</h2>
+      <h2 class="portfolio-section__subtitle">
+        {{ profitEUR < 0 ? "Loss" : "Profit" }}:
+      </h2>
       <span
         class="portfolio-section__value"
         [style.color]="colorize(profitEUR)"
