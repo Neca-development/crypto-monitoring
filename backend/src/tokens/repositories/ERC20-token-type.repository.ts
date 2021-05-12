@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common'
 import { EntityRepository, Repository } from 'typeorm'
 import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
-import SupportedTypes from './ERC20SupportedTokens.json'
+import SupportedTypes from './ERC20SupportedTokens.ropsten.json'
 
 @EntityRepository(ERC20TokenType)
 export class ERC20TokenTypeRepository extends Repository<ERC20TokenType> {

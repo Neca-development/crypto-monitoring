@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   InternalServerErrorException,
   Logger,
@@ -7,7 +8,6 @@ import {
 import { User } from 'src/auth/user/user.entity'
 import { dbErrorCodes } from 'src/config/db-error-codes'
 import { NumToEth } from 'src/helpers/NumToEth'
-import { renameKey } from 'src/helpers/RenameSymbol'
 import { EntityRepository, Repository } from 'typeorm'
 import { WalletETH } from '../entities/Wallet-eth.entity'
 import { IGetWalletProps } from '../interfaces/IGetWalletProps'
@@ -94,11 +94,11 @@ export class EthRepository extends Repository<WalletETH> {
     return await this.findOne({ id })
   }
 
-
   /*
   Получение кошелька по его id
   В интерфейсе указывается какую именно информацию необходимо получить
   Если кошель не будет найден выбросит NotFound
+  Изначально возвращается с id, балансом, адресом, средней ценой закупки
 
   Хештеги в транзакциях возвращаются в виде
   __hashtags__
@@ -122,8 +122,7 @@ export class EthRepository extends Repository<WalletETH> {
 
     const selections = ['wallet']
 
-    query
-      .where('wallet.id = :walletID', { walletID })
+    query.where('wallet.id = :walletID', { walletID })
 
     if (user) {
       query.innerJoinAndSelect('wallet.user', 'user')
@@ -136,10 +135,13 @@ export class EthRepository extends Repository<WalletETH> {
       selections.push('transactions')
 
       if (tsxHashtags) {
-        query.leftJoinAndSelect('transactions.hashtags', 'hashtags', 'transactions.id = hashtags.transactionId')
+        query.leftJoinAndSelect(
+          'transactions.hashtags',
+          'hashtags',
+          'transactions.id = hashtags.transactionId'
+        )
         selections.push('hashtags')
       }
-
     }
 
     query.select(selections)
@@ -150,10 +152,10 @@ export class EthRepository extends Repository<WalletETH> {
       throw new NotFoundException(`Wallet with id ${walletID} not found`)
     }
 
-
     const wallet: any = {
       id: walletDB.id,
       balance: walletDB.balance,
+      mediumBuyPrice: walletDB.mediumBuyPrice,
       address: walletDB.address
     }
 
@@ -200,4 +202,46 @@ export class EthRepository extends Repository<WalletETH> {
     return +result.sum
   }
 
+  /*
+    Установление средней цены закупки кошелька
+    В случае если кошель не будет найден выбросит NotFound
+    Если передать цену ниже нуля - BadRequest
+  */
+
+  async setMediumBuyPriceById(walletID: number, price: number) {
+    if (price < 0) {
+      throw new BadRequestException('Price must be more than 0!')
+    }
+
+    let wallet = await this.getWalletById(walletID)
+
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found!`)
+    }
+
+    wallet.mediumBuyPrice = price
+
+    await wallet.save()
+
+    return wallet
+  }
+
+  /*
+    Удаление средней цены закупки кошелька в null
+    В случае если кошель не будет найден выбросит NotFound
+  */
+
+  async deleteMediumBuyPriceById(walletID: number) {
+    let wallet = await this.getWalletById(walletID)
+
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with id ${walletID} not found!`)
+    }
+
+    wallet.mediumBuyPrice = null
+
+    await wallet.save()
+
+    return wallet
+  }
 }

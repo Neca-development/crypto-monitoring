@@ -21,6 +21,9 @@ export class WalletETH extends BaseEntity {
   @Column('decimal', { precision: 40, scale: 18 })
   balance: number
 
+  @Column('decimal', { precision: 30, scale: 18, nullable: true })
+  mediumBuyPrice: number
+
   @ManyToOne(type => User, user => user.ethWallets, {
     eager: true,
     cascade: false,

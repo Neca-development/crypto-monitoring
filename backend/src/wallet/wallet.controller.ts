@@ -23,6 +23,8 @@ import { RolesGuard } from 'src/auth/guards/guards/roles.guard'
 import { HashtagAddToTsxDto } from 'src/dto/admin.add-hashtag.dto'
 import { HashtagEditDto } from 'src/dto/admin.edit-hashtag.dto'
 import { HashtagDeleteDto } from 'src/dto/admin.delete-hashtag.dto'
+import { SetMediumBuyPriceDto } from 'src/dto/admin.set-mediumBuyPrice.dto'
+import { DeleteMediumBuyPriceDto } from 'src/dto/admin.delete-mediumBuyPrice.dto'
 
 @Controller('wallet')
 @Roles(UserRole.admin)
@@ -78,5 +80,15 @@ export class WalletController {
   @Delete('/transaction/hashtag')
   deleteHashtag(@Body(ValidationPipe) deleteHashtag: HashtagDeleteDto) {
     return this.walletService.deleteHashtag(deleteHashtag)
+  }
+
+  @Post('/mediumBuyPrice')
+  setMediumBuyPrice(@Body(ValidationPipe) setMediumBuyPriceDto: SetMediumBuyPriceDto) {
+    return this.walletService.setMediumBuyPrice(setMediumBuyPriceDto)
+  }
+
+  @Delete('/mediumBuyPrice')
+  deleteMediumBuyPrice(@Body(ValidationPipe) deleteMediumBuyPrice: DeleteMediumBuyPriceDto) {
+    return this.walletService.deleteMediumBuyPrice(deleteMediumBuyPrice)
   }
 }
