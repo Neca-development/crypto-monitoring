@@ -34,6 +34,8 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   ];
   dataSource: MatTableDataSource<Transaction>;
   hashTags = new Set();
+  dateFilter: Date | string | number;
+  tagFilter: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -90,6 +92,8 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
 
   resetFilter() {
     this.dataSource.data = this.data;
+    this.dateFilter = "";
+    this.tagFilter = "";
   }
 
   async addTag(

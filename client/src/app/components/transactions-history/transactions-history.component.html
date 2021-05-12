@@ -9,6 +9,7 @@
             (dateInput)="applyFilter($event)"
             [matDatepicker]="picker"
             placeholder="Choose a date"
+            [(ngModel)]="dateFilter"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -18,7 +19,10 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>Filter by tag</mat-label>
-          <mat-select (selectionChange)="filterByTag($event)">
+          <mat-select
+            [(ngModel)]="tagFilter"
+            (selectionChange)="filterByTag($event)"
+          >
             <mat-option *ngFor="let tag of hashTags" [value]="tag">
               {{ tag }}
             </mat-option>
