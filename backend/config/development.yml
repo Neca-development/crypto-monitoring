@@ -11,3 +11,6 @@ jwt:
 admin:
   email: 'test@gmail.com'
   password: 'IWannaFly'
+
+email:
+  receiver: 'monitoringcrypto@gmail.com'

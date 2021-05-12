@@ -1,4 +1,4 @@
-import { web3http } from '../web3'
+import { web3http } from '../../helpers/web3'
 import { TOKEN_ABI } from '../AbiToken'
 import { ERC20TokenType } from '../entities/ERC20-token-type.entity'
 
