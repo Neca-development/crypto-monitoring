@@ -1,3 +1,6 @@
+server:
+  port: 80
+
 admin:
   email: 'test@gmail.com'
   password: 'IWannaFly'
@@ -5,9 +8,6 @@ admin:
 jwt:
   secret: '655afd70c47be89de9e8295a1982e96b5804419'
   expiresIn: 86400
-
-server:
-  port: 80
 
 db:
   host: 'localhost'

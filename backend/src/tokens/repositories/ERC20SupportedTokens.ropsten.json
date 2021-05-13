@@ -1,0 +1,14 @@
+[
+    {
+        "symbol": "WEENUS",
+        "decimals": 18,
+        "contractAddress": "0x101848d5c5bbca18e6b4431eedf6b95e9adf82fa",
+        "name": "Weenus"
+    },
+    {
+        "symbol": "YEENUS",
+        "decimals": 8,
+        "contractAddress": "0xf6ff95d53e08c9660dc7820fd5a775484f77183a",
+        "name": "Yeenus"
+    }
+]

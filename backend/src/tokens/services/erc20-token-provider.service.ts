@@ -14,11 +14,18 @@ export class ERC20TokenProviderService {
   private readonly logger = new Logger(ERC20TokenProviderService.name)
 
   private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
+  private etherscanUrl: string
 
   constructor(
     private erc20ContractsService: ERC20ContractsService,
     private httpService: HttpService
-  ) {}
+  ) {
+    if (process.env.NODE_ENV == 'production') {
+      this.etherscanUrl = 'https://api.etherscan.io'
+    } else {
+      this.etherscanUrl = 'https://api-ropsten.etherscan.io'
+    }
+  }
 
   async getTokensByAddress(address: string) {
     let tokens = await this.erc20ContractsService.getTokensForAddress(address)
@@ -49,7 +56,7 @@ export class ERC20TokenProviderService {
     ethWalletAddress: string,
     token: IERC20TokenModel
   ) {
-    let requestUrl = `https://api.etherscan.io/api?module=account&action=tokentx&address=${ethWalletAddress}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${this.etherscanApiKey}`
+    let requestUrl = `${this.etherscanUrl}/api?module=account&action=tokentx&address=${ethWalletAddress}&startblock=0&endblock=999999999&page=1&offset=100&sort=desc&apikey=${this.etherscanApiKey}`
 
     let result = await this.httpService.get(requestUrl).toPromise()
 

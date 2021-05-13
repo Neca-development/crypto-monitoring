@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpService,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
@@ -32,6 +31,10 @@ import { ERC20_TOKEN_TYPE } from 'src/tokens/enum/token-const'
 import { VaultConvertationService } from '../convertation/vault-convertation.service'
 import { ERC20TokenService } from 'src/tokens/services/erc20-token.service'
 import { IERC20UserInfo } from 'src/tokens/SubTypes/IERC20UserInfo'
+import { SetMediumBuyPriceDto } from 'src/dto/admin.set-mediumBuyPrice.dto'
+import { DeleteMediumBuyPriceDto } from 'src/dto/admin.delete-mediumBuyPrice.dto'
+import { EthRepository } from './repositories/eth.repository'
+import { BtcRepository } from './repositories/btc.repository'
 
 /*
   Сервис отвечающий за кошельки
@@ -65,6 +68,10 @@ export class WalletService {
     private erc20transcationRepository: ERC20TransactionRepository,
     @InjectRepository(ERC20TokenRepository)
     private ERC20TokenRepository: ERC20TokenRepository,
+    @InjectRepository(EthRepository)
+    private ethRepository: EthRepository,
+    @InjectRepository(BtcRepository)
+    private btcRepository: BtcRepository,
     private vaultConvertationService: VaultConvertationService,
     private erc20tokenService: ERC20TokenService
   ) {}
@@ -229,13 +236,21 @@ export class WalletService {
         throw new BadRequestException(`Invalid wallet type ${type}`)
     }
 
+    console.log(`Result is`)
+    console.log(result)
+
+    
+    wallet.mediumBuyPrice = result.mediumBuyPrice
     wallet.address = result.address
     wallet.balance = result.balance
+
+    if (wallet.mediumBuyPrice !== null) {
+      wallet.mediumBuyPrice = +wallet.mediumBuyPrice
+    } 
 
     /*
       Конвертация балансов в евро
     */
-
 
     if (balanceInEur) {
       switch (type) {
@@ -260,7 +275,6 @@ export class WalletService {
       wallet.holderName = result.user.fullName
     }
 
-
     if (balanceHistory) {
       wallet.balanceHistory = await this.getWalletBalanceHistory(
         walletID,
@@ -268,7 +282,6 @@ export class WalletService {
         30
       )
     }
-
 
     let erc20TokenTransactions = []
 
@@ -570,7 +583,7 @@ export class WalletService {
         if (!wallet) {
           throw new NotFoundException(`Wallet with id  ${walletID} not found`)
         }
-        return await this.BtcService.getWalletBalanceStats(days, wallet)
+        return await this.BtcService.getWalletBalanceHistory(days, wallet)
       case WalletType.eth:
         wallet = await this.EthService.getWallet({
           walletID,
@@ -580,7 +593,7 @@ export class WalletService {
         if (!wallet) {
           throw new NotFoundException(`Wallet with id  ${walletID} not found`)
         }
-        return await this.EthService.getWalletBalanceStats(days, wallet)
+        return await this.EthService.getWalletBalanceHistory(days, wallet)
 
       default:
         throw new BadRequestException(`Invalid wallet type ${type}`)
@@ -672,11 +685,39 @@ export class WalletService {
 
   async getUserBalanceHistory(user: User, days: number) {
     let ethHistory = await this.EthService.getUserBalanceStats(days, user)
-    let btcHistory = await this.BtcService.getUserBalanceStats(days, user)
+    let btcHistory = await this.BtcService.getUserBalanceHistory(days, user)
 
     return {
       ethHistory,
       btcHistory
+    }
+  }
+
+  async setMediumBuyPrice(setMediumBuyPriceDto: SetMediumBuyPriceDto) {
+    const { walletID, price, type } = setMediumBuyPriceDto
+
+    switch (type) {
+      case WalletType.eth:
+        return await this.ethRepository.setMediumBuyPriceById(walletID, price)
+      case WalletType.btc:
+        return await this.btcRepository.setMediumBuyPriceById(walletID, price)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
+    }
+  }
+
+  async deleteMediumBuyPrice(deleteMediumBuyPrice: DeleteMediumBuyPriceDto) {
+    const { walletID, type } = deleteMediumBuyPrice
+
+    switch (type) {
+      case WalletType.eth:
+        return await this.ethRepository.deleteMediumBuyPriceById(walletID)
+      case WalletType.btc:
+        return await this.btcRepository.deleteMediumBuyPriceById(walletID)
+
+      default:
+        throw new BadRequestException(`Invalid wallet type ${type}`)
     }
   }
 }

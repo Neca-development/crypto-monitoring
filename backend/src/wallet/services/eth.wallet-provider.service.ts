@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpService,
   Injectable,
   InternalServerErrorException,
@@ -7,9 +6,9 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { NumToEth } from 'src/helpers/NumToEth'
-import * as Web3 from 'web3'
 import { TransactionEthModel } from '../interfaces/Transaction-eth.model'
 import { WalletEthModel } from '../interfaces/Wallet-eth.model'
+import { web3http } from '../../helpers/web3'
 
 /*
   Mainnet infura
@@ -28,19 +27,19 @@ import { WalletEthModel } from '../interfaces/Wallet-eth.model'
 
 @Injectable()
 export class EthWalletProviderService {
-  constructor(private httpService: HttpService) { }
-
   private readonly logger = new Logger(EthWalletProviderService.name)
 
-  private infuraUrl =
-    'https://mainnet.infura.io/v3/28b42a756903430db51aed449ff78ad6'
+  private etherscanUrl: string
+  private etherscanApiKey = 'XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5'
 
-  private infuraTestUrl =
-    'https://ropsten.infura.io/v3/43adaa094d794787ba472b1e7d7e00c6'
+  constructor(private httpService: HttpService) {
 
-  private etherscanApiKey = 'Q4ZAGAHGFQBPKTKRJTDZDPZXFAUGJ1VRRV'
-
-  private web3 = new Web3.default(this.infuraUrl)
+    if (process.env.NODE_ENV == 'production') {
+      this.etherscanUrl = 'https://api.etherscan.io'
+    } else {
+      this.etherscanUrl = 'https://api-ropsten.etherscan.io'
+    }
+  }
 
   /*
     Получение со стороннего api кошелька и его транзакций в виде WalletEthModel
@@ -79,7 +78,7 @@ export class EthWalletProviderService {
   private async getBalance(address: string): Promise<number> {
     let balance
     try {
-      balance = await this.web3.eth.getBalance(address)
+      balance = await web3http.eth.getBalance(address)
       this.logger.log(`Balance is ${balance}`)
     } catch (e) {
       this.logger.error(`Cannot get wallet with address ${address}`, e.stack)
@@ -103,7 +102,7 @@ export class EthWalletProviderService {
     try {
       response = await this.httpService
         .get(
-          `https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+          `${this.etherscanUrl}/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=${this.etherscanApiKey}`,
           {}
         )
         .toPromise()

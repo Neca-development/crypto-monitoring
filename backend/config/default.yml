@@ -4,7 +4,7 @@ server:
 db:
   type: 'postgres'
   port: 5432
-  database: 'cryptomonitoringprod'
+  database: 'cryptomonitoringdev'
 
 admin:
   email: 'test@gmail.com'
@@ -18,4 +18,3 @@ email:
   user: 'monitoringcrypto@gmail.com'
   receiver: 'cscrypto29@gmail.com'
   password: '123123Opus'
-

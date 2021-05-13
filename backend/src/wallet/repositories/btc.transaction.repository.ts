@@ -63,13 +63,21 @@ export class BtcTransactionRepository extends Repository<TransactionBTC> {
   */
 
   async getLastTsxHash(wallet: WalletBTC): Promise<string> {
-    let transactions = await wallet.transactions
 
-    if (!transactions.length) {
+    let query = this.createQueryBuilder('transaction')
+    query.where('transaction.walletId = :walletID', { walletID: wallet.id })
+    query.orderBy('transaction.time', 'DESC')
+    query.select('transaction.hash')
+
+    let result = await query.getOne()
+
+    if (!result) {
       return 'No transactions found'
     }
 
-    return transactions[transactions.length - 1].hash
+    console.log(result)
+
+    return result.hash
   }
 
   /*
