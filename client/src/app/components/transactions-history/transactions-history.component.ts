@@ -11,6 +11,7 @@ import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Transaction } from "src/app/models/models";
 import { TransactionService } from "./../../services/transaction.service";
+import { ITag } from "./../../models/models";
 
 @Component({
   selector: "app-transactions-history",
@@ -32,6 +33,9 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     "link",
   ];
   dataSource: MatTableDataSource<Transaction>;
+  hashTags = new Set();
+  dateFilter: Date | string | number;
+  tagFilter: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -39,11 +43,24 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource(this.data);
+    this.resetHashtags();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  resetHashtags() {
+    this.data.forEach((el: Transaction) => {
+      if (el.__hashtags__) {
+        el.__hashtags__.forEach((tag: ITag) => {
+          this.hashTags.add(tag.text);
+        });
+      } else {
+        el.__hashtags__ = [];
+      }
+    });
   }
 
   applyFilter(event: Event) {
@@ -55,6 +72,28 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  filterByTag(event: any) {
+    const filterValue = event.value;
+    this.dataSource.data = this.data.filter((t: Transaction) => {
+      let flag = false;
+      t.__hashtags__.forEach((tag) => {
+        if (tag.text.includes(filterValue)) {
+          flag = true;
+        }
+      });
+      return flag;
+    });
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  resetFilter() {
+    this.dataSource.data = this.data;
+    this.dateFilter = "";
+    this.tagFilter = "";
   }
 
   async addTag(
@@ -71,6 +110,7 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
       const idx = this.data.findIndex((el: Transaction) => el.id === rowId);
       this.data[idx].__hashtags__.push({ id: tagId, text: value.trim() });
     }
+    this.resetHashtags();
 
     // Reset the input value
     if (input) {
@@ -78,7 +118,8 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     }
   }
 
-  async removeTag(tagId: any, row: number, coin: string): Promise<void> {
+  async removeTag(tag: any, row: number, coin: string): Promise<void> {
+    const tagId = tag.id;
     const rowIdx = this.data.findIndex((el: Transaction) => el.id === row);
     const index = this.data[rowIdx].__hashtags__.findIndex(
       (el: any) => el.id === tagId
@@ -88,7 +129,20 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
     console.log(index);
 
     if (index >= 0) {
-      this.data[rowIdx].__hashtags__.splice(index, 1);
+      const removed = this.data[rowIdx].__hashtags__.splice(index, 1);
+      console.log(removed);
+      this.hashTags.delete(tag.text);
+    }
+  }
+
+  showTagInput(tagArr: any[]) {
+    if (!tagArr) {
+      return true;
+    }
+    if (tagArr.length < 3) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
