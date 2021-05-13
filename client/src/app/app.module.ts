@@ -25,6 +25,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatChipsModule } from "@angular/material/chips";
 
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
@@ -36,6 +37,8 @@ import { WalletComponent } from "./views/client/wallet/wallet.component";
 import { MainComponent } from "./views/client/main/main.component";
 import { LoadingService } from "./services/loading.service";
 import { HttpRequestInterceptor } from "./http-request-interceptor";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { ChartComponent } from "./components/chart/chart.component";
 
 @NgModule({
   declarations: [
@@ -48,6 +51,7 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     TransactionsHistoryComponent,
     WalletComponent,
     MainComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +77,9 @@ import { HttpRequestInterceptor } from "./http-request-interceptor";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatChipsModule,
+    NgxChartsModule,
   ],
   providers: [
     LoadingService,

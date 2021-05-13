@@ -1,23 +1,35 @@
 .portfolio-section {
   display: flex;
-  flex-direction: column;
   height: auto;
-  max-width: 800px;
-}
-
-.portfolio-header {
-  font-weight: bold;
-  margin: 20px 0;
-}
-
-.portfolio-section {
+  margin-top: 35px;
+  border-radius: 15px;
+  padding: 25px 25px 15px;
+  box-shadow: var(--base-shadow);
+  max-width: 600px;
   .search__input {
-    max-width: 50%;
-    padding: 5px;
+    padding: 15px;
+    margin-top: 10px;
+  }
+  &__title {
+    font-weight: 400;
+    font-size: 30px;
   }
 
-  span {
-    padding: 0px 10px;
+  &__subtitle {
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  &__profit {
+    font-size: 18px;
+    text-align: right;
+    margin-left: 20px;
+    flex: auto;
+    font-weight: 400;
+  }
+
+  &__value {
+    display: block;
+    margin-bottom: 10px;
   }
 }
-

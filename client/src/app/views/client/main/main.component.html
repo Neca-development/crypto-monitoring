@@ -10,7 +10,9 @@
   <h2 class="client__title">{{ user.fullName }}</h2>
   <div class="client__row">
     <div class="client__left">
-      <div class="client__graph">Graph with total balance</div>
+      <div class="client__chart-container">
+        <app-chart [data]="user.balanceHistory"></app-chart>
+      </div>
       <div class="client__currency-list">
         <div class="client__currency">
           <mat-icon class="client__currency-head">generating_tokens</mat-icon>
@@ -50,6 +52,7 @@
           class="wallet__value"
           [routerLink]="['wallet', wallet.id]"
           [queryParams]="{ type: wallet.type }"
+          [matTooltip]="wallet.address"
         >
           {{ wallet.address }}
         </span>

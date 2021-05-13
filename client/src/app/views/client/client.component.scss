@@ -24,27 +24,17 @@
     }
 
     &__row {
-      display: grid;
-      grid-gap: 22px;
-      grid-template-columns: repeat(2, 1fr);
-      margin-top: 30px;
-    }
-
-    &__graph {
-      font-weight: 500;
-      font-size: 36px;
-      line-height: 42px;
-      background-color: #000;
-      text-align: center;
-      padding: 120px 0;
-      color: #ffffff;
+      display: flex;
+      margin-top: 50px;
     }
 
     &__currency-list {
       margin-top: 20px;
 
       &_l {
+        flex: auto;
         margin-top: 0;
+        margin-left: 30px;
         .client__currency {
           width: 100%;
         }
@@ -63,7 +53,7 @@
       position: relative;
       font-size: 26px;
       line-height: 42px;
-      padding: 20px 10px;
+      padding: 20px;
       text-align: center;
       background-color: var(--base-bg);
       box-shadow: var(--inner-shadow);
@@ -83,10 +73,21 @@
       font-size: 18px;
     }
 
+    &__left {
+      flex: auto;
+
+      app-chart {
+        width: 100%;
+        display: block;
+      }
+    }
+
     &__right {
       background-color: var(--base-bg);
       box-shadow: var(--inner-shadow);
       border-radius: 20px;
+      margin-left: 30px;
+      min-width: 30%;
     }
 
     &__block-explorer {
@@ -112,6 +113,13 @@
       padding: 20px 25px;
       border-radius: 10px;
       line-height: normal;
+    }
+
+    &__chart-container {
+      padding: 10px;
+      border-radius: 20px;
+      height: 420px;
+      box-shadow: var(--base-shadow);
     }
   }
 
@@ -147,6 +155,10 @@
     &__value {
       cursor: pointer;
       transition: all ease 0.15s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 150px);
+      display: inline-block;
       &:hover {
         color: #ff4a13;
       }
