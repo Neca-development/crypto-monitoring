@@ -189,7 +189,7 @@ export class EthMonitoringService {
     // Official https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.etherscanApiKey}&offset=5&page=1
     let response = await this.httpService
       .get(
-        `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=5&apikey=${this.etherscanApiKey}`,
+        `https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address=${address}&startblock=0&endblock=99999999&page=1&offset=5&apikey=${this.etherscanApiKey}`,
         {}
       )
       .toPromise()

@@ -4,7 +4,7 @@ import Config from 'config'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-
+  app.enableCors();
   let server: any = Config.get('server')
 
   if (process.env.NODE_ENV == 'development') {
@@ -13,4 +13,5 @@ async function bootstrap() {
 
   await app.listen(server.port)
 }
+
 bootstrap()
