@@ -31,6 +31,7 @@ export class WalletComponent implements OnInit {
     const btcToEUR = await this.currencyService.getBTCtoEUR();
     const ethToEUR = await this.currencyService.getETHtoEUR();
     this.ethOrBtc = this.wallet.type === "ETH" ? ethToEUR : btcToEUR;
+    this.calculate();
   }
 
   calculate() {
