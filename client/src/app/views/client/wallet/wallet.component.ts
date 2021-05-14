@@ -14,7 +14,6 @@ export class WalletComponent implements OnInit {
   wallet: IWallet;
   id: number;
   type: "";
-  averageCost = "";
   purchasePrice = 0;
   profitEUR = 0;
   profitPercent = 0;
@@ -35,7 +34,8 @@ export class WalletComponent implements OnInit {
   }
 
   calculate() {
-    this.purchasePrice = +this.averageCost * +this.wallet.balance || 0;
+    this.purchasePrice =
+      +this.wallet.mediumBuyPrice * +this.wallet.balance || 0;
     this.profitEUR = +this.wallet.balanceEur - +this.purchasePrice;
     this.profitPercent = (this.profitEUR / this.purchasePrice) * 100;
   }
