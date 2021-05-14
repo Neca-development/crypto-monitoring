@@ -57,7 +57,7 @@ export class WalletProviderService {
   }
 
   async getEthWallet(address: string) {
-    const web3 = new Web3.default(this.infuraUrl)
+    const web3 = new Web3.default(this.infuraTestUrl)
 
     let balance: string
 
@@ -78,7 +78,7 @@ export class WalletProviderService {
     try {
       response = await this.httpService
         .get(
-          `https://api.etherscan.io/api?module=account&action=txlist&sort=asc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
+          `https://api-ropsten.etherscan.io/api?module=account&action=txlist&sort=asc&address=${address}&startblock=0&endblock=99999999&page=1&offset=30&apikey=XV7IHEB5WHVI9XKTMHUMW9YYQ4RBTUEFZ5`,
           {}
         )
         .toPromise()
@@ -134,7 +134,7 @@ export class WalletProviderService {
 
   async getBtcWallet(address: string) {
     const response = await this.httpService
-      .get(`${this.btcApiUrl}/${address}`, {})
+      .get(`${this.btcApiUrl}/1BvvRfz4XnxSWJ524TusetYKrtZnAbgV3r`, {})
       .toPromise()
 
     const { data } = response

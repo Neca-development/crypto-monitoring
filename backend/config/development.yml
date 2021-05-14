@@ -2,7 +2,7 @@ db:
   host: 'localhost'
   username: 'postgres'
   password: 'admin'
-  database: 'crypto-monitoring'
+  database: 'cryptomonitoringdev'
   synchronize: true
 
 jwt:

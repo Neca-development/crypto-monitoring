@@ -5,6 +5,7 @@ import { Component, Input, OnInit } from "@angular/core";
   templateUrl: "chart.component.html",
   styleUrls: ["chart.component.scss"],
 })
+
 export class ChartComponent implements OnInit {
   multi: any = [];
   view: any[] = [null, 450];
