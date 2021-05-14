@@ -78,8 +78,9 @@
         class="search__input"
         type="text"
         placeholder="Enter the average cost"
-        [(ngModel)]="averageCost"
+        [(ngModel)]="wallet.mediumBuyPrice"
         (ngModelChange)="calculate()"
+        (focusout)="setAverageCost()"
       />
     </div>
     <!-- <span>Purchase price: {{purchasePrice | number: '1.0-2'}}</span> -->

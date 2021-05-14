@@ -7,6 +7,7 @@ export interface IUser {
 
 export interface IWallet {
   address: string;
+  mediumBuyPrice?: number;
   holderName?: string;
   balance?: string;
   balanceEur?: any;
