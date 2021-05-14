@@ -1,3 +1,3 @@
 export enum dbErrorCodes {
-  duplicate = '23505'
+  duplicate = '23505',
 }
