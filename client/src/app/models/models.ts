@@ -14,13 +14,20 @@ export interface IWallet {
   transactions?: Transaction[];
 }
 
+export interface ITag {
+  id: number;
+  text: string;
+}
+
 export interface Transaction {
+  time: string | number | Date;
+  id: number;
   currency: string;
   TXHash: string;
   ToAdress: string;
+  __hashtags__: ITag[];
   date: Date;
   type: "In" | "Out";
-  time: string;
 }
 
 export interface IAuthorizedUser {
@@ -37,11 +44,11 @@ export interface IAPIResponse<T> {
 export interface BTCResponse {
   bitcoin: {
     eur: number;
-  }
+  };
 }
 
 export interface ETHResponse {
   ethereum: {
     eur: number;
-  }
+  };
 }

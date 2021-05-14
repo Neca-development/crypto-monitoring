@@ -25,6 +25,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSortModule } from "@angular/material/sort";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatChipsModule } from "@angular/material/chips";
 
 import { LoginComponent } from "./views/login/login.component";
 import { HeaderComponent } from "./components/header/header.component";
@@ -77,6 +78,7 @@ import { ChartComponent } from "./components/chart/chart.component";
     MatPaginatorModule,
     MatSortModule,
     MatTooltipModule,
+    MatChipsModule,
     NgxChartsModule,
   ],
   providers: [
