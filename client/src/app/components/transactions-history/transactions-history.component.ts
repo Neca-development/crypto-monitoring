@@ -42,6 +42,17 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
   constructor(private _transactionService: TransactionService) {}
 
   ngOnInit() {
+    this.data.sort((transaction: Transaction, nextTransaction: Transaction) => {
+      const transactionTime = new Date(transaction.time);
+      const nextTransactionTime = new Date(nextTransaction.time);
+
+      if (transactionTime > nextTransactionTime) {
+        return -1;
+      } else if (transactionTime < nextTransactionTime) {
+        return 1;
+      }
+      return 0;
+    });
     this.dataSource = new MatTableDataSource(this.data);
     this.resetHashtags();
   }
