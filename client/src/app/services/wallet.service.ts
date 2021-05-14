@@ -12,7 +12,7 @@ export class WalletService extends BaseRequestService {
     super(_snackBar, http);
   }
 
-  async getWalletInfo(address: string, type: string): Promise<IWallet> {
+  async getWalletInfo(address: number, type: string): Promise<IWallet> {
     return await this.get(
       `/wallet?walletID=${address}&type=${type}&holderName=true&transactions=true&balanceInEur=true&hashtags=true&erc20tokens=true&balanceHistory=true`,
       null,
@@ -28,6 +28,14 @@ export class WalletService extends BaseRequestService {
     return await this.get(
       "/wallet/stats?ethBalanceSumm=true&ethBalanceSummEur=true&btcBalanceSumm=true&btcBalanceSummEur=true&erc20BalancesSummEur=true",
       null,
+      false
+    );
+  }
+
+  async setAveragePrice(walletID: number, type: string, price: number) {
+    return await this.post(
+      "/wallet/mediumBuyPrice",
+      { walletID, type, price },
       false
     );
   }

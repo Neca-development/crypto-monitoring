@@ -12,7 +12,7 @@ import { WalletService } from "src/app/services/wallet.service";
 })
 export class WalletComponent implements OnInit {
   wallet: IWallet;
-  id: "";
+  id: number;
   type: "";
   averageCost = "";
   purchasePrice = 0;
@@ -26,7 +26,7 @@ export class WalletComponent implements OnInit {
     private currencyService: CurrencyService
   ) {}
   async ngOnInit() {
-    this.id = this.activateRoute.snapshot.params["id"];
+    this.id = parseInt(this.activateRoute.snapshot.params["id"], 10);
     this.type = this.activateRoute.snapshot.queryParams["type"];
     this.wallet = await this._walletService.getWalletInfo(this.id, this.type);
     const btcToEUR = await this.currencyService.getBTCtoEUR();
@@ -48,5 +48,13 @@ export class WalletComponent implements OnInit {
     } else {
       return "red";
     }
+  }
+
+  setAverageCost() {
+    this._walletService.setAveragePrice(
+      this.id,
+      this.type,
+      +this.wallet.mediumBuyPrice
+    );
   }
 }
