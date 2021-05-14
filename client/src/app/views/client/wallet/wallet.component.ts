@@ -18,6 +18,7 @@ export class WalletComponent implements OnInit {
   profitEUR = 0;
   profitPercent = 0;
   ethOrBtc = 0;
+  totalBalance: number = 0;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -32,6 +33,11 @@ export class WalletComponent implements OnInit {
     const ethToEUR = await this.currencyService.getETHtoEUR();
     this.ethOrBtc = this.wallet.type === "ETH" ? ethToEUR : btcToEUR;
     this.calculate();
+
+    this.wallet.erc20tokens.forEach((token: any) => {
+      this.totalBalance += token.eur;
+    });
+    this.totalBalance += this.wallet.balanceEur;
   }
 
   calculate() {
