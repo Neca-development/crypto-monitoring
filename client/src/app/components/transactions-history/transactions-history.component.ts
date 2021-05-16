@@ -106,7 +106,7 @@ export class TransactionsHistoryComponent implements AfterViewInit, OnInit {
 
     const tagId = await this._transactionService.addHashtag(rowId, coin, value);
     // Add our fruit
-    if ((value || "").trim()) {
+    if (value.trim()) {
       const idx = this.data.findIndex((el: Transaction) => el.id === rowId);
       this.data[idx].__hashtags__.push({ id: tagId, text: value.trim() });
     }
