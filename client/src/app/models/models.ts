@@ -13,6 +13,7 @@ export interface IWallet {
   balanceEur?: any;
   type?: string;
   transactions?: Transaction[];
+  erc20tokens?: any[];
 }
 
 export interface ITag {

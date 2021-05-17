@@ -38,8 +38,9 @@
           <mat-icon class="client__currency-head">euro_symbol</mat-icon>
           <span>
             {{
-              user.totalEthBalanceEur + user.totalBtcBalanceEur
-                | number: "1.0-2"
+              user.totalEthBalanceEur +
+                user.totalBtcBalanceEur +
+                user.totalERC20BalanceEur | number: "1.0-2"
             }}
             <b>EUR</b></span
           >
