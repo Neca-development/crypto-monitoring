@@ -1,0 +1,117 @@
+<div *ngIf="wallet" class="container client">
+  <button
+    mat-button
+    color="accent"
+    routerLink="/dashboard"
+    class="client__back"
+  >
+    Back
+  </button>
+  <div class="client__header">
+    <h2 class="client__title">
+      {{ wallet.address }}
+      <span class="client__title-hint"
+        ><b>Owner:</b> {{ wallet.holderName }}</span
+      >
+    </h2>
+    <a
+      *ngIf="wallet.type === 'BTC'"
+      [href]="'https://www.blockchain.com/btc/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
+      Block Explorer
+    </a>
+    <a
+      *ngIf="wallet.type === 'ETH'"
+      [href]="'https://etherscan.io/address/' + wallet.address"
+      target="_blank"
+      mat-flat-button
+      color="primary"
+      class="client__block-explorer"
+    >
+      Block Explorer
+    </a>
+  </div>
+  <div class="client__row">
+    <div class="client__left">
+      <div class="client__chart-container">
+        <app-chart [data]="wallet.balanceHistory"></app-chart>
+      </div>
+    </div>
+    <div class="client__currency-list client__currency-list_l">
+      <div class="client__currency">
+        <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+        <span
+          >{{ +wallet.balance === 0 ? 0 : wallet.balance }}
+          <b>{{ wallet.type }}</b></span
+        >
+        <br />
+        <span class="client__currency-hint">
+          {{ +wallet.balanceEur | number: "1.0-2" }} <b>EUR</b>
+        </span>
+      </div>
+      <div *ngFor="let token of wallet.erc20tokens" class="client__currency">
+        <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+        <span>
+          {{ +token.balance === 0 ? 0 : (token.balance | number: "1.0-10") }}
+          <b>{{ token.type.symbol }}</b>
+        </span>
+        <span class="client__currency-hint">
+          {{ +token.eur | number: "1.0-2" }} <b>EUR</b>
+        </span>
+      </div>
+      <div class="client__currency">
+        <mat-icon class="client__currency-head">euro_symbol</mat-icon>
+        <span>{{ totalBalance | number: "1.0-2" }} <b>EUR</b></span>
+      </div>
+    </div>
+  </div>
+  <!-- <label class="switch client__activate-portfolio">
+    <input type="checkbox" name="" id="" />
+    <div class="switch__bar"></div>
+    <div class="switch__circle"></div>
+    <span class="switch__label">Activate Portfolio</span>
+  </label>
+  <div class="client__average-price">
+    <b>Average Purchase Price:</b> 0.002342 ETH
+  </div> -->
+  <div class="portfolio-section">
+    <div class="search">
+      <h2 class="portfolio-section__title">Wallet Profit/Loss</h2>
+      <input
+        class="search__input"
+        type="text"
+        placeholder="Enter the average cost"
+        [(ngModel)]="wallet.mediumBuyPrice"
+        (ngModelChange)="calculate()"
+        (focusout)="setAverageCost()"
+      />
+    </div>
+    <!-- <span>Purchase price: {{purchasePrice | number: '1.0-2'}}</span> -->
+    <div class="portfolio-section__profit">
+      <h2 class="portfolio-section__subtitle">
+        {{ profitEUR < 0 ? "Loss" : "Profit" }}:
+      </h2>
+      <span
+        class="portfolio-section__value"
+        [style.color]="colorize(profitEUR)"
+      >
+        € {{ profitEUR | number: "1.0-2" }}
+      </span>
+      <span
+        class="portfolio-section__value"
+        [style.color]="colorize(profitPercent)"
+      >
+        {{ profitPercent | number: "1.0-2" }} %
+      </span>
+    </div>
+  </div>
+
+  <app-transactions-history
+    [data]="wallet.transactions"
+    [type]="wallet.type"
+  ></app-transactions-history>
+</div>

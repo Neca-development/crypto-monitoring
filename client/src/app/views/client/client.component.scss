@@ -1,0 +1,177 @@
+::ng-deep {
+  .client {
+    padding-top: 30px;
+
+    h2.client__title {
+      font-weight: 600;
+      font-size: 42px;
+      line-height: 42px;
+      margin-bottom: 30px;
+    }
+
+    &__title-hint {
+      font-size: 30px;
+      font-weight: 500;
+      display: block;
+      margin-top: 20px;
+    }
+
+    button.client__back {
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 80px;
+    }
+
+    &__row {
+      display: flex;
+      margin-top: 50px;
+    }
+
+    &__graph {
+      font-weight: 500;
+      font-size: 36px;
+      line-height: 42px;
+      background-color: #000;
+      text-align: center;
+      padding: 120px 0;
+      color: #ffffff;
+    }
+
+    &__currency-list {
+      margin-top: 20px;
+
+      &_l {
+        flex: auto;
+        margin-top: 0;
+        margin-left: 30px;
+        .client__currency {
+          width: 100%;
+        }
+      }
+    }
+
+    &__currency {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: 500;
+      position: relative;
+      font-size: 26px;
+      line-height: 42px;
+      padding: 20px;
+      text-align: center;
+      background-color: var(--base-bg);
+      box-shadow: var(--inner-shadow);
+      border-radius: 15px;
+    }
+
+    &__currency-hint {
+      font-size: 18px;
+      line-height: 21px;
+    }
+
+    &__currency-head {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      opacity: 0.5;
+      font-size: 18px;
+    }
+
+    &__left {
+      flex: auto;
+
+      app-chart {
+        width: 100%;
+        display: block;
+      }
+    }
+
+    &__right {
+      background-color: var(--base-bg);
+      box-shadow: var(--inner-shadow);
+      border-radius: 20px;
+      margin-left: 30px;
+      min-width: 30%;
+    }
+
+    &__block-explorer {
+      font-size: 20px;
+      padding: 5px 15px;
+    }
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    &__activate-portfolio {
+      margin-top: 30px;
+      display: flex;
+    }
+    &__average-price {
+      margin-top: 35px;
+      font-size: 28px;
+      box-shadow: var(--inner-shadow);
+      background: var(--base-bg);
+      display: inline-block;
+      padding: 20px 25px;
+      border-radius: 10px;
+      line-height: normal;
+    }
+
+    &__chart-container {
+      padding: 10px;
+      border-radius: 20px;
+      height: 420px;
+      box-shadow: var(--base-shadow);
+    }
+  }
+
+  .wallet {
+    margin-bottom: 20px;
+    padding: 21px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    line-height: 21px;
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      height: 10px;
+      width: 90%;
+      background-color: var(--base-bg);
+      box-shadow: var(--base-shadow);
+      border-radius: 15px;
+      bottom: -10px;
+      left: 5%;
+    }
+
+    &:last-of-type {
+      margin-bottom: 0;
+      &::after {
+        display: none;
+      }
+    }
+
+    &__value {
+      cursor: pointer;
+      transition: all ease 0.15s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 150px);
+      display: inline-block;
+      &:hover {
+        color: #ff4a13;
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+<div *ngIf="user" class="container client">
+  <button
+    mat-button
+    color="accent"
+    routerLink="/dashboard"
+    class="client__back"
+  >
+    Back
+  </button>
+  <h2 class="client__title">{{ user.fullName }}</h2>
+  <div class="client__row">
+    <div class="client__left">
+      <div class="client__chart-container">
+        <app-chart [data]="user.balanceHistory"></app-chart>
+      </div>
+      <div class="client__currency-list">
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+          <span
+            >{{ +user.totalBtcBalance === 0 ? 0 : user.totalBtcBalance }}
+            <b>BTC</b></span
+          >
+          <span class="client__currency-hint"
+            >{{ user.totalBtcBalanceEur | number: "1.0-2" }} <b>EUR</b></span
+          >
+        </div>
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">generating_tokens</mat-icon>
+          <span>
+            {{ +user.totalEthBalance === 0 ? 0 : user.totalEthBalance }}
+            <b> ETH</b>
+          </span>
+          <span class="client__currency-hint"
+            >{{ user.totalEthBalanceEur | number: "1.0-2" }} <b>EUR</b></span
+          >
+        </div>
+        <div class="client__currency">
+          <mat-icon class="client__currency-head">euro_symbol</mat-icon>
+          <span>
+            {{
+              user.totalEthBalanceEur +
+                user.totalBtcBalanceEur +
+                user.totalERC20BalanceEur | number: "1.0-2"
+            }}
+            <b>EUR</b></span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="client__right">
+      <div class="wallet" *ngFor="let wallet of user.addresses">
+        <span
+          class="wallet__value"
+          [routerLink]="['wallet', wallet.id]"
+          [queryParams]="{ type: wallet.type }"
+          [matTooltip]="wallet.address"
+        >
+          {{ wallet.address }}
+        </span>
+        <a
+          *ngIf="wallet.type === 'BTC'"
+          [href]="'https://www.blockchain.com/btc/address/' + wallet.address"
+          target="_blank"
+          mat-button
+          color="primary"
+        >
+          Block Explorer
+        </a>
+        <a
+          *ngIf="wallet.type === 'ETH'"
+          [href]="'https://etherscan.io/address/' + wallet.address"
+          target="_blank"
+          mat-button
+          color="primary"
+        >
+          Block Explorer
+        </a>
+      </div>
+    </div>
+  </div>
+  <app-transactions-history
+    [data]="user.transactions"
+  ></app-transactions-history>
+</div>

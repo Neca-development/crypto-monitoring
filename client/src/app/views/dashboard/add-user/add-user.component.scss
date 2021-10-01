@@ -1,0 +1,29 @@
+.form {
+  width: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 88px 20px;
+
+  &__input {
+    font-size: 14px;
+    width: 100%;
+    line-height: 140.62%;
+  }
+
+  &__submit {
+    padding: 15px 25px;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 21px;
+    text-align: center;
+  }
+  &__inputs-group {
+    position: relative;
+  }
+  &__add-field {
+    position: absolute;
+    right: -60px;
+    top: 10px;
+  }
+}

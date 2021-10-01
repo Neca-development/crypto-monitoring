@@ -1,0 +1,20 @@
+server:
+  port: 3000
+
+db:
+  type: 'postgres'
+  port: 5432
+  database: 'cryptomonitoringdev'
+
+admin:
+  email: 'test@gmail.com'
+  password: 'IWannaFly'
+
+jwt:
+  expiresIn: 86400
+
+email:
+  service: 'gmail'
+  user: 'monitoringcrypto@gmail.com'
+  receiver: 'cscrypto29@gmail.com'
+  password: '123123Opus'
